@@ -24,20 +24,18 @@ def main(工作空间="C:\\Users\\common\\project\\J江东区临江控规\\临�
         # Process: 复制要素 (2) (复制要素) (management)
         输入要素 = bxarcpy.类.要素类.要素读取_通过名称(输入要素名称)
         # 输出要素 = bxarcpy.数据管理.要素复制(输入要素=输入路径)
+        输入要素 = 输入要素.要素创建_通过复制()
 
-        删除字段 = ["dkbmgk", "地块性", "单元名", "TBYBH", "FID_DLTB", "GKXZ", "Layer", "CZCSXM", "三调地类名称", "三调地类编号", "ORIG_FID", "a", "镇街名称", "名称", "FID_4去除", "Shape_Leng", "三调稳", "二调永", "三调恢", "三调耕", "二调耕", "街道", "村名称", "组名", "序号", "FID_规划范围线_2303070850", "FWDGDHRLY", "SFWYYJJBNT", "WDGD", "BZ", "ZRSYX", "SJMC", "SJBH", "BHJSSJ", "BHKSSJ", "JZDZ", "LXDH", "ZRRMC", "ZRRZJHM", "ZZRR", "ZMC", "CFZR", "SJNF", "FRDBS", "ZLFLDM", "GDDJ", "GDDB", "ZZSXMC", "ZZSXDM", "TBXHMC", "TBXHDM", "GGBZL", "GDPDJB", "GDLX", "YJJBNTMJ", "KCMJ", "KCXS", "KCDLBM", "YJJBNTTBMJ", "ZLDWMC", "ZLDWDM", "QSDWMC", "QSDWDM", "QSXZ", "DLMC", "DLBM", "TBBH", "YJJBNTTBBH", "XZQMC", "XZQDM", "YSDM", "BSM", "FID_YJJBNTBHTB", "mj", "RefName", "LineWt", "Elevation", "Linetype", "Color", "Entity", "地块性质", "实体类型", "基数转换关系", "用途管制分区", "综合耕地N", "面积", "处理方向", "综合净面积", "基期代码", "基期名称", "基期CZCSXM", "基期类型", "基期大类", "基期城乡统计", "基期KCXS"]
+        # 删除字段 = ["dkbmgk", "地块性", "单元名", "TBYBH", "FID_DLTB", "GKXZ", "Layer", "CZCSXM", "三调地类名称", "三调地类编号", "ORIG_FID", "a", "镇街名称", "名称", "FID_4去除", "Shape_Leng", "三调稳", "二调永", "三调恢", "三调耕", "二调耕", "街道", "村名称", "组名", "序号", "FID_规划范围线_2303070850", "FWDGDHRLY", "SFWYYJJBNT", "WDGD", "BZ", "ZRSYX", "SJMC", "SJBH", "BHJSSJ", "BHKSSJ", "JZDZ", "LXDH", "ZRRMC", "ZRRZJHM", "ZZRR", "ZMC", "CFZR", "SJNF", "FRDBS", "ZLFLDM", "GDDJ", "GDDB", "ZZSXMC", "ZZSXDM", "TBXHMC", "TBXHDM", "GGBZL", "GDPDJB", "GDLX", "YJJBNTMJ", "KCMJ", "KCXS", "KCDLBM", "YJJBNTTBMJ", "ZLDWMC", "ZLDWDM", "QSDWMC", "QSDWDM", "QSXZ", "DLMC", "DLBM", "TBBH", "YJJBNTTBBH", "XZQMC", "XZQDM", "YSDM", "BSM", "FID_YJJBNTBHTB", "mj", "RefName", "LineWt", "Elevation", "Linetype", "Color", "Entity", "地块性质", "实体类型", "基数转换关系", "用途管制分区", "综合耕地N", "面积", "处理方向", "综合净面积", "基期代码", "基期名称", "基期CZCSXM", "基期类型", "基期大类", "基期城乡统计", "基期KCXS"]
         # Process: 删除字段 (2) (删除字段) (management)
         # 输出要素 = bxarcpy.数据管理.字段删除(输入要素=输出要素, 删除字段列表=删除字段)
-        输入要素.字段删除(删除字段)
+        输入要素.字段删除(保留字段名称列表=["地类编号"])
 
         # Process: 添加字段 (添加字段) (management)
-        输入要素.字段添加("Layer").字段计算("Layer", "\"YDGIS-\" + !地类编号!.replace('/','／')")
         # 输出要素 = bxarcpy.数据管理.字段添加(输入要素=输出要素, 字段名称="Layer", 字段类型="字符串", 字段长度=100)
 
         # # Process: 计算字段 (计算字段) (management)
         # 输出要素 = bxarcpy.数据管理.字段计算(输入要素=输出要素, 字段名称="Layer", 表达式="\"YDGIS-\" + !地类编号!.replace('/','／')", 字段类型="字符串")
-
-        输入要素.字段添加("地块性质").字段计算("地块性质", "!地类编号!.replace('／','/')")
         # Process: 添加字段 (2) (添加字段) (management)
         # 输出要素 = bxarcpy.数据管理.字段添加(输入要素=输出要素, 字段名称="地块性质", 字段类型="字符串", 字段长度=100)
 
@@ -45,7 +43,6 @@ def main(工作空间="C:\\Users\\common\\project\\J江东区临江控规\\临�
         # 输出要素 = bxarcpy.数据管理.字段计算(输入要素=输出要素, 字段名称="地块性质", 表达式="!地类编号!.replace('／','/')", 字段类型="字符串")
 
         # Process: 添加字段 (3) (添加字段) (management)
-        输入要素.字段添加("实体类型").字段计算("实体类型", '"控规地块"')
         # 输出要素 = bxarcpy.数据管理.字段添加(输入要素=输出要素, 字段名称="实体类型", 字段类型="字符串", 字段长度=100)
 
         # Process: 计算字段 (3) (计算字段) (management)
@@ -92,14 +89,17 @@ def main(工作空间="C:\\Users\\common\\project\\J江东区临江控规\\临�
         转单部件后要素.要素几何修复()
 
         # 输出要素 = bxarcpy.数据管理.字段删除(输入要素=输出要素, 删除字段列表=["ORIG_FID", "地类编号"])
+        转单部件后要素.字段添加("Layer").字段计算("Layer", "\"YDGIS-\" + !地类编号!.replace('/','／')")
+        转单部件后要素.字段添加("地块性质").字段计算("地块性质", "!地类编号!.replace('／','/')")
+        转单部件后要素.字段添加("实体类型").字段计算("实体类型", '"控规地块"')
         转单部件后要素.字段删除(["ORIG_FID", "地类编号", "是否切分"])
 
         # Process: 复制要素 (复制要素) (management)
         # print("输入要素是：" + 输出要素)
         # print("输出要素是：" + 工作空间 + 输出路径)
-        预处理结束后要素 = 转单部件后要素.要素创建_通过复制并重命名重名要素("AA_导出到CAD前预处理")
+        转单部件后要素.导出到CAD(输出CAD路径)
+        转单部件后要素.要素创建_通过复制并重命名重名要素("AA_导出到CAD前预处理")
         # 输出要素 = bxarcpy.数据管理.要素复制(输入要素=输出要素, 输出要素=工作空间 + 输出路径)
-        预处理结束后要素.导出到CAD(输出CAD路径)
         # bxarcpy.转换.GEO导出到CAD(输入要素列表=[输出要素], 输出路径=输出CAD路径)
 
 
