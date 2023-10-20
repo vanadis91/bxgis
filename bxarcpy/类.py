@@ -622,6 +622,10 @@ class 游标类_用于更新:
                 折点和孔洞数量总数 += 折点和孔洞数量
             return 折点和孔洞数量总数 - self.折点数量
 
+        # @property
+        # def 孔洞数量(self):
+        #     return self._内嵌对象.interiorRingCount()
+
         def 是否为多部件要素(self):
             return self._内嵌对象.isMultipart
 
