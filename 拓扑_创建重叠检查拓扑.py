@@ -56,7 +56,7 @@ def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控
 if __name__ == "__main__":
     # Global Environment settings
     # main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素="\\AA_DIST_用地规划图_Union_Union", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
-    main(工作空间=r"C:\\Users\\common\\project\\F富阳受降控规\\受降北_数据库.gdb", 输入要素="\\DIST_用地现状图", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
+    main(工作空间=r"C:\\Users\\common\\project\\F富阳受降控规\\受降北_数据库.gdb", 输入要素="DIST_用地现状图", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
     # main(工作空间=r"C:\Users\beixiao\Desktop\新建文件地理数据库.gdb", 输入要素="\\test", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
     # main(工作空间=r"C:\Users\beixiao\Desktop\新建文件地理数据库.gdb", 输入要素="\\AA_现有控规")
     # main(工作空间=r"C:\Users\beixiao\Desktop\新建文件地理数据库.gdb", 输入要素="\\AA_原控规", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")

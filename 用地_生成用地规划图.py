@@ -10,8 +10,8 @@ import time
 
 def main(工作空间="C:\\Users\\common\\project\\J江东区临江控规\\临江控规_数据库.gdb", DIST_用地规划图="\\DIST_用地规划图1", AA_应在CAD中填色实际没填色="\\AA_应在CAD中填色实际没填色1", SQL_CAD地块中空隙的地类="'00'", SQL_以CAD为准的地类="地类编号 LIKE '060102%' OR 地类编号 LIKE '07%' OR 地类编号 LIKE '08%' OR 地类编号 LIKE '09%' OR 地类编号 LIKE '10%' OR 地类编号 LIKE '11%'  OR 地类编号 LIKE '12%'  OR 地类编号 LIKE '13%'  OR 地类编号 LIKE '14%'  OR 地类编号 LIKE '15%'  OR 地类编号 LIKE '16%'  OR ( 地类编号 LIKE '17%' AND 地类编号 NOT LIKE '1704%' AND 地类编号 NOT LIKE '1705%' )  OR 地类编号 LIKE '23%'"):
     # 用地_生成用地规划图
-    with bxarcpy.环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
-        bxarcpy.配置.是否覆盖输出要素(True)
+    with bxarcpy.类.环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
+        bxarcpy.类.配置.是否覆盖输出要素 = True
         DIST_用地规划图 = 工作空间 + DIST_用地规划图
         AA_应在CAD中填色实际没填色 = 工作空间 + AA_应在CAD中填色实际没填色
         YD_CAD色块 = 工作空间 + "\\YD_CAD色块"
