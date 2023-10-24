@@ -7,56 +7,47 @@ import bxarcpy
 # from sys import argv
 
 
-def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素="\\YD_CAD色块1", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg"):  # 拓扑_创建重叠检查拓扑
+def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素名称列表=["YD_CAD色块1"], 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg"):  # 拓扑_创建重叠检查拓扑
     with bxarcpy.类.环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
         # To allow overwriting outputs change overwriteOutput option to True.
         # arcpy.env.overwriteOutput = False
         bxarcpy.类.配置.是否覆盖输出要素 = True
 
         # Process: 创建要素数据集 (创建要素数据集) (management)
-        包含拓扑检查的要素数据集 = bxarcpy.类.要素数据集类.要素数据集创建("拓扑检查")
+        要素数据集 = bxarcpy.类.要素数据集类.要素数据集创建("拓扑检查")
         # 新创建的要素集 = bxarcpy.数据管理.要素集创建(数据库=工作空间, 要素集名称="拓扑检查")
-        拓扑对象 = bxarcpy.类.拓扑类.拓扑创建(包含拓扑检查的要素数据集.名称, "拓扑")
+        拓扑对象 = bxarcpy.类.拓扑类.拓扑创建(要素数据集.名称, "拓扑")
         # Process: 创建拓扑 (创建拓扑) (management)
         # 拓扑 = bxarcpy.数据管理.拓扑创建(要素集=新创建的要素集, 拓扑名称="拓扑")
 
         # Process: 要素类至要素类 (要素类至要素类) (conversion)
-        输入要素 = bxarcpy.类.要素类.要素读取_通过名称(输入要素)
-        要素数据集中的要素 = 输入要素.导出到要素(包含拓扑检查的要素数据集.名称, "AA_拓扑检查")
-        # 要素集中要素 = bxarcpy.转换.要素导出到要素(输入要素=输入要素, 输出路径=新创建的要素集, 输出文件名="AA_拓扑检查")
+        for x in 输入要素名称列表:
+            输入要素 = bxarcpy.类.要素类.要素读取_通过名称(x)
+            要素数据集中的要素 = 输入要素.导出到要素(要素数据集.名称 + "\\" + 输入要素.名称 + "_1")
+            # 要素集中要素 = bxarcpy.转换.要素导出到要素(输入要素=输入要素, 输出路径=新创建的要素集, 输出文件名="AA_拓扑检查")
 
-        # Process: 向拓扑中添加要素类 (向拓扑中添加要素类) (management)
-        拓扑对象.拓扑中添加要素(要素数据集中的要素.名称)
-        # 拓扑 = bxarcpy.数据管理.拓扑中添加要素(拓扑名称=拓扑, 输入要素=要素集中要素)
+            # Process: 向拓扑中添加要素类 (向拓扑中添加要素类) (management)
+            拓扑对象.拓扑中添加要素(要素数据集中的要素.名称)
 
-        # Process: 添加拓扑规则 (添加拓扑规则) (management)
-        拓扑对象.拓扑中添加规则(要素数据集中的要素.名称, 规则="Must Not Overlap (Area)")
-        # 拓扑 = bxarcpy.数据管理.拓扑中添加规则(拓扑名称=拓扑, 输入要素=要素集中要素, 规则="Must Not Overlap (Area)")
+            # Process: 添加拓扑规则 (添加拓扑规则) (management)
+            拓扑对象.拓扑中添加规则(要素数据集中的要素.名称, 规则="Must Not Overlap (Area)")
 
-        # Process: 拓扑验证 (拓扑验证) (management)
-        # 拓扑 = bxarcpy.数据管理.拓扑验证(拓扑名称=拓扑)
-        拓扑对象.拓扑验证()
+            # Process: 拓扑验证 (拓扑验证) (management)
+            拓扑对象.拓扑验证()
 
         拓扑导出后要素1, 拓扑导出后要素2, 拓扑导出后要素3 = 拓扑对象.导出到要素("AA_拓扑导出后要素")
 
-        # 拓扑导出后要素1, 拓扑导出后要素2, 拓扑导出后要素3 = bxarcpy.数据管理.拓扑导出(拓扑名称=拓扑, 数据库名称=工作空间, 导出要素名称="拓扑导出后要素")
-
-        # print(拓扑导出后要素)
         拓扑导出后要素3.导出到CAD(输出CAD路径)
-        # bxarcpy.转换.GEO导出到CAD(输入要素列表=[拓扑导出后要素3], 输出路径=输出CAD路径)
+
         拓扑导出后要素1.要素删除()
         拓扑导出后要素2.要素删除()
         拓扑导出后要素3.要素删除()
 
-        # bxarcpy.数据管理.要素删除(输入要素列表=拓扑导出后要素1)
-        # bxarcpy.数据管理.要素删除(输入要素列表=拓扑导出后要素2)
-        # bxarcpy.数据管理.要素删除(输入要素列表=拓扑导出后要素3)
-
 
 if __name__ == "__main__":
     # Global Environment settings
-    # main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素="\\AA_DIST_用地规划图_Union_Union", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
-    main(工作空间=r"C:\\Users\\common\\project\\F富阳受降控规\\受降北_数据库.gdb", 输入要素="DIST_用地现状图", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
+    main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素名称列表=["YD_农转用20年及以前", "YD_现状修改1", "YD_农转用21年及以后", "YD_审批信息已实施", "YD_地籍信息", "YD_现状修改2", "YD_审批信息已批未建", "DIST_用地现状图"], 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
+    # main(工作空间=r"C:\\Users\\common\\project\\F富阳受降控规\\受降北_数据库.gdb", 输入要素="DIST_用地现状图", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
     # main(工作空间=r"C:\Users\beixiao\Desktop\新建文件地理数据库.gdb", 输入要素="\\test", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
     # main(工作空间=r"C:\Users\beixiao\Desktop\新建文件地理数据库.gdb", 输入要素="\\AA_现有控规")
     # main(工作空间=r"C:\Users\beixiao\Desktop\新建文件地理数据库.gdb", 输入要素="\\AA_原控规", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")

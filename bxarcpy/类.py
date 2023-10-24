@@ -290,7 +290,7 @@ class 拓扑类:
     def 拓扑创建(要素数据集名称=None, 拓扑名称=None):
         return 拓扑类(名称=arcpy.management.CreateTopology(in_dataset=要素数据集名称, out_name=拓扑名称, in_cluster_tolerance=None)[0])
 
-    def 拓扑中添加要素(self, 输入要素名称=None):
+    def 拓扑中添加要素(self, 输入要素名称):
         arcpy.management.AddFeatureClassToTopology(in_topology=self.名称, in_featureclass=输入要素名称, xy_rank=1, z_rank=1)[0]
         return self
 
@@ -357,11 +357,11 @@ class 要素类:
         arcpy.analysis.Clip(in_features=self.名称, clip_features=裁剪要素名称, out_feature_class=输出要素名称, cluster_tolerance="")
         return 要素类(名称=输出要素名称)
 
-    def 要素创建_通过擦除(self, 擦除要素路径, 输出要素路径="in_memory\\AA_擦除"):
-        if 输出要素路径 == "in_memory\\AA_擦除":
-            输出要素路径 = 输出要素路径 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        arcpy.analysis.Erase(in_features=self.名称, erase_features=擦除要素路径, out_feature_class=输出要素路径, cluster_tolerance="")
-        return 要素类(名称=输出要素路径)
+    def 要素创建_通过擦除(self, 擦除要素名称, 输出要素名称="in_memory\\AA_擦除"):
+        if 输出要素名称 == "in_memory\\AA_擦除":
+            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+        arcpy.analysis.Erase(in_features=self.名称, erase_features=擦除要素名称, out_feature_class=输出要素名称, cluster_tolerance="")
+        return 要素类(名称=输出要素名称)
 
     def 要素创建_通过擦除并几何修复(self, 擦除要素名称, 输出要素名称="in_memory\\AA_擦除并几何修复"):
         if 输出要素名称 == "in_memory\\AA_擦除并几何修复":
@@ -371,9 +371,9 @@ class 要素类:
         arcpy.analysis.Erase(in_features=输入.名称, erase_features=擦除.名称, out_feature_class=输出要素名称, cluster_tolerance="")
         return 要素类(名称=输出要素名称)
 
-    def 要素创建_通过相交(self, 输入要素路径列表=[], 输出要素路径="in_memory\\AA_相交"):
+    def 要素创建_通过相交(self, 输入要素名称列表=[], 输出要素路径="in_memory\\AA_相交"):
         _输入要素路径列表 = [self.名称]
-        _输入要素路径列表.extend(输入要素路径列表)
+        _输入要素路径列表.extend(输入要素名称列表)
         if 输出要素路径 == "in_memory\\AA_相交":
             输出要素路径 = 输出要素路径 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
         _输入要素路径列表 = [[x, ""] for x in _输入要素路径列表]
@@ -401,18 +401,18 @@ class 要素类:
         arcpy.management.Dissolve(in_features=self.名称, out_feature_class=输出要素名称, dissolve_field=融合字段列表, statistics_fields=统计字段列表, multi_part="SINGLE_PART", unsplit_lines="DISSOLVE_LINES", concatenation_separator="")
         return 要素类(名称=输出要素名称)
 
-    def 要素创建_通过更新并合并字段(self, 更新要素名称, 输出要素路径="in_memory\\AA_更新并合并字段"):
-        if 输出要素路径 == "in_memory\\AA_更新并合并字段":
-            输出要素路径 = 输出要素路径 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+    def 要素创建_通过更新并合并字段(self, 更新要素名称, 输出要素名称="in_memory\\AA_更新并合并字段"):
+        if 输出要素名称 == "in_memory\\AA_更新并合并字段":
+            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
         输出 = self.要素创建_通过擦除并几何修复(更新要素名称)
-        输出 = 输出.要素创建_通过合并([更新要素名称], 输出要素路径)
+        输出 = 输出.要素创建_通过合并([更新要素名称], 输出要素名称)
         return 输出
 
-    def 要素创建_通过筛选(self, SQL语句="", 输出要素路径="in_memory\\AA_筛选"):
-        if 输出要素路径 == "in_memory\\AA_筛选":
-            输出要素路径 = 输出要素路径 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        arcpy.analysis.Select(in_features=self.名称, out_feature_class=输出要素路径, where_clause=SQL语句)
-        return 要素类(名称=输出要素路径)
+    def 要素创建_通过筛选(self, SQL语句="", 输出要素名称="in_memory\\AA_筛选"):
+        if 输出要素名称 == "in_memory\\AA_筛选":
+            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+        arcpy.analysis.Select(in_features=self.名称, out_feature_class=输出要素名称, where_clause=SQL语句)
+        return 要素类(名称=输出要素名称)
 
     def 要素创建_通过多部件至单部件(self, 输出要素路径="in_memory\\AA_多部件至单部件"):
         if 输出要素路径 == "in_memory\\AA_多部件至单部件":
@@ -446,16 +446,17 @@ class 要素类:
         )
         return 要素类(名称=输出要素名称)
 
-    def 要素创建_通过填充空隙(self, 填充范围要素路径=None, 填充地类编号表达式='"00"', 输出要素名称="in_memory\\AA_填充空隙"):
+    def 要素创建_通过填充空隙(self, 填充范围要素名称, 填充地类编号表达式='"00"', 输出要素名称="in_memory\\AA_填充空隙"):
         # 常用_填充空隙后
         # To allow overwriting outputs change overwriteOutput option to True.
         if 输出要素名称 == "in_memory\\AA_填充空隙":
             输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
 
         # Process: 复制要素 (复制要素) (management)
-        填充范围1 = 要素类.要素读取_通过名称(填充范围要素路径).要素创建_通过复制()
-        填充范围1.字段添加(字段名称="地类编号", 字段类型="字符串", 字段长度=100).字段计算(字段名称="地类编号", 字段类型="字符串", 表达式=填充地类编号表达式)
-        ret = 填充范围1.要素创建_通过更新并合并字段(self.名称, 输出要素名称)
+        顶部元素 = 要素类.要素读取_通过名称(self.名称).要素创建_通过复制()
+        填充范围1 = 要素类.要素读取_通过名称(填充范围要素名称).要素创建_通过复制()
+        填充范围1.字段添加("地类编号").字段计算("地类编号", 填充地类编号表达式)
+        ret = 填充范围1.要素创建_通过更新并合并字段(顶部元素.名称, 输出要素名称)
         return ret
 
     def 要素创建_通过切分(self, 折点数量=200, 输出要素名称="in_memory\\AA_切分"):
@@ -497,12 +498,13 @@ class 要素类:
             字段对象列表 = 要素类(名称=self.名称).字段列表获取()
             字段名称列表 = [x.名称 for x in 字段对象列表]
             调试.输出调试(f"要素拥有的所有字段为：" + str(字段名称列表))
+            保留字段名称列表.extend(["OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length"])
             for x in 保留字段名称列表:
-                字段名称列表.remove(x)
-            字段名称列表.remove("OBJECTID")
-            字段名称列表.remove("Shape")
+                if x in 字段名称列表:
+                    字段名称列表.remove(x)
             调试.输出调试(f"除去保留字段列表后剩余的所有字段为：" + str(字段名称列表))
-            arcpy.management.DeleteField(in_table=self.名称, drop_field=字段名称列表, method="DELETE_FIELDS")[0]
+            if 字段名称列表:
+                arcpy.management.DeleteField(in_table=self.名称, drop_field=字段名称列表, method="DELETE_FIELDS")[0]
         return self
 
     def 字段添加(self, 字段名称, 字段类型="字符串", 字段长度=100, 字段别称=""):
@@ -533,9 +535,10 @@ class 要素类:
     def 导出到CAD(self, 输出路径):
         return arcpy.conversion.ExportCAD(in_features=self.名称, Output_Type="DWG_R2010", Output_File=输出路径, Ignore_FileNames="Ignore_Filenames_in_Tables", Append_To_Existing="Overwrite_Existing_Files", Seed_File="")
 
-    def 导出到要素(self, 输出目录, 输出文件名):
-        arcpy.conversion.FeatureClassToFeatureClass(in_features=self.名称, out_path=输出目录, out_name=输出文件名, where_clause="", field_mapping="", config_keyword="")[0]
-        return 要素类(名称=输出文件名)
+    def 导出到要素(self, 输出要素名称):
+        # arcpy.conversion.FeatureClassToFeatureClass(in_features=self.名称, out_path=输出目录, out_name=输出文件名, where_clause="", field_mapping="", config_keyword="")[0]
+        arcpy.conversion.ExportFeatures(in_features=self.名称, out_features=输出要素名称, where_clause="", use_field_alias_as_name="NOT_USE_ALIAS", field_mapping=None, sort_field=[])
+        return 要素类(名称=输出要素名称)
 
 
 class 字段类:
