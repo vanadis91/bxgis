@@ -490,19 +490,19 @@ class 要素类:
         return [x.名称 for x in 字段列表]
 
     def 字段删除(self, 删除字段名称列表=None, 保留字段名称列表=None):
-        from bxpy import 调试
+        from bxpy import 日志
 
         if 保留字段名称列表 is None:
             arcpy.management.DeleteField(in_table=self.名称, drop_field=删除字段名称列表, method="DELETE_FIELDS")[0]
         elif 删除字段名称列表 is None:
             字段对象列表 = 要素类(名称=self.名称).字段列表获取()
             字段名称列表 = [x.名称 for x in 字段对象列表]
-            调试.输出调试(f"要素拥有的所有字段为：" + str(字段名称列表))
+            日志.输出调试(f"要素拥有的所有字段为：" + str(字段名称列表))
             保留字段名称列表.extend(["OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length"])
             for x in 保留字段名称列表:
                 if x in 字段名称列表:
                     字段名称列表.remove(x)
-            调试.输出调试(f"除去保留字段列表后剩余的所有字段为：" + str(字段名称列表))
+            日志.输出调试(f"除去保留字段列表后剩余的所有字段为：" + str(字段名称列表))
             if 字段名称列表:
                 arcpy.management.DeleteField(in_table=self.名称, drop_field=字段名称列表, method="DELETE_FIELDS")[0]
         return self

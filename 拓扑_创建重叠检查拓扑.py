@@ -46,7 +46,8 @@ def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控
 
 if __name__ == "__main__":
     # Global Environment settings
-    main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素名称列表=["YD_农转用20年及以前", "YD_现状修改1", "YD_农转用21年及以后", "YD_审批信息已实施", "YD_地籍信息", "YD_现状修改2", "YD_审批信息已批未建", "DIST_用地现状图"], 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
+    # main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素名称列表=["YD_农转用20年及以前", "YD_现状修改1", "YD_农转用21年及以后", "YD_审批信息已实施", "YD_地籍信息", "YD_现状修改2", "YD_审批信息已批未建", "DIST_用地现状图"], 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
+    main(工作空间=r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb", 输入要素名称列表=["AA_CAD色块_拓扑检查"], 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
     # main(工作空间=r"C:\\Users\\common\\project\\F富阳受降控规\\受降北_数据库.gdb", 输入要素="DIST_用地现状图", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
     # main(工作空间=r"C:\Users\beixiao\Desktop\新建文件地理数据库.gdb", 输入要素="\\test", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
     # main(工作空间=r"C:\Users\beixiao\Desktop\新建文件地理数据库.gdb", 输入要素="\\AA_现有控规")
