@@ -12,6 +12,7 @@ def main(
     工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb",
     CAD路径列表=[r"C:\Users\beixiao\Desktop\01.dwg"],
     输出要素=r"YD_CAD色块",
+    是否拓扑检查=False,
 ):
     with bxarcpy.类.环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
         # 输入输出_CAD转GIS预处理_PY3
@@ -25,13 +26,11 @@ def main(
 
         if CAD路径列表 == [r"C:\Users\beixiao\Desktop\01.dwg"]:
             输入要素 = bxarcpy.类.要素类.要素读取_通过名称(输出要素集.名称 + r"\控规地块")
-            复制后要素 = 输入要素.要素创建_通过复制并重命名重名要素(输出要素)
             # 输出要素 = bxarcpy.数据管理.要素复制(输入要素=输出要素集 + r"\控规地块", 输出要素=工作空间 + 输出要素)
         else:
             输入要素 = bxarcpy.类.要素类.要素读取_通过名称(输出要素集.名称 + r"\Polygon")
-            复制后要素 = 输入要素.要素创建_通过复制并重命名重名要素(输出要素)
             # 输出要素 = bxarcpy.数据管理.要素复制(输入要素=输出要素集 + r"\Polygon", 输出要素=工作空间 + 输出要素)
-
+        复制后要素 = 输入要素.要素创建_通过复制并重命名重名要素(输出要素)
         输出要素集.要素数据集删除()
         # bxarcpy.数据管理.要素删除(输入要素列表=[输出要素集])
 
@@ -46,9 +45,13 @@ def main(
         # 输出要素 = bxarcpy.数据管理.字段计算(输入要素=输出要素, 字段名称="地类编号", 表达式="!Layer!.split(\"#\")[0].split(\"-\")[1].replace('／','/')", 字段类型="字符串")
 
         # 输出要素 = bxarcpy.数据管理.字段删除(输入要素=输出要素, 删除字段列表=["Entity", "Handle", "Layer", "Color", "Linetype", "Elevation", "LineWt", "RefName", "LyrColor", "LyrLnType", "LyrLineWt"])
+        if 是否拓扑检查:
+            import 拓扑_创建重叠检查拓扑
+
+            拓扑_创建重叠检查拓扑.main(工作空间=工作空间, 输入要素名称列表=[复制后要素.名称], 输出CAD路径=r"C:\Users\beixiao\Desktop\拓扑检查.dwg")
 
 
 if __name__ == "__main__":
     # Global Environment settings
-    main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", CAD路径列表=[r"C:\Users\beixiao\Desktop\01.dwg"], 输出要素=r"YD_CAD色块")
+    main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", CAD路径列表=[r"C:\Users\beixiao\Desktop\01.dwg"], 输出要素=r"YD_CAD色块11", 是否拓扑检查=True)
     # main(工作空间=r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb", CAD路径列表=[r"C:\Users\beixiao\Desktop\01.dwg"], 输出要素=r"AA_CAD色块_拓扑检查")

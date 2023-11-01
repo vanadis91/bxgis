@@ -110,7 +110,7 @@ class 文档类:
         self.内嵌对象.homeFolder = 默认项目文件夹路径
 
     @staticmethod
-    def 文档读取(文档路径="CURRENT"):
+    def 文档读取_通过名称(文档路径="CURRENT"):
         return 文档类(内嵌对象=arcpy.mp.ArcGISProject(文档路径))
 
     def 文档另存为(self, 另存为路径):
@@ -119,7 +119,7 @@ class 文档类:
     def 文档保存(self):
         return self._内嵌对象.save()
 
-    def 地图列表读取(self, 筛选通配符="") -> list:
+    def 地图列表读取(self, 筛选通配符="") -> list["地图类"]:
         地图列表 = self._内嵌对象.listMaps(筛选通配符)
         return [地图类(x) for x in 地图列表]
 
@@ -146,7 +146,7 @@ class 地图类:
         def __repr__(self) -> str:
             return self._内嵌对象.__repr__()
 
-    def 图层列表读取(self, 筛选通配符=""):
+    def 图层列表读取(self, 筛选通配符="") -> list["图层类"]:
         图层列表 = self._内嵌对象.listLayers(筛选通配符)
         return [图层类(x) for x in 图层列表]
 
@@ -245,15 +245,15 @@ class 数据库类:
         return arcpy.ListFeatureClasses()
 
     @staticmethod
-    def 要素数据集列表获取():
+    def 要素数据集名称列表获取():
         return arcpy.ListDatasets()
 
     @staticmethod
-    def 文件列表获取():
+    def 文件名称列表获取():
         return arcpy.ListFiles()
 
     @staticmethod
-    def 栅格列表获取():
+    def 栅格名称列表获取():
         return arcpy.ListRasters()
 
 
@@ -263,6 +263,10 @@ class 要素数据集类:
             self.名称 = 内嵌对象.名称
         elif 名称:
             self.名称 = 名称
+
+    @staticmethod
+    def 要素数据集读取_通过名称(名称=None):
+        return 要素数据集类(名称=名称)
 
     @staticmethod
     def 要素数据集创建(要素集名称, 数据库路径=None):

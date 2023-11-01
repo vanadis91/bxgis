@@ -14,6 +14,10 @@ def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控
         bxarcpy.类.配置.是否覆盖输出要素 = True
 
         # Process: 创建要素数据集 (创建要素数据集) (management)
+        数据库对象 = bxarcpy.类.数据库类.数据库读取_通过路径(工作空间)
+        要素数据集名称列表 = 数据库对象.要素数据集名称列表获取()
+        if "拓扑检查" in 要素数据集名称列表:
+            bxarcpy.类.要素数据集类.要素数据集读取_通过名称("拓扑检查").要素数据集删除()
         要素数据集 = bxarcpy.类.要素数据集类.要素数据集创建("拓扑检查")
         # 新创建的要素集 = bxarcpy.数据管理.要素集创建(数据库=工作空间, 要素集名称="拓扑检查")
         拓扑对象 = bxarcpy.类.拓扑类.拓扑创建(要素数据集.名称, "拓扑")
@@ -46,9 +50,6 @@ def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控
 
 if __name__ == "__main__":
     # Global Environment settings
-    # main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素名称列表=["YD_农转用20年及以前", "YD_现状修改1", "YD_农转用21年及以后", "YD_审批信息已实施", "YD_地籍信息", "YD_现状修改2", "YD_审批信息已批未建", "DIST_用地现状图"], 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
-    main(工作空间=r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb", 输入要素名称列表=["AA_CAD色块_拓扑检查"], 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
+    main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素名称列表=["YD_审批信息已批未建", "YD_上位_粮食生产功能区", "YD_上位农用地落实_耕地质量提升", "YD_上位农用地落实_旱改水", "YD_上位农用地落实_垦造耕地", "YD_上位农用地落实_新增设施农用地", "YD_上位基本农田落实", "YD_GIS方案_农用地设计", "YD_CAD色块以外建设用地修改", "DIST_用地规划图"], 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
+    # main(工作空间=r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb", 输入要素名称列表=["AA_CAD色块_拓扑检查"], 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
     # main(工作空间=r"C:\\Users\\common\\project\\F富阳受降控规\\受降北_数据库.gdb", 输入要素="DIST_用地现状图", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
-    # main(工作空间=r"C:\Users\beixiao\Desktop\新建文件地理数据库.gdb", 输入要素="\\test", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
-    # main(工作空间=r"C:\Users\beixiao\Desktop\新建文件地理数据库.gdb", 输入要素="\\AA_现有控规")
-    # main(工作空间=r"C:\Users\beixiao\Desktop\新建文件地理数据库.gdb", 输入要素="\\AA_原控规", 输出CAD路径=r"C:\Users\beixiao\Desktop\001.dwg")
