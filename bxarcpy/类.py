@@ -1,7 +1,12 @@
 import arcpy
 import time
+from bxpy import 日志
 
 _字段类型映射 = {"字符串": "TEXT", "TEXT": "TEXT", "双精度": "DOUBLE", "DOUBLE": "DOUBLE", "长整型": "LONG", "LONG": "LONG", "短整型": "SHORT", "SHORT": "SHORT", "日期": "DATE", "DATE": "DATE", "单精度": "FLOAT", "FLOAT": "FLOAT"}
+
+_要素类型映射 = {"点": "POINT", "POINT": "POINT", "多点": "MULTIPOINT", "MULTIPOINT": "MULTIPOINT", "面": "POLYGON", "POLYGON": "POLYGON", "线": "POLYLINE", "POLYLINE": "POLYLINE", "多面体": "MULTIPATCH", "MULTIPATCH": "MULTIPATCH"}
+
+_要素类型反映射 = {"点": "点", "POINT": "点", "多点": "多点", "MULTIPOINT": "多点", "面": "面", "POLYGON": "面", "线": "线", "POLYLINE": "线", "多面体": "多面体", "MULTIPATCH": "多面体"}
 
 
 class _配置类:
@@ -37,14 +42,16 @@ class _配置类:
 
 class 环境:
     class 环境管理器(object):
-        def __init__(self, 输出包含M值="Disabled", 输出包含Z值="Disabled", **kwargs):
-            _参数映射 = {"临时工作空间": "scratchWorkspace", "scratchWorkspace": "scratchWorkspace", "工作空间": "workspace", "workspace": "workspace", "输出包含M值": "outputMFlag", "outputMFlag": "outputMFlag", "输出包含Z值": "outputZFlag", "outputZFlag": "outputZFlag"}
+        def __init__(self, 输出包含M值="Disabled", 输出包含Z值="Disabled", XY分辨率=0.0001, XY容差=0.001, **kwargs):
+            _参数映射 = {"临时工作空间": "scratchWorkspace", "scratchWorkspace": "scratchWorkspace", "工作空间": "workspace", "workspace": "workspace", "输出包含M值": "outputMFlag", "outputMFlag": "outputMFlag", "输出包含Z值": "outputZFlag", "outputZFlag": "outputZFlag", "XYResolution": "XYResolution", "XY分辨率": "XYResolution", "XYTolerance": "XYTolerance", "XY容差": "XYTolerance"}
             kwargsTemp = {}
             for key, value in kwargs.items():
                 kwargsTemp[_参数映射[key]] = value
             kwargs = kwargsTemp
             kwargs["outputMFlag"] = 输出包含M值
             kwargs["outputZFlag"] = 输出包含Z值
+            kwargs["XYResolution"] = XY分辨率
+            kwargs["XYTolerance"] = XY容差
 
             self._original_envs = {}
             self._environments = kwargs
@@ -285,6 +292,17 @@ class 要素数据集类:
 
 
 class 拓扑类:
+    _规则映射表 = {
+        "Must Not Overlap (Area)": "Must Not Overlap (Area)",
+        "面无重叠": "Must Not Overlap (Area)",
+        "Must Not Have Gaps (Area)": "Must Not Have Gaps (Area)",
+        "面无空隙": "Must Not Have Gaps (Area)",
+        "Must Not Overlap (Line)": "Must Not Overlap (Line)",
+        "线无重叠": "Must Not Overlap (Line)",
+        "Must Not Self-Overlap (Line)": "Must Not Self-Overlap (Line)",
+        "线无自重叠": "Must Not Self-Overlap (Line)",
+    }
+
     def __init__(self, 内嵌对象=None, 名称=None) -> None:
         if 内嵌对象:
             self.名称 = 内嵌对象.名称
@@ -298,7 +316,8 @@ class 拓扑类:
         arcpy.management.AddFeatureClassToTopology(in_topology=self.名称, in_featureclass=输入要素名称, xy_rank=1, z_rank=1)[0]
         return self
 
-    def 拓扑中添加规则(self, 输入要素名称=None, 规则="Must Not Overlap (Area)"):
+    def 拓扑中添加规则(self, 输入要素名称=None, 规则="面无重叠"):
+        规则 = 拓扑类._规则映射表[规则]
         arcpy.management.AddRuleToTopology(in_topology=self.名称, rule_type=规则, in_featureclass=输入要素名称, subtype="", in_featureclass2="", subtype2="")[0]
         return self
 
@@ -317,17 +336,37 @@ class 拓扑类:
 
 class 要素类:
     def __init__(self, 内嵌对象=None, 名称=None):
-        if 内嵌对象:
-            self.名称 = 内嵌对象.路径
+        if type(内嵌对象) is 要素类:
+            self.名称 = 内嵌对象.名称
         elif 名称:
             self.名称 = 名称
 
     def __repr__(self) -> str:
         return f"<bxarcpy.要素类 对象 {{名称:{self.名称}}}>"
 
+    @property
+    def 几何类型(self):
+        几何类型 = arcpy.Describe(self.名称).shapeType
+        return _要素类型反映射[几何类型.upper()]
+
     @staticmethod
     def 要素读取_通过名称(名称=None):
         return 要素类(名称=名称)
+
+    @staticmethod
+    def 要素创建_通过名称(要素名称="AA_新建", 要素类型="面", 模板=None, 数据库路径="in_memory"):
+        if 要素名称 == "AA_新建":
+            要素名称 = 要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+        if 数据库路径 is None:
+            数据库路径 = 配置.当前工作空间
+        elif 数据库路径.upper() in ["临时", "IN_MEMORY", "MEMORY"]:
+            数据库路径 = "in_memory"
+        要素类型 = _要素类型映射[要素类型]
+        arcpy.management.CreateFeatureclass(out_path=数据库路径, out_name=要素名称, geometry_type=要素类型, template=模板, has_m="DISABLED", has_z="DISABLED", spatial_reference='PROJCS["CGCS2000_3_Degree_GK_CM_120E",GEOGCS["GCS_China_Geodetic_Coordinate_System_2000",DATUM["D_China_2000",SPHEROID["CGCS2000",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Gauss_Kruger"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",120.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]];526761.4357525 3337536.7866275 209129662504.711;-100000 10000;-100000 10000;0.001;0.001;0.001;IsHighPrecision', config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0, out_alias="")
+        ret = 要素类.要素读取_通过名称(名称=数据库路径 + "\\" + 要素名称)
+        # if 数据库路径.upper() in ["临时", "IN_MEMORY", "MEMORY"]:
+        #     ret = ret.要素创建_通过复制并重命名重名要素(f"in_memory\\{要素名称}")
+        return ret
 
     def 要素创建_通过复制(self, 输出要素名称="in_memory\\AA_复制"):
         if 输出要素名称 == "in_memory\\AA_复制":
@@ -399,10 +438,14 @@ class 要素类:
                     联合后要素.字段删除([字段名称])
         return 联合后要素
 
-    def 要素创建_通过融合(self, 输出要素名称="in_memory\\AA_融合", 融合字段列表=[], 统计字段列表=None):
+    def 要素创建_通过融合(self, 融合字段列表=[], 统计字段列表=None, 是否单部件=True, 输出要素名称="in_memory\\AA_融合"):
         if 输出要素名称 == "in_memory\\AA_融合":
             输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        arcpy.management.Dissolve(in_features=self.名称, out_feature_class=输出要素名称, dissolve_field=融合字段列表, statistics_fields=统计字段列表, multi_part="SINGLE_PART", unsplit_lines="DISSOLVE_LINES", concatenation_separator="")
+        if 是否单部件 == True:
+            是否单部件 = "SINGLE_PART"
+        else:
+            是否单部件 = "MULTI_PART"
+        arcpy.management.Dissolve(in_features=self.名称, out_feature_class=输出要素名称, dissolve_field=融合字段列表, statistics_fields=统计字段列表, multi_part=是否单部件, unsplit_lines="DISSOLVE_LINES", concatenation_separator="")
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过更新并合并字段(self, 更新要素名称, 输出要素名称="in_memory\\AA_更新并合并字段"):
@@ -418,23 +461,41 @@ class 要素类:
         arcpy.analysis.Select(in_features=self.名称, out_feature_class=输出要素名称, where_clause=SQL语句)
         return 要素类(名称=输出要素名称)
 
+    def 要素创建_通过排序(self, 排序字段及顺序列表=[["DATE_REP", "ASCENDING"]], 空间排序方式="UR", 输出要素名称="in_memory\\AA_排序"):
+        if 输出要素名称 == "in_memory\\AA_排序":
+            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+        排序字段及顺序列表temp = []
+        for x in 排序字段及顺序列表:
+            if x[1] == "ASCENDING" or x[1] == "正序":
+                排序字段及顺序列表temp.append([x[0], "ASCENDING"])
+            elif x[1] == "DESCENDING" or x[1] == "倒序":
+                排序字段及顺序列表temp.append([x[0], "DESCENDING"])
+        排序字段及顺序列表 = 排序字段及顺序列表temp
+        arcpy.management.Sort(in_dataset=self.名称, out_dataset=输出要素名称, sort_field=排序字段及顺序列表, spatial_sort_method=空间排序方式)
+        return 要素类(名称=输出要素名称)
+
     def 要素创建_通过多部件至单部件(self, 输出要素路径="in_memory\\AA_多部件至单部件"):
         if 输出要素路径 == "in_memory\\AA_多部件至单部件":
             输出要素路径 = 输出要素路径 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
         输出要素路径 = arcpy.management.MultipartToSinglepart(in_features=self.名称, out_feature_class=输出要素路径)
         return 要素类(名称=输出要素路径)
 
-    def 要素创建_通过空间连接(self, 连接要素名称, 输出要素名称="in_memory\\AA_空间连接", 连接方式="包含连接要素") -> "要素类":
-        _连接方式映射表 = {"INTERSECT": "INTERSECT", "相交": "INTERSECT", "CONTAINS": "CONTAINS", "包含连接要素": "CONTAINS", "COMPLETELY_CONTAINS": "COMPLETELY_CONTAINS", "完全包含连接要素": "COMPLETELY_CONTAINS", "在连接要素内": "WITHIN", "WITHIN": "WITHIN", "完全在连接要素内": "COMPLETELY_WITHIN", "COMPLETELY_WITHIN": "COMPLETELY_WITHIN", "包含连接要素内点": "包含连接要素内点", "内点在连接要素内": "内点在连接要素内"}
+    def 要素创建_通过空间连接(self, 连接要素名称, 连接方式="包含连接要素", 输出要素名称="in_memory\\AA_空间连接") -> "要素类":
+        _连接方式映射表 = {"INTERSECT": "INTERSECT", "相交": "INTERSECT", "CONTAINS": "CONTAINS", "包含连接要素": "CONTAINS", "COMPLETELY_CONTAINS": "COMPLETELY_CONTAINS", "完全包含连接要素": "COMPLETELY_CONTAINS", "在连接要素内": "WITHIN", "WITHIN": "WITHIN", "完全在连接要素内": "COMPLETELY_WITHIN", "COMPLETELY_WITHIN": "COMPLETELY_WITHIN", "包含连接要素内点": "包含连接要素内点", "内点在连接要素内": "内点在连接要素内", "形心在连接要素内": "HAVE_THEIR_CENTER_IN", "HAVE_THEIR_CENTER_IN": "HAVE_THEIR_CENTER_IN"}
         连接方式 = _连接方式映射表[连接方式]
         if 输出要素名称 == "in_memory\\AA_空间连接":
             输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
         if 连接方式 == "包含连接要素内点":
-            连接要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=连接要素名称, out_feature_class="in_memory\\AA_要素转点" + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime()), point_location="INSIDE")
-            return self.要素创建_通过空间连接(连接要素转内点后名称, 输出要素名称=输出要素名称, 连接方式="包含连接要素")
+            arcpy.management.RepairGeometry(in_features=连接要素名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]
+            连接要素 = 要素类.要素读取_通过名称(连接要素名称)
+            连接要素转点后要素 = 连接要素.要素创建_通过转点()
+            # 连接要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=连接要素名称, out_feature_class="in_memory\\AA_要素转点" + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime()), point_location="INSIDE")
+            return self.要素创建_通过空间连接(连接要素转点后要素.名称, 输出要素名称=输出要素名称, 连接方式="包含连接要素")
         if 连接方式 == "内点在连接要素内":
-            目标要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=self.名称, out_feature_class="in_memory\\AA_要素转点" + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime()), point_location="INSIDE")
-            目标要素 = 要素类.要素读取_通过名称(目标要素转内点后名称)
+            arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]
+            # 目标要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=self.名称, out_feature_class="in_memory\\AA_要素转点" + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime()), point_location="INSIDE")
+            目标要素转点后要素 = self.要素创建_通过转点()
+            目标要素 = 要素类.要素读取_通过名称(目标要素转点后要素.名称)
             目标要素连接后 = 目标要素.要素创建_通过空间连接(连接要素名称, "in_memory\\AA_空间连接", "在连接要素内")
             return self.要素创建_通过空间连接(目标要素连接后.名称, 输出要素名称=输出要素名称, 连接方式="包含连接要素")
         arcpy.analysis.SpatialJoin(
@@ -469,6 +530,67 @@ class 要素类:
         ret = arcpy.management.Dice(self.名称, 输出要素名称, 折点数量)
         return 要素类(名称=ret)
 
+    def 要素创建_通过转点(self, 输出要素名称="in_memory\\AA_转点"):
+        if 输出要素名称 == "in_memory\\AA_转点":
+            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+        点要素 = 要素类.要素创建_通过名称("AA_转点" + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime()), "点", 模板=self.名称)
+        点要素复制后 = 点要素.要素创建_通过复制(输出要素名称)
+        点要素.要素删除()
+        点要素 = 点要素复制后
+        字段列表 = self.字段名称列表获取()
+        字段列表.remove("OBJECTID")
+        字段列表.remove("Shape")
+        字段列表.remove("Shape_Length")
+        字段列表.remove("Shape_Area")
+        字段列表.insert(0, "_ID")
+        字段列表.insert(0, "_形状")
+        # print(字段列表)
+        点字段列表 = [x for x in 字段列表]
+        点字段列表.pop(1)
+        # print(点字段列表)
+        with 游标类.游标创建_通过名称("查找", self.名称, 字段列表) as 面要素游标对象:
+            with 游标类.游标创建_通过名称("插入", 点要素.名称, 点字段列表) as 点要素游标对象:
+                for x in 面要素游标对象:
+                    try:
+                        # 日志.输出调试(f"x[0]是{x[0]._内嵌对象}")
+                        x[0] = x[0].内点
+                        x.pop(1)
+                        # 日志.输出调试(f"内点是{内点}")
+                        点要素游标对象.行插入(x)
+                    except Exception as e:
+                        print(f"内点获取发生错误：{e}")
+                        print(f"ID为 {x[1]} 的对象无法获取到内点，取了端点")
+                        x[0] = x[0].点表[0][0]
+                        x.pop(1)
+                        # 日志.输出调试(f"端点是{端点}")
+                        点要素游标对象.行插入(x)
+        return 点要素.要素创建_通过复制并重命名重名要素(输出要素名称)
+
+    def 要素创建_通过转线(self, 输出要素名称="in_memory\\AA_转线"):
+        if 输出要素名称 == "in_memory\\AA_转线":
+            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+        arcpy.management.FeatureToLine(in_features=self.名称, out_feature_class=输出要素名称)
+        return 要素类.要素读取_通过名称(输出要素名称)
+
+    def 要素创建_通过面转线(self, 是否识别并存储面邻域信息=True, 输出要素名称="in_memory\\AA_面转线"):
+        if 输出要素名称 == "in_memory\\AA_面转线":
+            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+        if 是否识别并存储面邻域信息:
+            arcpy.management.PolygonToLine(in_features=self.名称, out_feature_class=输出要素名称, neighbor_option="IDENTIFY_NEIGHBORS")
+        else:
+            arcpy.management.PolygonToLine(in_features=self.名称, out_feature_class=输出要素名称, neighbor_option="IGNORE_NEIGHBORS")
+        return 要素类.要素读取_通过名称(输出要素名称)
+
+    def 要素创建_通过缓冲(self, 距离或字段名称, 融合类型="不融合", 融合字段名称列表=None, 输出要素名称="in_memory\\AA_缓冲"):
+        if 输出要素名称 == "in_memory\\AA_缓冲":
+            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+        _融合类型映射表 = {"不融合": "NONE", "NONE": "NONE", "融合为单个": "ALL", "ALL": "ALL", "融合按字段": "LIST", "LIST": "LIST"}
+        融合类型 = _融合类型映射表[融合类型]
+        if 融合字段名称列表:
+            融合字段名称列表 = ";".join(融合字段名称列表)
+        arcpy.analysis.Buffer(in_features=self.名称, out_feature_class=输出要素名称, buffer_distance_or_field=距离或字段名称, line_side="FULL", line_end_type="ROUND", dissolve_option=融合类型, dissolve_field=融合字段名称列表, method="PLANAR")
+        return 要素类.要素读取_通过名称(输出要素名称)
+
     def 要素删除(self):
         return arcpy.management.Delete(in_data=[self.名称], data_type="")[0]
 
@@ -502,7 +624,7 @@ class 要素类:
             字段对象列表 = 要素类(名称=self.名称).字段列表获取()
             字段名称列表 = [x.名称 for x in 字段对象列表]
             日志.输出调试(f"要素拥有的所有字段为：" + str(字段名称列表))
-            保留字段名称列表.extend(["OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length"])
+            保留字段名称列表.extend(["OID", "OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length"])
             for x in 保留字段名称列表:
                 if x in 字段名称列表:
                     字段名称列表.remove(x)
@@ -544,6 +666,43 @@ class 要素类:
         arcpy.conversion.ExportFeatures(in_features=self.名称, out_features=输出要素名称, where_clause="", use_field_alias_as_name="NOT_USE_ALIAS", field_mapping=None, sort_field=[])
         return 要素类(名称=输出要素名称)
 
+    def 拓扑创建(self):
+        要素类.拓扑创建_通过要素名称列表([self.名称])
+
+    @staticmethod
+    def 拓扑创建_通过要素名称列表(输入要素名称列表):
+        数据库对象 = 数据库类.数据库读取_通过路径(配置.当前工作空间)
+        要素数据集名称列表 = 数据库对象.要素数据集名称列表获取()
+        if "拓扑检查" in 要素数据集名称列表:
+            要素数据集类.要素数据集读取_通过名称("拓扑检查").要素数据集删除()
+        要素数据集 = 要素数据集类.要素数据集创建("拓扑检查")
+        拓扑对象 = 拓扑类.拓扑创建(要素数据集.名称, "拓扑")
+
+        for x in 输入要素名称列表:
+            输入要素 = 要素类.要素读取_通过名称(x)
+            要素数据集中的要素 = 输入要素.导出到要素(要素数据集.名称 + "\\" + 输入要素.名称 + "_1")
+            日志.输出调试(f"准备添加要素的名称是：{要素数据集中的要素.名称}")
+            拓扑对象.拓扑中添加要素(要素数据集中的要素.名称)
+            日志.输出调试(f"准备添加要素的类型是：{要素数据集中的要素.几何类型}")
+            if 要素数据集中的要素.几何类型 == "面":
+                拓扑对象.拓扑中添加规则(要素数据集中的要素.名称, 规则="面无重叠")
+            elif 要素数据集中的要素.几何类型 == "线":
+                拓扑对象.拓扑中添加规则(要素数据集中的要素.名称, 规则="线无重叠")
+                拓扑对象.拓扑中添加规则(要素数据集中的要素.名称, 规则="线无自重叠")
+            拓扑对象.拓扑验证()
+
+        拓扑导出后要素1, 拓扑导出后要素2, 拓扑导出后要素3 = 拓扑对象.导出到要素("AA_拓扑导出后要素")
+        if 要素数据集中的要素.几何类型 == "面":
+            拓扑导出后要素3.导出到CAD(r"C:\Users\beixiao\Desktop\拓扑检查.dwg")
+        elif 要素数据集中的要素.几何类型 == "线":
+            拓扑导出后要素2.导出到CAD(r"C:\Users\beixiao\Desktop\拓扑检查.dwg")
+        elif 要素数据集中的要素.几何类型 == "点":
+            拓扑导出后要素1.导出到CAD(r"C:\Users\beixiao\Desktop\拓扑检查.dwg")
+
+        拓扑导出后要素1.要素删除()
+        拓扑导出后要素2.要素删除()
+        拓扑导出后要素3.要素删除()
+
 
 class 字段类:
     def __init__(self, 内嵌对象) -> None:
@@ -556,47 +715,54 @@ class 字段类:
         return f"<对象 bxarcpy.字段类 {{名称:{self.名称}, 类型:{self.类型}, 长度:{self.长度}}}>"
 
 
-class 游标类_用于更新:
-    _需更新的字段名称列表映射表 = {"SHAPE@": "SHAPE@", "_形状": "SHAPE@"}
+class 游标类:
+    _需操作的字段名称列表映射表 = {"SHAPE@": "SHAPE@", "_形状": "SHAPE@", "OID@": "OID@", "_ID": "OID@"}
 
-    class 行对象:
-        def __init__(self, 行数据, 游标对象: "游标类_用于更新") -> None:
-            self.数据_字典格式 = {}
-            self.数据_列表格式 = []
-            self._内嵌对象_游标对象 = 游标对象
-            for k, v in zip(游标对象.字段名称列表, 行数据):
-                if k == "_形状":
-                    self.数据_列表格式.append(游标类_用于更新.形状(v))
-                    self.数据_字典格式[k] = 游标类_用于更新.形状(v)
-                else:
-                    self.数据_列表格式.append(v)
-                    self.数据_字典格式[k] = v
-            # self.数据_字典格式 = {k: v for k, v in zip(self._内嵌对象_游标对象.字段名称列表, 行数据)}
+    # class 行对象类:
+    #     def __init__(self, 行数据, 游标对象: "游标类") -> None:
+    #         self.数据_字典格式 = {}
+    #         self.数据_列表格式 = []
+    #         self._内嵌对象_游标对象 = 游标对象
+    #         for k, v in zip(游标对象.字段名称列表, 行数据):
+    #             if k == "_形状":
+    #                 self.数据_列表格式.append(游标类.形状类(v))
+    #                 self.数据_字典格式[k] = 游标类.形状类(v)
+    #             else:
+    #                 self.数据_列表格式.append(v)
+    #                 self.数据_字典格式[k] = v
+    #         # self.数据_字典格式 = {k: v for k, v in zip(self._内嵌对象_游标对象.字段名称列表, 行数据)}
 
-        def 行删除(self):
-            return self._内嵌对象_游标对象._内嵌对象.deleteRow()
+    #     def 行删除(self):
+    #         return self._内嵌对象_游标对象._内嵌对象.deleteRow()
 
-        def 行更新_列表格式(self):
-            用于更新的列表 = []
-            for k, v in zip(self._内嵌对象_游标对象.字段名称列表, self.数据_列表格式):
-                if k == "_形状":
-                    用于更新的列表.append(v._内嵌对象)
-                else:
-                    用于更新的列表.append(v)
-            return self._内嵌对象_游标对象._内嵌对象.updateRow(用于更新的列表)
+    #     def 行更新_列表格式(self):
+    #         用于更新的列表 = []
+    #         for k, v in zip(self._内嵌对象_游标对象.字段名称列表, self.数据_列表格式):
+    #             if k == "_形状":
+    #                 用于更新的列表.append(v._内嵌对象)
+    #             else:
+    #                 用于更新的列表.append(v)
+    #         return self._内嵌对象_游标对象._内嵌对象.updateRow(用于更新的列表)
 
-        def 行更新_字典格式(self):
-            用于更新的列表 = []
-            for k in self._内嵌对象_游标对象.字段名称列表:
-                if k == "_形状":
-                    用于更新的列表.append(self.数据_字典格式[k]._内嵌对象)
-                else:
-                    用于更新的列表.append(self.数据_字典格式[k])
-            return self._内嵌对象_游标对象._内嵌对象.updateRow(用于更新的列表)
+    #     def 行更新_字典格式(self):
+    #         用于更新的列表 = []
+    #         for k in self._内嵌对象_游标对象.字段名称列表:
+    #             if k == "_形状":
+    #                 用于更新的列表.append(self.数据_字典格式[k]._内嵌对象)
+    #             else:
+    #                 用于更新的列表.append(self.数据_字典格式[k])
+    #         return self._内嵌对象_游标对象._内嵌对象.updateRow(用于更新的列表)
 
-    class 形状:
-        _类型映射表 = {"polyline": "线", "polygon": "面"}
+    #     def 行插入_列表格式(self):
+    #         用于更新的列表 = []
+    #         for k, v in zip(self._内嵌对象_游标对象.字段名称列表, self.数据_列表格式):
+    #             if k == "_形状":
+    #                 用于更新的列表.append(v._内嵌对象)
+    #             else:
+    #                 用于更新的列表.append(v)
+    #         return self._内嵌对象_游标对象._内嵌对象.insertRow(用于更新的列表)
 
+    class 形状类:
         def __init__(self, 内嵌对象) -> None:
             # print(f"形状类：{内嵌对象.__class__}")
             self._内嵌对象 = 内嵌对象
@@ -604,11 +770,33 @@ class 游标类_用于更新:
         @property
         def 类型(self):
             类型 = self._内嵌对象.type
-            return 游标类_用于更新.形状._类型映射表[类型]
+            return _要素类型反映射[类型.upper()]
 
         @property
         def 点表(self):
             return self._内嵌对象.getPart()
+
+        def 交集(self, 相交要素形状: "游标类.形状类", 类型="面"):
+            _交集类型映射表 = {4: 4, "面": 4, 2: 2, "线": 2, 1: 1, "点": 1}
+            ret = self._内嵌对象.intersect(相交要素形状._内嵌对象, _交集类型映射表[类型])
+            if ret:
+                return 游标类.形状类(ret)
+            else:
+                return ret
+
+        def 差集(self, 擦除要素形状: "游标类.形状类"):
+            ret = self._内嵌对象.difference(擦除要素形状._内嵌对象)
+            if ret:
+                return 游标类.形状类(ret)
+            else:
+                return ret
+
+        # def 转线(self, 输出要素名称):
+        #     arcpy.PolygonToLine_management(self._内嵌对象, neighbor_option="IGNORE_NEIGHBORS")
+
+        @property
+        def 内点(self):
+            return self._内嵌对象.labelPoint
 
         @property
         def 折点数量(self):
@@ -646,17 +834,26 @@ class 游标类_用于更新:
         # def 边界组成数量(self):
         #     return self._内嵌对象.getPartCount()
 
-    def __init__(self, 输入要素名称, 需更新的字段名称列表):
-        self.字段名称列表 = 需更新的字段名称列表
+    @staticmethod
+    def 游标创建_通过名称(游标类型, 输入要素名称, 需操作的字段名称列表):
+        return 游标类(游标类型, 输入要素名称, 需操作的字段名称列表)
+
+    def __init__(self, 游标类型, 输入要素名称, 需操作的字段名称列表):
+        self.字段名称列表 = 需操作的字段名称列表
+        self.游标类型 = 游标类型
         需更新的字段名称列表temp = []
-        for x in 需更新的字段名称列表:
-            if x in 游标类_用于更新._需更新的字段名称列表映射表:
-                需更新的字段名称列表temp.append(游标类_用于更新._需更新的字段名称列表映射表[x])
+        for x in 需操作的字段名称列表:
+            if x in 游标类._需操作的字段名称列表映射表:
+                需更新的字段名称列表temp.append(游标类._需操作的字段名称列表映射表[x])
             else:
                 需更新的字段名称列表temp.append(x)
-        需更新的字段名称列表 = 需更新的字段名称列表temp
-
-        self._内嵌对象 = arcpy.da.UpdateCursor(输入要素名称, 需更新的字段名称列表)
+        需操作的字段名称列表 = 需更新的字段名称列表temp
+        if 游标类型 in ["更新"]:
+            self._内嵌对象 = arcpy.da.UpdateCursor(输入要素名称, 需操作的字段名称列表)
+        elif 游标类型 in ["插入", "新增"]:
+            self._内嵌对象 = arcpy.da.InsertCursor(输入要素名称, 需操作的字段名称列表)
+        elif 游标类型 in ["查找", "读取", "查询"]:
+            self._内嵌对象 = arcpy.da.SearchCursor(输入要素名称, 需操作的字段名称列表)
 
     def __enter__(self):
         self._内嵌对象 = self._内嵌对象.__enter__()
@@ -672,16 +869,182 @@ class 游标类_用于更新:
 
     def __next__(self):
         行数据 = self._内嵌对象.__next__()
-        行对象 = 游标类_用于更新.行对象(行数据, self)
-        return 行对象
+        # 行对象 = 游标类.行对象类(行数据, self)
+        行数据temp = []
+        for k, v in zip(self.字段名称列表, 行数据):
+            if k == "_形状":
+                行数据temp.append(游标类.形状类(v))
+            else:
+                行数据temp.append(v)
+        行数据temp = {k: v for k, v in zip(self.字段名称列表, 行数据temp)}
+        # print(f"行数据temp：{行数据temp}")
+        return 行数据temp
 
     def 下一个(self):
         return self.__next__()
 
     def 重置(self):
-        行数据 = self._内嵌对象.reset()
-        行对象 = 游标类_用于更新.行对象(行数据, self._内嵌对象)
-        return 行对象
+        # self._内嵌对象.reset()
+        # print(f"行数据：{self._内嵌对象[0]}")
+        # 行数据temp = []
+        # for k, v in zip(self.字段名称列表, 行数据):
+        #     if k == "_形状":
+        #         行数据temp.append(游标类.形状类(v))
+        #     else:
+        #         行数据temp.append(v)
+        # 行对象 = 游标类.行对象类(行数据, self)
+        self._内嵌对象.reset()
+        return
+
+    def 行删除(self):
+        return self._内嵌对象.deleteRow()
+
+    def 行更新(self, 行数据):
+        行数据 = [行数据[y] for y in self.字段名称列表]
+        用于更新的列表 = []
+        for k, v in zip(self.字段名称列表, 行数据):
+            if k == "_形状" and v.__class__.__name__ == "形状类":
+                用于更新的列表.append(v._内嵌对象)
+            else:
+                用于更新的列表.append(v)
+        return self._内嵌对象.updateRow(用于更新的列表)
+
+    def 行插入(self, 行数据):
+        # print(f"行数据为：{行数据}")
+        行数据 = [行数据[y] for y in self.字段名称列表]
+        用于插入的列表 = []
+        for k, v in zip(self.字段名称列表, 行数据):
+            if k == "_形状" and v.__class__.__name__ == "形状类":
+                用于插入的列表.append(v._内嵌对象)
+            else:
+                用于插入的列表.append(v)
+        return self._内嵌对象.insertRow(用于插入的列表)
+
+
+# class 游标类_用于更新(游标类):
+#     class 行对象:
+#         def __init__(self, 行数据, 游标对象: "游标类_用于更新") -> None:
+#             self.数据_字典格式 = {}
+#             self.数据_列表格式 = []
+#             self._内嵌对象_游标对象 = 游标对象
+#             for k, v in zip(游标对象.字段名称列表, 行数据):
+#                 if k == "_形状":
+#                     self.数据_列表格式.append(游标类_用于更新.形状(v))
+#                     self.数据_字典格式[k] = 游标类_用于更新.形状(v)
+#                 else:
+#                     self.数据_列表格式.append(v)
+#                     self.数据_字典格式[k] = v
+#             # self.数据_字典格式 = {k: v for k, v in zip(self._内嵌对象_游标对象.字段名称列表, 行数据)}
+
+#         def 行删除(self):
+#             return self._内嵌对象_游标对象._内嵌对象.deleteRow()
+
+#         def 行更新_列表格式(self):
+#             用于更新的列表 = []
+#             for k, v in zip(self._内嵌对象_游标对象.字段名称列表, self.数据_列表格式):
+#                 if k == "_形状":
+#                     用于更新的列表.append(v._内嵌对象)
+#                 else:
+#                     用于更新的列表.append(v)
+#             return self._内嵌对象_游标对象._内嵌对象.updateRow(用于更新的列表)
+
+#         def 行更新_字典格式(self):
+#             用于更新的列表 = []
+#             for k in self._内嵌对象_游标对象.字段名称列表:
+#                 if k == "_形状":
+#                     用于更新的列表.append(self.数据_字典格式[k]._内嵌对象)
+#                 else:
+#                     用于更新的列表.append(self.数据_字典格式[k])
+#             return self._内嵌对象_游标对象._内嵌对象.updateRow(用于更新的列表)
+
+#     class 形状:
+#         _类型映射表 = {"polyline": "线", "polygon": "面"}
+
+#         def __init__(self, 内嵌对象) -> None:
+#             # print(f"形状类：{内嵌对象.__class__}")
+#             self._内嵌对象 = 内嵌对象
+
+#         @property
+#         def 类型(self):
+#             类型 = self._内嵌对象.type
+#             return 游标类_用于更新.形状._类型映射表[类型]
+
+#         @property
+#         def 点表(self):
+#             return self._内嵌对象.getPart()
+
+#         @property
+#         def 折点数量(self):
+#             return self._内嵌对象.pointCount
+
+#         @property
+#         def 面积(self):
+#             return self._内嵌对象.area
+
+#         def 是否具有孔洞(self):
+#             return self._内嵌对象.hasOmittedBoundary
+
+#         @property
+#         def 孔洞数量(self):
+#             折点和孔洞数量总数 = 0
+#             for 每个部件x in self._内嵌对象.getPart():
+#                 折点和孔洞数量 = len(每个部件x)
+#                 折点和孔洞数量总数 += 折点和孔洞数量
+#             return 折点和孔洞数量总数 - self.折点数量
+
+#         # @property
+#         # def 孔洞数量(self):
+#         #     return self._内嵌对象.interiorRingCount()
+
+#         def 是否为多部件要素(self):
+#             return self._内嵌对象.isMultipart
+
+#         @property
+#         def 部件数量(self):
+#             return self._内嵌对象.partCount
+
+#         # def 边界部件获取(self, 索引):
+#         #     return self._内嵌对象[索引]
+
+#         # def 边界组成数量(self):
+#         #     return self._内嵌对象.getPartCount()
+
+#     def __init__(self, 输入要素名称, 需更新的字段名称列表):
+#         self.字段名称列表 = 需更新的字段名称列表
+#         需更新的字段名称列表temp = []
+#         for x in 需更新的字段名称列表:
+#             if x in 游标类_用于更新._需更新的字段名称列表映射表:
+#                 需更新的字段名称列表temp.append(游标类_用于更新._需更新的字段名称列表映射表[x])
+#             else:
+#                 需更新的字段名称列表temp.append(x)
+#         需更新的字段名称列表 = 需更新的字段名称列表temp
+
+#         self._内嵌对象 = arcpy.da.UpdateCursor(输入要素名称, 需更新的字段名称列表)
+
+#     def __enter__(self):
+#         self._内嵌对象 = self._内嵌对象.__enter__()
+#         return self
+
+#     def __exit__(self, 异常类型, 异常值, 追溯信息):
+#         # 如果__exit__返回值为True,代表吞掉了异常，继续运行
+#         # 如果__exit__返回值不为True,代表吐出了异常
+#         return self._内嵌对象.__exit__(异常类型, 异常值, 追溯信息)
+
+#     def __iter__(self):
+#         return self
+
+#     def __next__(self):
+#         行数据 = self._内嵌对象.__next__()
+#         行对象 = 游标类_用于更新.行对象(行数据, self)
+#         return 行对象
+
+#     def 下一个(self):
+#         return self.__next__()
+
+#     def 重置(self):
+#         行数据 = self._内嵌对象.reset()
+#         行对象 = 游标类_用于更新.行对象(行数据, self._内嵌对象)
+#         return 行对象
 
 
 class 图层类(要素类):
@@ -793,7 +1156,13 @@ class 图层类_10版本:
 
 
 if __name__ == "__main__":
+    日志.开启()
     # 配置.设置当前工作空间(工作空间路径=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb")
+    # 工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
+    # with 环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
+    #     配置.是否覆盖输出要素 = True
+    #     用地规划图 = 要素类.要素读取_通过名称("DIST_用地规划图")
+    #     用地规划图.要素创建_通过转点()
     # 获取要素类列表 = 数据库.获取要素类列表()
     # 字段x = 要素类.获取字段列表(获取要素类列表[0])[0]
     # print(字段x.name)

@@ -176,13 +176,13 @@ def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控
 
 if __name__ == "__main__":
     # Global Environment settings
-    # main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素="\\AA_规划工业用地")
-    import arcpy
+    main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素="\\AA_规划工业用地")
+    # import arcpy
 
-    bxarcpy.配置.设置当前工作空间(工作空间路径=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb")
+    # bxarcpy.配置.设置当前工作空间(工作空间路径=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb")
 
-    fcs = arcpy.ListFeatureClasses()
-    fcCount11 = len(fcs)
-    for fc11 in fcs:
-        print(fc11)
-    print(fcCount11)
+    # fcs = arcpy.ListFeatureClasses()
+    # fcCount11 = len(fcs)
+    # for fc11 in fcs:
+    #     print(fc11)
+    # print(fcCount11)

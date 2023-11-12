@@ -111,7 +111,7 @@ if __name__ == "__main__":
     # main(*argv[1:])
     main(
         工作空间="C:\\Users\\common\\project\\J江东区临江控规\\临江控规_数据库.gdb",
-        输入要素名称="DIST_用地规划图",
+        输入要素名称="DIST_用地现状图",
         输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg",
         裁剪范围要素名称="JX_规划范围线",
     )
