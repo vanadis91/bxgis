@@ -10,7 +10,7 @@ import bxarcpy
 def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素="\\AA_规划工业用地"):  # 用地_格式化_修改为入库格式
     with bxarcpy.环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
         # To allow overwriting outputs change overwriteOutput option to True.
-        bxarcpy.配置.是否覆盖输出要素(True)
+        bxarcpy.配置.是否覆盖输出要素 = True
         # arcpy.env.overwriteOutput = False
 
         删除字段 = ["Entity", "Color", "Linetype", "Elevation", "LineWt", "RefName", "mj", "FID_YJJBNTBHTB", "BSM", "YSDM", "XZQDM", "XZQMC", "YJJBNTTBBH", "TBBH", "DLBM", "DLMC", "QSXZ", "QSDWDM", "QSDWMC", "ZLDWDM", "ZLDWMC", "YJJBNTTBMJ", "KCDLBM", "KCXS", "KCMJ", "YJJBNTMJ", "GDLX", "GDPDJB", "GGBZL", "TBXHDM", "TBXHMC", "ZZSXDM", "ZZSXMC", "GDDB", "GDDJ", "ZLFLDM", "FRDBS", "SJNF", "CFZR", "ZMC", "ZZRR", "ZRRZJHM", "ZRRMC", "LXDH", "JZDZ", "BHKSSJ", "BHJSSJ", "SJBH", "SJMC", "ZRSYX", "BZ", "WDGD", "SFWYYJJBNT", "FWDGDHRLY", "FID_规划范围线_2303070850", "序号", "组名", "村名称", "街道", "二调耕", "三调耕", "三调恢", "二调永", "三调稳", "Shape_Leng", "FID_4去除", "名称", "镇街名称", "a", "ORIG_FID", "三调地类编号", "三调地类名称", "CZCSXM", "Layer", "地块性质", "实体类型", "GKXZ", "FID_DLTB", "TBYBH", "单元名", "地块性", "dkbmgk"]

@@ -1,19 +1,31 @@
 from bxpy import 日志
 import arcpy
-from 要素类 import 要素类
+from .要素类 import 要素类
 
 
 class 图层类(要素类):
-    def __init__(self, 内嵌对象=None):
-        self._内嵌对象 = 内嵌对象
-        self.名称 = self._内嵌对象.name
+    class 符号系统类:
+        def __init__(self, 内嵌对象, 内嵌图层对象):
+            self._内嵌对象 = 内嵌对象
+            self._内嵌图层对象 = 内嵌图层对象
+
+        def 符号系统设置_通过stylx样式文件(self, 样式文件路径):
+            self._内嵌对象.applySymbologyFromLayer(样式文件路径)
+            self._内嵌图层对象.refresh()
+
+    def __init__(self, 内嵌对象=None, 名称=None):
+        if 内嵌对象:
+            self._内嵌对象 = 内嵌对象
+            self.名称 = self._内嵌对象.name
+        if 名称:
+            self.名称 = 名称
 
     def __repr__(self) -> str:
-        return self._内嵌对象.__repr__()
+        return f"<bxarcpy.图层类 对象 {{名称:{self.名称}}}>"
 
     @property
     def 符号系统(self):
-        return self._内嵌对象.symbology
+        return 图层类.符号系统类(self._内嵌对象.symbology, self._内嵌对象)
 
     @符号系统.setter
     def 符号系统(self, 符号系统):
@@ -33,6 +45,10 @@ class 图层类(要素类):
         self._内嵌对象.definitionQuery = 查询语句
         return self
 
+    def 刷新(self):
+        self._内嵌对象.refresh()
+        return self
+
     def 最小视图比例设置(self, 视图比例: int):
         self._内嵌对象.minThreshold = 视图比例
         return self
@@ -45,8 +61,10 @@ class 图层类(要素类):
             update_symbology="DEFAULT",
         )[0]
 
-    def 符号系统设置_通过stylx样式文件(self, 样式文件路径, 映射关系="$feature.JQYDDM"):
-        return arcpy.management.MatchLayerSymbologyToAStyle(in_layer=self._内嵌对象, match_values=映射关系, in_style=样式文件路径)[0]
+    def 符号系统设置_通过stylx样式文件(self, 样式文件路径, 映射关系="地类编号"):
+        # 映射关系="$feature.JQYDDM"
+        # return arcpy.management.MatchLayerSymbologyToAStyle(in_layer=self._内嵌对象, match_values=映射关系, in_style=样式文件路径)[0]
+        return arcpy.MatchLayerSymbologyToAStyle_management(in_layer=self._内嵌对象, match_values=映射关系, in_style=样式文件路径)[0]
 
 
 class 图层类_10版本:

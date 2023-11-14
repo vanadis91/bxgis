@@ -1,7 +1,7 @@
-from 拓扑类 import 拓扑类
-from 要素类 import 要素类
-from 要素数据集类 import 要素数据集类
-from 布局类 import 布局类
+from .拓扑类 import 拓扑类
+from .要素类 import 要素类
+from .要素数据集类 import 要素数据集类
+from .布局类 import 布局类
 
 
 class 转换:

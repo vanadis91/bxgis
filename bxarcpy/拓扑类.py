@@ -1,7 +1,7 @@
 from bxpy import 日志
 import arcpy
-from 配置类 import 配置
-from 要素类 import 要素类
+from .配置类 import 配置
+from .要素类 import 要素类
 
 
 class 拓扑类:

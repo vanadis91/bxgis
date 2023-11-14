@@ -6,8 +6,8 @@ import bxarcpy
 
 
 def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 地块要素名称="DIST_用地规划图", 单元名称="临江单元", 批复时间="", 批复文号=""):
-    with bxarcpy.类.环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
-        bxarcpy.类.配置.是否覆盖输出要素 = True
+    with bxarcpy.环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
+        bxarcpy.配置.是否覆盖输出要素 = True
 
         地块要素 = bxarcpy.要素类.要素读取_通过名称(地块要素名称)
         地块要素 = 地块要素.要素创建_通过复制()
@@ -138,5 +138,33 @@ def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控
         地块要素.字段删除(保留字段名称列表=["DYMC", "PFSJ", "PFWH", "DKBH", "DLDM", "DLMC", "DLBM", "ZDLDM", "JRBL", "MJ", "RJL", "LDL", "JZMD", "JZGD", "XGLX", "FJSS1", "FJSS2", "GXYQ", "TXYQ", "GHDT", "XZYD", "TDM", "BZ"])
 
 
+def 生成土地码(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 地块要素名称="XG_GHDK"):
+    with bxarcpy.环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
+        bxarcpy.配置.是否覆盖输出要素 = True
+        地块要素 = bxarcpy.要素类.要素读取_通过名称(地块要素名称)
+        地块要素 = 地块要素.要素创建_通过复制()
+        需操作的字段名称列表 = ["dkbh", "dldm", "tdm"]
+        with bxarcpy.游标类.游标创建_通过名称("更新", 地块要素.名称, 需操作的字段名称列表) as 游标:
+            for x in 游标:
+                if x["dkbh"] not in ["", " ", None] and len(x["dkbh"].split("-")) == 2:
+                    主地类编号 = x["dldm"].split("/")[0]
+                    兼容性质数量 = len(x["dldm"].split("/"))
+                    街区编号 = x["dkbh"][4:6]
+                    街坊编号 = x["dkbh"][6:8]
+                    地块编号 = x["dkbh"].split("-")[-1].zfill(3)
+                elif x["dkbh"] not in ["", " ", None] and len(x["dkbh"].split("-")) == 3:
+                    主地类编号 = x["dldm"].split("/")[0]
+                    兼容性质数量 = len(x["dldm"].split("/"))
+                    街区编号 = "00"
+                    街坊编号 = "00"
+                    地块编号 = x["dkbh"].split("-")[-1].zfill(3)
+
+                土地码 = "H11006215" + 主地类编号.rjust(8, "0") + f"X{兼容性质数量}" + 街区编号 + 街坊编号 + 地块编号 + "0"
+                x["tdm"] = 土地码
+                游标.行更新(x)
+        地块要素.要素创建_通过复制并重命名重名要素(地块要素名称)
+
+
 if __name__ == "__main__":
-    main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 地块要素名称="DIST_用地规划图", 单元名称="临江单元", 批复时间="", 批复文号="")
+    # main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 地块要素名称="DIST_用地规划图", 单元名称="临江单元", 批复时间="", 批复文号="")
+    生成土地码(工作空间=r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb", 地块要素名称="XG_GHDK")

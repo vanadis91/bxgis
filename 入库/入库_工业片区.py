@@ -202,4 +202,5 @@ def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控
 
 
 if __name__ == "__main__":
-    main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 区域要素名称="JX_工业片区范围线", 单元名称="临江单元", 地块要素名称="DIST_用地规划图", 设施要素名称="SS_配套设施")
+    # main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 区域要素名称="JX_工业片区范围线", 单元名称="临江单元", 地块要素名称="DIST_用地规划图", 设施要素名称="SS_配套设施")
+    main(工作空间=r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb", 区域要素名称="JX_工业片区范围线", 单元名称="受降北单元", 地块要素名称="DIST_用地规划图", 设施要素名称="SS_配套设施")

@@ -2,7 +2,7 @@
 
 # import arcpy
 # from sys import argv
-from socket import fromshare
+# from socket import fromshare
 import bxarcpy
 from bxpy import 时间
 

@@ -1,6 +1,6 @@
 from bxpy import 日志
 import arcpy
-from 图层类 import 图层类
+from .图层类 import 图层类
 
 
 class 地图类:
@@ -8,7 +8,7 @@ class 地图类:
         self._内嵌对象 = 内嵌对象
 
     def __repr__(self) -> str:
-        return self._内嵌对象.__repr__()
+        return f"<bxarcpy.地图类 对象 {{内嵌对象:{self._内嵌对象}}}>"
 
     class 书签类:
         def __init__(self, 内嵌对象=None):

@@ -107,5 +107,5 @@ def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控
 
 
 if __name__ == "__main__":
-    # main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 街区要素名称="JX_街区范围线", 单元名称="临江单元", 用地规划图要素名称="DIST_用地规划图", 层级="街区")
-    main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 区域要素名称="JX_街坊范围线", 地块要素名称="DIST_用地规划图", 地块所属区域字段名称="所属街坊")
+    # main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 区域要素名称="JX_街坊范围线", 地块要素名称="DIST_用地规划图", 地块所属区域字段名称="所属街坊")
+    main(工作空间=r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb", 区域要素名称="JX_街坊范围线", 地块要素名称="DIST_用地规划图", 地块所属区域字段名称="所属街坊")

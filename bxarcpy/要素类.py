@@ -1,14 +1,6 @@
 from bxpy import 日志
 import arcpy
 import time
-import 常量
-from 配置类 import 配置
-from 数据库类 import 数据库类
-from 游标类 import 游标类
-from 图层类 import 图层类
-from 字段类 import 字段类
-from 要素数据集类 import 要素数据集类
-from 拓扑类 import 拓扑类
 
 
 class 要素类:
@@ -23,6 +15,8 @@ class 要素类:
 
     @property
     def 几何类型(self):
+        from . import 常量
+
         几何类型 = arcpy.Describe(self.名称).shapeType
         return 常量._要素类型反映射[几何类型.upper()]
 
@@ -32,6 +26,9 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过名称(要素名称="AA_新建", 要素类型="面", 模板=None, 数据库路径="in_memory"):
+        from .配置类 import 配置
+        from . import 常量
+
         if 要素名称 == "AA_新建":
             要素名称 = 要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
         if 数据库路径 is None:
@@ -52,13 +49,17 @@ class 要素类:
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过复制并重命名重名要素(self, 输出要素名称="in_memory\\AA_复制"):
+        from .数据库类 import 数据库类
+        from .配置类 import 配置
+        from .环境 import 环境
+
         if 输出要素名称 == "in_memory\\AA_复制":
             输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
         database = 数据库类.数据库读取_通过路径(配置.当前工作空间)
         要素名称列表 = database.要素名称列表获取()
         if 输出要素名称 in 要素名称列表:
             重命名后名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-            print(f"重名要素被命名为：{重命名后名称}")
+            环境.输出消息(f"重名要素被命名为：{重命名后名称}")
             要素类.要素读取_通过名称(输出要素名称).要素创建_通过复制(重命名后名称)
         arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)
         return 要素类(名称=输出要素名称)
@@ -208,6 +209,8 @@ class 要素类:
         return 要素类(名称=ret)
 
     def 要素创建_通过转点(self, 输出要素名称="in_memory\\AA_转点"):
+        from .游标类 import 游标类
+
         if 输出要素名称 == "in_memory\\AA_转点":
             输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
         点要素 = 要素类.要素创建_通过名称("AA_转点" + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime()), "点", 模板=self.名称)
@@ -280,12 +283,16 @@ class 要素类:
         return self
 
     def 选择集创建_通过属性(self, 选择方式="新建选择集", SQL语句=""):
+        from .图层类 import 图层类
+
         _选择方式映射表 = {"新建选择集": "NEW_SELECTION", "NEW_SELECTION": "NEW_SELECTION"}
         选择方式 = _选择方式映射表[选择方式]
         a = arcpy.management.SelectLayerByAttribute(in_layer_or_view=self.名称, selection_type=选择方式, where_clause=SQL语句, invert_where_clause="")[0]
         return 图层类(a)
 
     def 字段列表获取(self):
+        from .字段类 import 字段类
+
         return [字段类(x) for x in arcpy.ListFields(self.名称)]
 
     def 字段名称列表获取(self):
@@ -311,17 +318,23 @@ class 要素类:
         return self
 
     def 字段添加(self, 字段名称, 字段类型="字符串", 字段长度=100, 字段别称=""):
+        from . import 常量
+
         字段类型 = 常量._字段类型映射[字段类型]
         arcpy.management.DeleteField(in_table=self.名称, drop_field=[字段名称], method="DELETE_FIELDS")
         arcpy.management.AddField(in_table=self.名称, field_name=字段名称, field_type=字段类型, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")
         return self
 
     def 字段计算(self, 字段名称, 表达式, 字段类型="字符串", 语言类型="PYTHON3", 代码块=""):
+        from . import 常量
+
         字段类型 = 常量._字段类型映射[字段类型]
         arcpy.management.CalculateField(in_table=self.名称, field=字段名称, expression=表达式, expression_type=语言类型, code_block=代码块, field_type=字段类型, enforce_domains="NO_ENFORCE_DOMAINS")[0]
         return self
 
     def 字段修改(self, 字段名称=None, 修改后字段名称=None, 修改后字段别称=None, 字段类型=None, 字段长度=None, 清除字段别称=True):
+        from . import 常量
+
         if 字段类型:
             字段类型 = 常量._字段类型映射[字段类型]
         arcpy.management.AlterField(in_table=self.名称, field=字段名称, new_field_name=修改后字段名称, new_field_alias=修改后字段别称, field_type=字段类型, field_length=字段长度, field_is_nullable="NULLABLE", clear_field_alias=清除字段别称)[0]
@@ -348,6 +361,11 @@ class 要素类:
 
     @staticmethod
     def 拓扑创建_通过要素名称列表(输入要素名称列表):
+        from .要素数据集类 import 要素数据集类
+        from .拓扑类 import 拓扑类
+        from .数据库类 import 数据库类
+        from .配置类 import 配置
+
         数据库对象 = 数据库类.数据库读取_通过路径(配置.当前工作空间)
         要素数据集名称列表 = 数据库对象.要素数据集名称列表获取()
         if "拓扑检查" in 要素数据集名称列表:

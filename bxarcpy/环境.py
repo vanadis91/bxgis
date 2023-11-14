@@ -43,5 +43,16 @@ class 环境:
                 setattr(arcpy.env, k, v)
 
     @staticmethod
-    def 输入参数获取_以字符串形式(索引):
-        return arcpy.GetParameterAsText(索引)
+    def 输入参数获取_以字符串形式(索引, 默认值="", 是否去除路径=False):
+        x = arcpy.GetParameterAsText(索引)
+        if x == "":
+            x = 默认值
+        if 是否去除路径:
+            x = x.split("\\")[-1]
+        环境.输出消息(f"参数{索引}为：{x}")
+        return x
+
+    @staticmethod
+    def 输出消息(x):
+        arcpy.AddMessage(x)
+        # print(x)

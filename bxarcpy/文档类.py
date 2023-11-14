@@ -1,7 +1,7 @@
 from bxpy import 日志
 import arcpy
-from 地图类 import 地图类
-from 布局类 import 布局类
+from .地图类 import 地图类
+from .布局类 import 布局类
 
 
 class 文档类:
@@ -9,7 +9,7 @@ class 文档类:
         self._内嵌对象 = 内嵌对象
 
     def __repr__(self) -> str:
-        return self._内嵌对象.__repr__()
+        return f"<bxarcpy.文档类 对象 {{内嵌对象:{self._内嵌对象}}}>"
 
     @property
     def 默认数据库(self):

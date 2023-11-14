@@ -7,6 +7,7 @@ from bxpy import 日志
 
 
 def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素名称="CZ_三调"):  # 用地_格式化_三调字段修改
+    bxarcpy.环境.输出消息(f"输入要素名称：{输入要素名称}")
     with bxarcpy.环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
         # To allow overwriting outputs change overwriteOutput option to True.
         bxarcpy.配置.是否覆盖输出要素 = True
@@ -46,10 +47,11 @@ def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控
         ]
 
         输入要素 = bxarcpy.要素类.要素读取_通过名称(输入要素名称)
+        输入要素 = 输入要素.要素创建_通过复制()
         输入要素字段名称列表 = 输入要素.字段名称列表获取()
         for x in 替换字典:
             if x["字段名称"] in 输入要素字段名称列表:
-                输入要素.字段修改(x["字段名称"], x["修改后名称"], x["修改后名称"], x["类型"], x["长度"], 清除字段别称=True)
+                输入要素.字段修改(x["字段名称"], x["修改后名称"], x["修改后名称"], x["类型"], x["长度"], 清除字段别称=False)
                 # print(x["字段名称"] + " 已被修改为 " + x["修改后名称"])
 
         SQL语句 = r"扣除地类系数 <> 0"
@@ -76,8 +78,12 @@ def main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控
         日志.输出调试(f"筛选后要素是：" + str(筛选后要素))
         筛选后要素.要素创建_通过复制并重命名重名要素(r"CZ_三调筛选_坐落单位名称")
 
+        输入要素.要素创建_通过复制并重命名重名要素(输入要素名称)
+
 
 if __name__ == "__main__":
     # Global Environment settings
-    日志.开启()
-    main(工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb", 输入要素名称="YD_三调")
+    # 日志.开启()
+    工作空间 = bxarcpy.环境.输入参数获取_以字符串形式(0, r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb")
+    输入要素名称 = bxarcpy.环境.输入参数获取_以字符串形式(1, "YD_三调", True)
+    main(工作空间=工作空间, 输入要素名称=输入要素名称)

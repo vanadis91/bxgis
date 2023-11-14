@@ -1,6 +1,6 @@
 from bxpy import 日志
 import arcpy
-from 图层类 import 图层类
+from .图层类 import 图层类
 
 
 class 图层文件类:

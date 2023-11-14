@@ -1,6 +1,6 @@
 from bxpy import 日志
 import arcpy
-from 地图类 import 地图类
+from .地图类 import 地图类
 
 
 class 布局类:

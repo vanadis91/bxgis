@@ -1,6 +1,6 @@
 from bxpy import 日志
 import arcpy
-from 常量 import _要素类型反映射
+from .常量 import _要素类型反映射
 
 
 class 游标类:

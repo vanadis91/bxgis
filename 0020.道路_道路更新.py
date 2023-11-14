@@ -2,7 +2,6 @@
 
 # import arcpy
 # from sys import argv
-from socket import fromshare
 import bxarcpy
 from bxpy import 时间
 
@@ -14,8 +13,8 @@ def 计算道路边线(
     输出要素名称="DL_道路边线",
     范围要素名称="JX_规划范围线",
 ):
-    with bxarcpy.类.环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
-        bxarcpy.类.配置.是否覆盖输出要素 = True
+    with bxarcpy.环境.环境管理器(临时工作空间=工作空间, 工作空间=工作空间):
+        bxarcpy.配置.是否覆盖输出要素 = True
 
         道路中线要素 = bxarcpy.要素类.要素读取_通过名称(道路中线要素名称)
         道路中线要素 = 道路中线要素.要素创建_通过复制()
@@ -34,7 +33,7 @@ def test(x):
         return 1.0
     elif x == '城市支路':
         return 4.0
-    elif x == '普通城市主干路':
+    elif x in ['普通城市主干路','城市主干路']:
         return 2.5
     elif x == '一级城市主干路':
         return 2.0
@@ -172,20 +171,20 @@ def 计算河道边线(
 
 
 def main():
-    # 计算道路边线(
-    #     工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb",
-    #     地块要素名称="DIST_用地规划图",
-    #     道路中线要素名称="DL_道路中线",
-    #     输出要素名称="DL_道路边线",
-    #     范围要素名称="JX_规划范围线",
-    # )
-    计算河道边线(
-        工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb",
+    计算道路边线(
+        工作空间=r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb",
         地块要素名称="DIST_用地规划图",
-        河道中线要素名称="DL_河道中线",
-        输出要素名称="DL_河道边线",
+        道路中线要素名称="DL_道路中线",
+        输出要素名称="DL_道路边线",
         范围要素名称="JX_规划范围线",
     )
+    # 计算河道边线(
+    #     工作空间=r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb",
+    #     地块要素名称="DIST_用地规划图",
+    #     河道中线要素名称="DL_河道中线",
+    #     输出要素名称="DL_河道边线",
+    #     范围要素名称="JX_规划范围线",
+    # )
 
 
 if __name__ == "__main__":
