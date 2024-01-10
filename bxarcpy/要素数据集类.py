@@ -26,5 +26,8 @@ class 要素数据集类:
 
     @staticmethod
     def 导入从CAD(CAD路径列表, 输出要素数据集名称):
+        日志.输出调试(f"CAD路径列表：{CAD路径列表}")
+        日志.输出调试(f"配置.当前工作空间：{配置.当前工作空间}")
+        日志.输出调试(f"输出要素数据集名称：{输出要素数据集名称}")
         arcpy.conversion.CADToGeodatabase(input_cad_datasets=CAD路径列表, out_gdb_path=配置.当前工作空间, out_dataset_name=输出要素数据集名称, reference_scale=1000, spatial_reference='PROJCS["CGCS2000_3_Degree_GK_CM_120E",GEOGCS["GCS_China_Geodetic_Coordinate_System_2000",DATUM["D_China_2000",SPHEROID["CGCS2000",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Gauss_Kruger"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",120.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]];-5123200 -10002100 10000;-100000 10000;-100000 10000;0.001;0.001;0.001;IsHighPrecision')[0]
         return 要素数据集类(名称=输出要素数据集名称)

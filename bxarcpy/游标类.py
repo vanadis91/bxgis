@@ -4,7 +4,20 @@ from .常量 import _要素类型反映射
 
 
 class 游标类:
-    _需操作的字段名称列表映射表 = {"SHAPE@": "SHAPE@", "_形状": "SHAPE@", "OID@": "OID@", "_ID": "OID@"}
+    _需操作的字段名称列表映射表 = {
+        "SHAPE@": "SHAPE@",
+        "_形状": "SHAPE@",
+        "OID@": "OID@",
+        "_ID": "OID@",
+        "_面积": "SHAPE@AREA",
+        "SHAPE@AREA": "SHAPE@AREA",
+        "_长度": "SHAPE@LENGTH",
+        "SHAPE@LENGTH": "SHAPE@LENGTH",
+        "_质心": "SHAPE@CENTROID",
+        "SHAPE@CENTROID": "SHAPE@CENTROID",
+        "_外接矩形": "SHAPE@EXTENT",
+        "SHAPE@EXTENT": "SHAPE@EXTENT",
+    }
 
     # class 行对象类:
     #     def __init__(self, 行数据, 游标对象: "游标类") -> None:

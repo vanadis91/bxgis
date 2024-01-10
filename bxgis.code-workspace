@@ -1,14 +1,30 @@
 {
-	"folders": [
-		{
-			"path": "C:/Users/beixiao/Project/bxgis"
-		},
-		{
-			"path": "C:/Users/beixiao/Project/bxpy"
-		},
-		{
-			"path": "C:/Users/beixiao/Project/bxpandas"
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": "C:/Users/beixiao/Project/bxgis"
+    },
+    {
+      "path": "C:/Users/beixiao/Project/bxpy"
+    },
+    {
+      "path": "C:/Users/beixiao/Project/bxpandas"
+    }
+  ],
+  "settings": {
+    "search.exclude": {
+      "**/.idea": true,
+      "**/.venv": true,
+      "**/#历史版本": true,
+      "**/_gsdata_": true,
+      "**/__pycache__": true,
+      "**/#未整理": true,
+      "**/node_modules": true
+    },
+    "files.exclude": {
+      "**/.idea": true,
+      "**/#未整理": true,
+      "**/#历史版本/**/package.json": true,
+      "**/__pycache__": true
+    }
+  }
 }

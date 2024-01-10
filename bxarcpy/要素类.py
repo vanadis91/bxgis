@@ -1,27 +1,39 @@
-from bxpy import 日志
+from bxpy import 日志, 时间
 import arcpy
 import time
+from . import 常量
+from typing import Union
 
 
 class 要素类:
-    def __init__(self, 内嵌对象=None, 名称=None):
+    def __init__(self, 内嵌对象=None, 名称: Union[str, None] = None):
         if type(内嵌对象) is 要素类:
             self.名称 = 内嵌对象.名称
-        elif 名称:
+            self.名称_无路径 = 内嵌对象.名称_无路径
+        elif type(名称) is str:
             self.名称 = 名称
+            self.名称_无路径 = 名称.split("\\")[-1]
+        else:
+            print(f"无法将该对象转换为要素类：内嵌对象：{内嵌对象} 名称：{名称}")
 
     def __repr__(self) -> str:
-        return f"<bxarcpy.要素类 对象 {{名称:{self.名称}}}>"
+        return f"<bxarcpy.要素类 对象 {{名称:{self.名称}, 名称_无路径:{self.名称_无路径}}}>"
 
     @property
     def 几何类型(self):
         from . import 常量
 
-        几何类型 = arcpy.Describe(self.名称).shapeType
+        几何类型 = arcpy.Describe(self.名称).shapeType  # type: ignore
         return 常量._要素类型反映射[几何类型.upper()]
 
+    @property
+    def 几何数量(self):
+        结果 = arcpy.GetCount_management(self.名称)
+        数量 = int(结果.getOutput(0))  # type: ignore
+        return 数量
+
     @staticmethod
-    def 要素读取_通过名称(名称=None):
+    def 要素读取_通过名称(名称):
         return 要素类(名称=名称)
 
     @staticmethod
@@ -30,13 +42,13 @@ class 要素类:
         from . import 常量
 
         if 要素名称 == "AA_新建":
-            要素名称 = 要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+            要素名称 = 要素名称 + "_" + 常量.当前时间()
         if 数据库路径 is None:
             数据库路径 = 配置.当前工作空间
         elif 数据库路径.upper() in ["临时", "IN_MEMORY", "MEMORY"]:
             数据库路径 = "in_memory"
         要素类型 = 常量._要素类型映射[要素类型]
-        arcpy.management.CreateFeatureclass(out_path=数据库路径, out_name=要素名称, geometry_type=要素类型, template=模板, has_m="DISABLED", has_z="DISABLED", spatial_reference='PROJCS["CGCS2000_3_Degree_GK_CM_120E",GEOGCS["GCS_China_Geodetic_Coordinate_System_2000",DATUM["D_China_2000",SPHEROID["CGCS2000",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Gauss_Kruger"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",120.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]];526761.4357525 3337536.7866275 209129662504.711;-100000 10000;-100000 10000;0.001;0.001;0.001;IsHighPrecision', config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0, out_alias="")
+        arcpy.management.CreateFeatureclass(out_path=数据库路径, out_name=要素名称, geometry_type=要素类型, template=模板, has_m="DISABLED", has_z="DISABLED", spatial_reference='PROJCS["CGCS2000_3_Degree_GK_CM_120E",GEOGCS["GCS_China_Geodetic_Coordinate_System_2000",DATUM["D_China_2000",SPHEROID["CGCS2000",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Gauss_Kruger"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",120.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]];526761.4357525 3337536.7866275 209129662504.711;-100000 10000;-100000 10000;0.001;0.001;0.001;IsHighPrecision', config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0, out_alias="")  # type: ignore
         ret = 要素类.要素读取_通过名称(名称=数据库路径 + "\\" + 要素名称)
         # if 数据库路径.upper() in ["临时", "IN_MEMORY", "MEMORY"]:
         #     ret = ret.要素创建_通过复制并重命名重名要素(f"in_memory\\{要素名称}")
@@ -44,70 +56,92 @@ class 要素类:
 
     def 要素创建_通过复制(self, 输出要素名称="in_memory\\AA_复制"):
         if 输出要素名称 == "in_memory\\AA_复制":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
         return 要素类(名称=输出要素名称)
 
-    def 要素创建_通过复制并重命名重名要素(self, 输出要素名称="in_memory\\AA_复制"):
+    def 要素创建_通过复制并重命名重名要素(self, 输出要素名称="in_memory\\AA_复制", 重名要素后缀=None):
         from .数据库类 import 数据库类
         from .配置类 import 配置
         from .环境 import 环境
 
         if 输出要素名称 == "in_memory\\AA_复制":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
         database = 数据库类.数据库读取_通过路径(配置.当前工作空间)
         要素名称列表 = database.要素名称列表获取()
         if 输出要素名称 in 要素名称列表:
-            重命名后名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-            环境.输出消息(f"重名要素被命名为：{重命名后名称}")
-            要素类.要素读取_通过名称(输出要素名称).要素创建_通过复制(重命名后名称)
-        arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)
+            时间.等待(1)
+            重命名后名称 = 输出要素名称 + "_" + 常量.当前时间()
+            if 重名要素后缀 is not None:
+                重命名后名称 = 重命名后名称 + "_" + 重名要素后缀
+            try:
+                要素类.要素读取_通过名称(输出要素名称).要素创建_通过复制(重命名后名称)
+                环境.输出消息(f"将重名要素复制为：{重命名后名称}")
+            except Exception as e:
+                环境.输出消息(f"找到重名要素但是重命名失败")
+            # try:
+            #     要素类.要素读取_通过名称(输出要素名称).要素删除()
+            #     环境.输出消息(f"将重名要素 {self.名称} 删除")
+            # except Exception as e:
+            #     环境.输出消息(f"重名要素删除失败")
+
+        try:
+            arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
+        except Exception as e:
+            from .环境 import 环境
+
+            时间.等待(1)
+            输出要素名称 = 输出要素名称 + "_new"
+
+            环境.输出消息(f"覆盖失败，输出要素被重命名为：{输出要素名称}")
+            arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
+
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过合并(self, 输入要素名称列表=[], 输出要素名称="in_memory\\AA_合并"):
         _输入要素路径列表 = [self.名称]
         _输入要素路径列表.extend(输入要素名称列表)
         if 输出要素名称 == "in_memory\\AA_合并":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        arcpy.management.Merge(inputs=_输入要素路径列表, output=输出要素名称, field_mappings="", add_source="NO_SOURCE_INFO")
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        arcpy.management.Merge(inputs=_输入要素路径列表, output=输出要素名称, field_mappings="", add_source="NO_SOURCE_INFO")  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过裁剪(self, 裁剪要素名称, 输出要素名称="in_memory\\AA_裁剪"):
         if 输出要素名称 == "in_memory\\AA_裁剪":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        arcpy.analysis.Clip(in_features=self.名称, clip_features=裁剪要素名称, out_feature_class=输出要素名称, cluster_tolerance="")
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        arcpy.analysis.Clip(in_features=self.名称, clip_features=裁剪要素名称, out_feature_class=输出要素名称, cluster_tolerance="")  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过擦除(self, 擦除要素名称, 输出要素名称="in_memory\\AA_擦除"):
         if 输出要素名称 == "in_memory\\AA_擦除":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        arcpy.analysis.Erase(in_features=self.名称, erase_features=擦除要素名称, out_feature_class=输出要素名称, cluster_tolerance="")
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        arcpy.analysis.Erase(in_features=self.名称, erase_features=擦除要素名称, out_feature_class=输出要素名称, cluster_tolerance="")  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过擦除并几何修复(self, 擦除要素名称, 输出要素名称="in_memory\\AA_擦除并几何修复"):
         if 输出要素名称 == "in_memory\\AA_擦除并几何修复":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
         输入 = self.要素几何修复()
         擦除 = 要素类.要素读取_通过名称(擦除要素名称).要素几何修复()
-        arcpy.analysis.Erase(in_features=输入.名称, erase_features=擦除.名称, out_feature_class=输出要素名称, cluster_tolerance="")
+        arcpy.analysis.Erase(in_features=输入.名称, erase_features=擦除.名称, out_feature_class=输出要素名称, cluster_tolerance="")  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过相交(self, 输入要素名称列表=[], 输出要素路径="in_memory\\AA_相交"):
         _输入要素路径列表 = [self.名称]
         _输入要素路径列表.extend(输入要素名称列表)
         if 输出要素路径 == "in_memory\\AA_相交":
-            输出要素路径 = 输出要素路径 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+            输出要素路径 = 输出要素路径 + "_" + 常量.当前时间()
         _输入要素路径列表 = [[x, ""] for x in _输入要素路径列表]
-        arcpy.analysis.Intersect(in_features=_输入要素路径列表, out_feature_class=输出要素路径, join_attributes="ALL", cluster_tolerance="", output_type="INPUT")
+        arcpy.analysis.Intersect(in_features=_输入要素路径列表, out_feature_class=输出要素路径, join_attributes="ALL", cluster_tolerance="", output_type="INPUT")  # type: ignore
         return 要素类(名称=输出要素路径)
 
-    def 要素创建_通过联合(self, 输入要素名称列表=[], 输出要素名称="in_memory\\AA_联合", 是否保留周长和面积=False):
+    def 要素创建_通过联合(self, 输入要素名称列表=[], 是否保留周长和面积=False, 输出要素名称="in_memory\\AA_联合"):
         _输入要素名称列表 = [self.名称]
         _输入要素名称列表.extend(输入要素名称列表)
         if 输出要素名称 == "in_memory\\AA_联合":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
         _输入要素名称列表 = [[x, ""] for x in _输入要素名称列表]
-        arcpy.analysis.Union(in_features=_输入要素名称列表, out_feature_class=输出要素名称, join_attributes="ALL", cluster_tolerance="", gaps="GAPS")
+        arcpy.analysis.Union(in_features=_输入要素名称列表, out_feature_class=输出要素名称, join_attributes="ALL", cluster_tolerance=None, gaps="GAPS")  # type: ignore
         联合后要素 = 要素类(名称=输出要素名称)
         if 是否保留周长和面积 is False:
             字段名称列表 = 联合后要素.字段名称列表获取()
@@ -116,32 +150,113 @@ class 要素类:
                     联合后要素.字段删除([字段名称])
         return 联合后要素
 
+    def 要素创建_通过联合并赋值字段(self, 区域要素名称="JX_街区范围线", 字段映射列表=[["所属街区", "街区编号"]], 输出要素名称="in_memory\\AA_联合并赋值字段"):
+        if 输出要素名称 == "in_memory\\AA_联合并赋值字段":
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        输入要素 = 要素类.要素读取_通过名称(self.名称)
+        输入要素原始无路径名称 = 输入要素.名称_无路径
+        输入要素 = 输入要素.要素创建_通过复制()
+
+        区域要素 = 要素类.要素读取_通过名称(区域要素名称)
+        区域要素原始无路径名称 = 区域要素.名称_无路径
+
+        区域要素中保留的字段列表 = [x[1] for x in 字段映射列表]
+        区域要素 = 区域要素.要素创建_通过复制().字段删除(保留字段名称列表=区域要素中保留的字段列表)
+        联合后要素 = 输入要素.要素创建_通过联合([区域要素.名称]).要素创建_通过多部件至单部件()
+
+        应填色但是没填的区域要素 = 要素类.要素创建_通过名称(模板=联合后要素.名称)
+        时间.等待(1)
+        不应填色但是填色的区域要素 = 要素类.要素创建_通过名称(模板=联合后要素.名称)
+        时间.等待(1)
+        被范围线分割的要素 = 要素类.要素创建_通过名称(模板=联合后要素.名称)
+        时间.等待(1)
+        联合后要素字段列表 = 联合后要素.字段名称列表获取()
+        # print(字段列表)
+        for x in 联合后要素字段列表:
+            if x in ["OBJECTID", "Shape", "Shape_Length", "Shape_Area"]:
+                联合后要素字段列表.remove(x)
+
+        联合后要素字段列表.insert(0, "_形状")
+
+        元素FID列表 = []
+        元素属性列表 = []
+        分割要素已插入列表 = []
+        from .游标类 import 游标类
+
+        with 游标类.游标创建_通过名称("查找", 联合后要素.名称, 联合后要素字段列表) as 联合后要素游标:
+            with 游标类.游标创建_通过名称("插入", 应填色但是没填的区域要素.名称, 联合后要素字段列表) as 应填色但是没填的区域要素游标:
+                with 游标类.游标创建_通过名称("插入", 不应填色但是填色的区域要素.名称, 联合后要素字段列表) as 不应填色但是填色的区域要素游标:
+                    with 游标类.游标创建_通过名称("插入", 被范围线分割的要素.名称, 联合后要素字段列表) as 被范围线分割的要素游标:
+                        for x in 联合后要素游标:
+                            if x[f"FID_{输入要素.名称_无路径}"] == -1:
+                                应填色但是没填的区域要素游标.行插入(x)
+                            if x[f"FID_{区域要素.名称_无路径}"] == -1:
+                                不应填色但是填色的区域要素游标.行插入(x)
+                            if x[f"FID_{输入要素.名称_无路径}"] in 元素FID列表 and x[f"FID_{输入要素.名称_无路径}"] != -1:
+                                日志.输出调试(f'这个图元被分割了，FID_{输入要素.名称_无路径}是：{x[f"FID_{输入要素.名称_无路径}"]}')
+                                if x[f"FID_{输入要素.名称_无路径}"] in 分割要素已插入列表:
+                                    被范围线分割的要素游标.行插入(x)
+                                else:
+                                    被范围线分割的要素游标.行插入(x)
+                                    被范围线分割的要素游标.行插入(元素属性列表[元素FID列表.index(x[f"FID_{输入要素.名称_无路径}"])])
+                                    分割要素已插入列表.append(x[f"FID_{输入要素.名称_无路径}"])
+                            元素FID列表.append(x[f"FID_{输入要素.名称_无路径}"])
+                            元素属性列表.append(x)
+        for x in 字段映射列表:
+            联合后要素.字段添加(x[0]).字段计算(x[0], f"!{x[1]}!")
+        if 应填色但是没填的区域要素.几何数量 > 0:
+            from .环境 import 环境
+
+            环境.输出消息(f"{输入要素原始无路径名称}与{区域要素原始无路径名称}之间存在应填未填区域")
+            应填色但是没填的区域要素.要素创建_通过复制并重命名重名要素(f"AA_{输入要素原始无路径名称}与{区域要素原始无路径名称}之间应填未填区域").导出到CAD(rf"C:\Users\beixiao\Desktop\AA_{输入要素原始无路径名称}与{区域要素原始无路径名称}之间应填未填区域.dwg")
+        if 不应填色但是填色的区域要素.几何数量 > 0:
+            from .环境 import 环境
+
+            环境.输出消息(f"{输入要素原始无路径名称}与{区域要素原始无路径名称}之间存在不应填但被填区域")
+            不应填色但是填色的区域要素.要素创建_通过复制并重命名重名要素(f"AA_{输入要素原始无路径名称}与{区域要素原始无路径名称}之间不应填但被填区域").导出到CAD(rf"C:\Users\beixiao\Desktop\AA_{输入要素原始无路径名称}与{区域要素原始无路径名称}之间不应填但被填区域.dwg")
+        if 被范围线分割的要素.几何数量 > 0:
+            from .环境 import 环境
+
+            环境.输出消息(f"{输入要素原始无路径名称}被{区域要素原始无路径名称}联合后有些要素被分割")
+            被范围线分割的要素.要素创建_通过复制并重命名重名要素(f"AA_{输入要素原始无路径名称}被{区域要素原始无路径名称}联合后被分割图形").导出到CAD(rf"C:\Users\beixiao\Desktop\AA_{输入要素原始无路径名称}被{区域要素原始无路径名称}联合后被分割图形.dwg")
+
+        需要删除的字段列表 = [f"FID_{输入要素.名称_无路径}", f"FID_{区域要素.名称_无路径}", "ORIG_FID"]
+        需要删除的字段列表.extend([x[1] for x in 字段映射列表])
+        联合后要素.字段删除(需要删除的字段列表).要素创建_通过复制并重命名重名要素(输出要素名称)
+        return 要素类(名称=输出要素名称)
+
     def 要素创建_通过融合(self, 融合字段列表=[], 统计字段列表=None, 是否单部件=True, 输出要素名称="in_memory\\AA_融合"):
         if 输出要素名称 == "in_memory\\AA_融合":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
         if 是否单部件 == True:
             是否单部件 = "SINGLE_PART"
         else:
             是否单部件 = "MULTI_PART"
-        arcpy.management.Dissolve(in_features=self.名称, out_feature_class=输出要素名称, dissolve_field=融合字段列表, statistics_fields=统计字段列表, multi_part=是否单部件, unsplit_lines="DISSOLVE_LINES", concatenation_separator="")
+        arcpy.management.Dissolve(in_features=self.名称, out_feature_class=输出要素名称, dissolve_field=融合字段列表, statistics_fields=统计字段列表, multi_part=是否单部件, unsplit_lines="DISSOLVE_LINES", concatenation_separator="")  # type: ignore
+        return 要素类(名称=输出要素名称)
+
+    def 要素创建_通过更新(self, 更新要素名称, 输出要素名称="in_memory\\AA_更新"):
+        if 输出要素名称 == "in_memory\\AA_更新":
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        arcpy.analysis.Update(self.名称, 更新要素名称, 输出要素名称)  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过更新并合并字段(self, 更新要素名称, 输出要素名称="in_memory\\AA_更新并合并字段"):
         if 输出要素名称 == "in_memory\\AA_更新并合并字段":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        输出 = self.要素创建_通过擦除并几何修复(更新要素名称)
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        输出 = self.要素创建_通过擦除(更新要素名称)
         输出 = 输出.要素创建_通过合并([更新要素名称], 输出要素名称)
         return 输出
 
     def 要素创建_通过筛选(self, SQL语句="", 输出要素名称="in_memory\\AA_筛选"):
         if 输出要素名称 == "in_memory\\AA_筛选":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        arcpy.analysis.Select(in_features=self.名称, out_feature_class=输出要素名称, where_clause=SQL语句)
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        arcpy.analysis.Select(in_features=self.名称, out_feature_class=输出要素名称, where_clause=SQL语句)  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过排序(self, 排序字段及顺序列表=[["DATE_REP", "ASCENDING"]], 空间排序方式="UR", 输出要素名称="in_memory\\AA_排序"):
         if 输出要素名称 == "in_memory\\AA_排序":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
         排序字段及顺序列表temp = []
         for x in 排序字段及顺序列表:
             if x[1] == "ASCENDING" or x[1] == "正序":
@@ -149,34 +264,39 @@ class 要素类:
             elif x[1] == "DESCENDING" or x[1] == "倒序":
                 排序字段及顺序列表temp.append([x[0], "DESCENDING"])
         排序字段及顺序列表 = 排序字段及顺序列表temp
-        arcpy.management.Sort(in_dataset=self.名称, out_dataset=输出要素名称, sort_field=排序字段及顺序列表, spatial_sort_method=空间排序方式)
+        arcpy.management.Sort(in_dataset=self.名称, out_dataset=输出要素名称, sort_field=排序字段及顺序列表, spatial_sort_method=空间排序方式)  # type: ignore
         return 要素类(名称=输出要素名称)
 
-    def 要素创建_通过多部件至单部件(self, 输出要素路径="in_memory\\AA_多部件至单部件"):
-        if 输出要素路径 == "in_memory\\AA_多部件至单部件":
-            输出要素路径 = 输出要素路径 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        输出要素路径 = arcpy.management.MultipartToSinglepart(in_features=self.名称, out_feature_class=输出要素路径)
-        return 要素类(名称=输出要素路径)
+    def 要素创建_通过多部件至单部件(self, 输出要素名称="in_memory\\AA_多部件至单部件"):
+        if 输出要素名称 == "in_memory\\AA_多部件至单部件":
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        try:
+            arcpy.management.MultipartToSinglepart(in_features=self.名称, out_feature_class=输出要素名称)  # type: ignore
+        except Exception as e:
+            self.要素几何修复()
+            print("错误：多部件至单部件出错")
+            arcpy.management.MultipartToSinglepart(in_features=self.名称, out_feature_class=输出要素名称)  # type: ignore
+        return 要素类(名称=输出要素名称)
 
     def 要素创建_通过空间连接(self, 连接要素名称, 连接方式="包含连接要素", 输出要素名称="in_memory\\AA_空间连接") -> "要素类":
         _连接方式映射表 = {"INTERSECT": "INTERSECT", "相交": "INTERSECT", "CONTAINS": "CONTAINS", "包含连接要素": "CONTAINS", "COMPLETELY_CONTAINS": "COMPLETELY_CONTAINS", "完全包含连接要素": "COMPLETELY_CONTAINS", "在连接要素内": "WITHIN", "WITHIN": "WITHIN", "完全在连接要素内": "COMPLETELY_WITHIN", "COMPLETELY_WITHIN": "COMPLETELY_WITHIN", "包含连接要素内点": "包含连接要素内点", "内点在连接要素内": "内点在连接要素内", "形心在连接要素内": "HAVE_THEIR_CENTER_IN", "HAVE_THEIR_CENTER_IN": "HAVE_THEIR_CENTER_IN"}
         连接方式 = _连接方式映射表[连接方式]
         if 输出要素名称 == "in_memory\\AA_空间连接":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
         if 连接方式 == "包含连接要素内点":
-            arcpy.management.RepairGeometry(in_features=连接要素名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]
+            arcpy.management.RepairGeometry(in_features=连接要素名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]  # type: ignore
             连接要素 = 要素类.要素读取_通过名称(连接要素名称)
             连接要素转点后要素 = 连接要素.要素创建_通过转点()
-            # 连接要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=连接要素名称, out_feature_class="in_memory\\AA_要素转点" + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime()), point_location="INSIDE")
+            # 连接要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=连接要素名称, out_feature_class="in_memory\\AA_要素转点" + "_" + 常量.当前时间(), point_location="INSIDE")
             return self.要素创建_通过空间连接(连接要素转点后要素.名称, 输出要素名称=输出要素名称, 连接方式="包含连接要素")
         if 连接方式 == "内点在连接要素内":
-            arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]
-            # 目标要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=self.名称, out_feature_class="in_memory\\AA_要素转点" + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime()), point_location="INSIDE")
+            arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]  # type: ignore
+            # 目标要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=self.名称, out_feature_class="in_memory\\AA_要素转点" + "_" + 常量.当前时间(), point_location="INSIDE")
             目标要素转点后要素 = self.要素创建_通过转点()
             目标要素 = 要素类.要素读取_通过名称(目标要素转点后要素.名称)
             目标要素连接后 = 目标要素.要素创建_通过空间连接(连接要素名称, "in_memory\\AA_空间连接", "在连接要素内")
             return self.要素创建_通过空间连接(目标要素连接后.名称, 输出要素名称=输出要素名称, 连接方式="包含连接要素")
-        arcpy.analysis.SpatialJoin(
+        arcpy.analysis.SpatialJoin(  # type: ignore
             target_features=self.名称,
             join_features=连接要素名称,
             out_feature_class=输出要素名称,
@@ -193,27 +313,28 @@ class 要素类:
         # 常用_填充空隙后
         # To allow overwriting outputs change overwriteOutput option to True.
         if 输出要素名称 == "in_memory\\AA_填充空隙":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
 
         # Process: 复制要素 (复制要素) (management)
-        顶部元素 = 要素类.要素读取_通过名称(self.名称).要素创建_通过复制()
-        填充范围1 = 要素类.要素读取_通过名称(填充范围要素名称).要素创建_通过复制()
-        填充范围1.字段添加("地类编号").字段计算("地类编号", 填充地类编号表达式)
-        ret = 填充范围1.要素创建_通过更新并合并字段(顶部元素.名称, 输出要素名称)
-        return ret
+        输入要素 = 要素类.要素读取_通过名称(self.名称).要素创建_通过复制()
+        填充范围要素 = 要素类.要素读取_通过名称(填充范围要素名称).要素创建_通过复制()
+        填充范围要素.字段添加("地类编号").字段计算("地类编号", 填充地类编号表达式)
+        更新后要素 = 输入要素.要素创建_通过更新(填充范围要素.名称).要素创建_通过更新(输入要素.名称)
+        输出要素 = 更新后要素.要素创建_通过复制并重命名重名要素(输出要素名称)
+        return 输出要素
 
     def 要素创建_通过切分(self, 折点数量=200, 输出要素名称="in_memory\\AA_切分"):
         if 输出要素名称 == "in_memory\\AA_切分":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        ret = arcpy.management.Dice(self.名称, 输出要素名称, 折点数量)
-        return 要素类(名称=ret)
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        arcpy.management.Dice(self.名称, 输出要素名称, 折点数量)  # type: ignore
+        return 要素类(名称=输出要素名称)
 
     def 要素创建_通过转点(self, 输出要素名称="in_memory\\AA_转点"):
         from .游标类 import 游标类
 
         if 输出要素名称 == "in_memory\\AA_转点":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        点要素 = 要素类.要素创建_通过名称("AA_转点" + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime()), "点", 模板=self.名称)
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        点要素 = 要素类.要素创建_通过名称("AA_转点" + "_" + 常量.当前时间(), "点", 模板=self.名称)
         点要素复制后 = 点要素.要素创建_通过复制(输出要素名称)
         点要素.要素删除()
         点要素 = 点要素复制后
@@ -248,38 +369,45 @@ class 要素类:
 
     def 要素创建_通过转线(self, 输出要素名称="in_memory\\AA_转线"):
         if 输出要素名称 == "in_memory\\AA_转线":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
-        arcpy.management.FeatureToLine(in_features=self.名称, out_feature_class=输出要素名称)
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+        arcpy.management.FeatureToLine(in_features=self.名称, out_feature_class=输出要素名称)  # type: ignore
         return 要素类.要素读取_通过名称(输出要素名称)
 
     def 要素创建_通过面转线(self, 是否识别并存储面邻域信息=True, 输出要素名称="in_memory\\AA_面转线"):
         if 输出要素名称 == "in_memory\\AA_面转线":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
         if 是否识别并存储面邻域信息:
-            arcpy.management.PolygonToLine(in_features=self.名称, out_feature_class=输出要素名称, neighbor_option="IDENTIFY_NEIGHBORS")
+            arcpy.management.PolygonToLine(in_features=self.名称, out_feature_class=输出要素名称, neighbor_option="IDENTIFY_NEIGHBORS")  # type: ignore
         else:
-            arcpy.management.PolygonToLine(in_features=self.名称, out_feature_class=输出要素名称, neighbor_option="IGNORE_NEIGHBORS")
+            arcpy.management.PolygonToLine(in_features=self.名称, out_feature_class=输出要素名称, neighbor_option="IGNORE_NEIGHBORS")  # type: ignore
         return 要素类.要素读取_通过名称(输出要素名称)
 
-    def 要素创建_通过缓冲(self, 距离或字段名称, 融合类型="不融合", 融合字段名称列表=None, 输出要素名称="in_memory\\AA_缓冲"):
+    def 要素创建_通过缓冲(self, 距离或字段名称, 融合类型="不融合", 融合字段名称列表=None, 末端类型="圆形", 输出要素名称="in_memory\\AA_缓冲"):
         if 输出要素名称 == "in_memory\\AA_缓冲":
-            输出要素名称 = 输出要素名称 + "_" + time.strftime(r"%Y%m%d%H%M%S", time.localtime())
+            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
         _融合类型映射表 = {"不融合": "NONE", "NONE": "NONE", "融合为单个": "ALL", "ALL": "ALL", "融合按字段": "LIST", "LIST": "LIST"}
         融合类型 = _融合类型映射表[融合类型]
+        _末端类型映射表 = {"圆形": "ROUND", "ROUND": "ROUND", "方形": "FLAT", "FLAT": "FLAT"}
+        末端类型 = _末端类型映射表[末端类型]
         if 融合字段名称列表:
             融合字段名称列表 = ";".join(融合字段名称列表)
-        arcpy.analysis.Buffer(in_features=self.名称, out_feature_class=输出要素名称, buffer_distance_or_field=距离或字段名称, line_side="FULL", line_end_type="ROUND", dissolve_option=融合类型, dissolve_field=融合字段名称列表, method="PLANAR")
+        arcpy.analysis.Buffer(in_features=self.名称, out_feature_class=输出要素名称, buffer_distance_or_field=距离或字段名称, line_side="FULL", line_end_type=末端类型, dissolve_option=融合类型, dissolve_field=融合字段名称列表, method="PLANAR")  # type: ignore
         return 要素类.要素读取_通过名称(输出要素名称)
 
     def 要素删除(self):
-        return arcpy.management.Delete(in_data=[self.名称], data_type="")[0]
+        return arcpy.management.Delete(in_data=[self.名称], data_type="")[0]  # type: ignore
+
+    def 要素重命名(self, 新名称):
+        arcpy.management.Rename(self.名称, 新名称)  # type: ignore
+        return 要素类(名称=新名称)
 
     @staticmethod
     def 要素删除_通过要素名称列表(要素名称列表):
-        return arcpy.management.Delete(in_data=要素名称列表, data_type="")[0]
+        return arcpy.management.Delete(in_data=要素名称列表, data_type="")[0]  # type: ignore
 
     def 要素几何修复(self):
-        arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]
+        arcpy.management.RepairGeometry(in_features=self.名称, delete_null="KEEP_NULL", validation_method="ESRI")[0]  # type: ignore
+        # arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]
         return self
 
     def 选择集创建_通过属性(self, 选择方式="新建选择集", SQL语句=""):
@@ -287,13 +415,13 @@ class 要素类:
 
         _选择方式映射表 = {"新建选择集": "NEW_SELECTION", "NEW_SELECTION": "NEW_SELECTION"}
         选择方式 = _选择方式映射表[选择方式]
-        a = arcpy.management.SelectLayerByAttribute(in_layer_or_view=self.名称, selection_type=选择方式, where_clause=SQL语句, invert_where_clause="")[0]
+        a = arcpy.management.SelectLayerByAttribute(in_layer_or_view=self.名称, selection_type=选择方式, where_clause=SQL语句, invert_where_clause="")[0]  # type: ignore
         return 图层类(a)
 
     def 字段列表获取(self):
         from .字段类 import 字段类
 
-        return [字段类(x) for x in arcpy.ListFields(self.名称)]
+        return [字段类(x) for x in arcpy.ListFields(self.名称)]  # type: ignore
 
     def 字段名称列表获取(self):
         字段列表 = self.字段列表获取()
@@ -303,7 +431,7 @@ class 要素类:
         from bxpy import 日志
 
         if 保留字段名称列表 is None:
-            arcpy.management.DeleteField(in_table=self.名称, drop_field=删除字段名称列表, method="DELETE_FIELDS")[0]
+            arcpy.management.DeleteField(in_table=self.名称, drop_field=删除字段名称列表, method="DELETE_FIELDS")[0]  # type: ignore
         elif 删除字段名称列表 is None:
             字段对象列表 = 要素类(名称=self.名称).字段列表获取()
             字段名称列表 = [x.名称 for x in 字段对象列表]
@@ -312,24 +440,24 @@ class 要素类:
             for x in 保留字段名称列表:
                 if x in 字段名称列表:
                     字段名称列表.remove(x)
-            日志.输出调试(f"除去保留字段列表后剩余的所有字段为：" + str(字段名称列表))
+            日志.输出调试(f"即将被删除的字段为：" + str(字段名称列表))
             if 字段名称列表:
-                arcpy.management.DeleteField(in_table=self.名称, drop_field=字段名称列表, method="DELETE_FIELDS")[0]
+                arcpy.management.DeleteField(in_table=self.名称, drop_field=字段名称列表, method="DELETE_FIELDS")[0]  # type: ignore
         return self
 
     def 字段添加(self, 字段名称, 字段类型="字符串", 字段长度=100, 字段别称=""):
         from . import 常量
 
         字段类型 = 常量._字段类型映射[字段类型]
-        arcpy.management.DeleteField(in_table=self.名称, drop_field=[字段名称], method="DELETE_FIELDS")
-        arcpy.management.AddField(in_table=self.名称, field_name=字段名称, field_type=字段类型, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")
+        arcpy.management.DeleteField(in_table=self.名称, drop_field=[字段名称], method="DELETE_FIELDS")  # type: ignore
+        arcpy.management.AddField(in_table=self.名称, field_name=字段名称, field_type=字段类型, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")  # type: ignore
         return self
 
     def 字段计算(self, 字段名称, 表达式, 字段类型="字符串", 语言类型="PYTHON3", 代码块=""):
         from . import 常量
 
         字段类型 = 常量._字段类型映射[字段类型]
-        arcpy.management.CalculateField(in_table=self.名称, field=字段名称, expression=表达式, expression_type=语言类型, code_block=代码块, field_type=字段类型, enforce_domains="NO_ENFORCE_DOMAINS")[0]
+        arcpy.management.CalculateField(in_table=self.名称, field=字段名称, expression=表达式, expression_type=语言类型, code_block=代码块, field_type=字段类型, enforce_domains="NO_ENFORCE_DOMAINS")[0]  # type: ignore
         return self
 
     def 字段修改(self, 字段名称=None, 修改后字段名称=None, 修改后字段别称=None, 字段类型=None, 字段长度=None, 清除字段别称=True):
@@ -337,30 +465,30 @@ class 要素类:
 
         if 字段类型:
             字段类型 = 常量._字段类型映射[字段类型]
-        arcpy.management.AlterField(in_table=self.名称, field=字段名称, new_field_name=修改后字段名称, new_field_alias=修改后字段别称, field_type=字段类型, field_length=字段长度, field_is_nullable="NULLABLE", clear_field_alias=清除字段别称)[0]
+        arcpy.management.AlterField(in_table=self.名称, field=字段名称, new_field_name=修改后字段名称, new_field_alias=修改后字段别称, field_type=字段类型, field_length=字段长度, field_is_nullable="NULLABLE", clear_field_alias=清除字段别称)[0]  # type: ignore
         return self
 
     def 连接创建(self, 输入要素连接字段名称=None, 连接要素名称=None, 连接要素连接字段名称=None):
-        arcpy.management.AddJoin(in_layer_or_view=self.名称, in_field=输入要素连接字段名称, join_table=连接要素名称, join_field=连接要素连接字段名称, join_type="KEEP_ALL", index_join_fields="NO_INDEX_JOIN_FIELDS")[0]
+        arcpy.management.AddJoin(in_layer_or_view=self.名称, in_field=输入要素连接字段名称, join_table=连接要素名称, join_field=连接要素连接字段名称, join_type="KEEP_ALL", index_join_fields="NO_INDEX_JOIN_FIELDS")[0]  # type: ignore
         return self
 
     def 连接取消(self, 连接要素名称):
-        arcpy.management.RemoveJoin(in_layer_or_view=self.名称, join_name=连接要素名称)[0]
+        arcpy.management.RemoveJoin(in_layer_or_view=self.名称, join_name=连接要素名称)[0]  # type: ignore
         return self
 
     def 导出到CAD(self, 输出路径):
-        return arcpy.conversion.ExportCAD(in_features=self.名称, Output_Type="DWG_R2010", Output_File=输出路径, Ignore_FileNames="Ignore_Filenames_in_Tables", Append_To_Existing="Overwrite_Existing_Files", Seed_File="")
+        return arcpy.conversion.ExportCAD(in_features=self.名称, Output_Type="DWG_R2010", Output_File=输出路径, Ignore_FileNames="Ignore_Filenames_in_Tables", Append_To_Existing="Overwrite_Existing_Files", Seed_File="")  # type: ignore
 
     def 导出到要素(self, 输出要素名称):
         # arcpy.conversion.FeatureClassToFeatureClass(in_features=self.名称, out_path=输出目录, out_name=输出文件名, where_clause="", field_mapping="", config_keyword="")[0]
-        arcpy.conversion.ExportFeatures(in_features=self.名称, out_features=输出要素名称, where_clause="", use_field_alias_as_name="NOT_USE_ALIAS", field_mapping=None, sort_field=[])
+        arcpy.conversion.ExportFeatures(in_features=self.名称, out_features=输出要素名称, where_clause="", use_field_alias_as_name="NOT_USE_ALIAS", field_mapping=None, sort_field=[])  # type: ignore
         return 要素类(名称=输出要素名称)
 
-    def 拓扑创建(self):
-        要素类.拓扑创建_通过要素名称列表([self.名称])
+    def 拓扑检查重叠(self):
+        要素类.拓扑检查重叠_通过要素名称列表([self.名称])
 
     @staticmethod
-    def 拓扑创建_通过要素名称列表(输入要素名称列表):
+    def 拓扑检查重叠_通过要素名称列表(输入要素名称列表):
         from .要素数据集类 import 要素数据集类
         from .拓扑类 import 拓扑类
         from .数据库类 import 数据库类
@@ -387,13 +515,84 @@ class 要素类:
             拓扑对象.拓扑验证()
 
         拓扑导出后要素1, 拓扑导出后要素2, 拓扑导出后要素3 = 拓扑对象.导出到要素("AA_拓扑导出后要素")
-        if 要素数据集中的要素.几何类型 == "面":
-            拓扑导出后要素3.导出到CAD(r"C:\Users\beixiao\Desktop\拓扑检查.dwg")
-        elif 要素数据集中的要素.几何类型 == "线":
-            拓扑导出后要素2.导出到CAD(r"C:\Users\beixiao\Desktop\拓扑检查.dwg")
-        elif 要素数据集中的要素.几何类型 == "点":
-            拓扑导出后要素1.导出到CAD(r"C:\Users\beixiao\Desktop\拓扑检查.dwg")
+        if 拓扑导出后要素3.几何数量 > 0:
+            from bxarcpy import 环境
+
+            环境.输出消息(f"拓扑检查存在面错误")
+            拓扑导出后要素3.要素创建_通过多部件至单部件().导出到CAD(r"C:\Users\beixiao\Desktop\拓扑检查_面.dwg")
+        if 拓扑导出后要素2.几何数量 > 0:
+            from bxarcpy import 环境
+
+            环境.输出消息(f"拓扑检查存在线错误")
+            拓扑导出后要素2.要素创建_通过多部件至单部件().导出到CAD(r"C:\Users\beixiao\Desktop\拓扑检查_线.dwg")
+        if 拓扑导出后要素1.几何数量 > 0:
+            from bxarcpy import 环境
+
+            环境.输出消息(f"拓扑检查存在点错误")
+            拓扑导出后要素1.要素创建_通过多部件至单部件().导出到CAD(r"C:\Users\beixiao\Desktop\拓扑检查_点.dwg")
+        if 拓扑导出后要素3.几何数量 <= 0 and 拓扑导出后要素2.几何数量 <= 0 and 拓扑导出后要素1.几何数量 <= 0:
+            from bxarcpy import 环境
+
+            环境.输出消息(f"拓扑检查没有错误")
 
         拓扑导出后要素1.要素删除()
         拓扑导出后要素2.要素删除()
         拓扑导出后要素3.要素删除()
+
+    def 拓扑检查范围(self, 范围要素名称):
+        要素类.拓扑检查范围_通过要素名称列表([self.名称], 范围要素名称)
+
+    @staticmethod
+    def 拓扑检查范围_通过要素名称列表(输入要素名称列表, 范围要素名称):
+        for x in 输入要素名称列表:
+            范围要素 = 要素类.要素读取_通过名称(范围要素名称).要素创建_通过复制()
+            已填色要素 = 要素类.要素读取_通过名称(x).要素创建_通过复制()
+            需填未填 = 范围要素.要素创建_通过擦除(已填色要素.名称).要素创建_通过多部件至单部件()
+            输入要素名称_无路径 = x.split("\\")[-1]
+            if 需填未填.几何数量 > 0:
+                from .环境 import 环境
+
+                环境.输出消息(f"{输入要素名称_无路径}与{范围要素名称}之间存在需填未填区域")
+                需填未填.要素创建_通过复制并重命名重名要素(f"AA_{输入要素名称_无路径}与{范围要素名称}之间需填未填区域").导出到CAD(rf"C:\Users\beixiao\Desktop\{输入要素名称_无路径}与{范围要素名称}之间需填未填区域.dwg")
+            不需填但被填 = 已填色要素.要素创建_通过擦除(范围要素.名称).要素创建_通过多部件至单部件()
+            if 不需填但被填.几何数量 > 0:
+                from .环境 import 环境
+
+                环境.输出消息(f"{输入要素名称_无路径}与{范围要素名称}之间存在不需填但被填区域")
+                不需填但被填.要素创建_通过复制并重命名重名要素(f"AA_{输入要素名称_无路径}与{范围要素名称}之间不需填但被填区域").导出到CAD(rf"C:\Users\beixiao\Desktop\{输入要素名称_无路径}与{范围要素名称}之间不需填但被填区域.dwg")
+            if 需填未填.几何数量 <= 0 and 不需填但被填.几何数量 <= 0:
+                from .环境 import 环境
+
+                环境.输出消息(f"{输入要素名称_无路径}与{范围要素名称}之间契合")
+
+    # def 符号系统设置_通过样式文件(图层名称="DIST_用地规划图"):
+    #     from . import 文档类
+    #     文档 = 文档类.文档读取_通过名称("CURRENT")
+    #     # 文档 = bxarcpy.文档类.文档读取_通过名称(文档路径=r"C:\Users\common\Project\J江东区临江控规\临江控规_数据库.aprx")
+    #     地图 = 文档.地图列表读取("*")[0]
+    #     # bxarcpy.环境.输出消息(f"选取到的地图是：{地图}")
+    #     # 日志.输出调试(地图)
+    #     图层名称_无路径 = 图层名称.split("\\")[-1]
+    #     图层 = 地图.图层列表读取(图层名称_无路径)[0]
+    #     # bxarcpy.环境.输出消息(f"{图层._内嵌对象.name}")
+    #     图层.符号系统设置_通过stylx样式文件()
+    #     符号系统图层 = bxarcpy.图层文件类.图层文件读取(r"C:\Users\beixiao\appconfig\ArcGIS\010.符号系统\符号系统_省国空地类_根据编号.lyr").图层列表读取()[0]
+    #     bxarcpy.环境.输出消息(f"符号系统图层：{符号系统图层}")
+    #     图层.符号系统设置_通过图层文件(符号系统图层, [["值字段", "地类编号", "地类编号"]])
+
+    # 输出图层 = rf'arcpy.management.MatchLayerSymbologyToAStyle(in_layer={DIST_用地规划图}, match_values="$feature.地类编号", in_style="C:\\Users\\Beixiao\\AppConfig\\ArcGIS\\010.符号系统\\符号系统_省国空地类_根据编号.stylx")[0]'
+    # python_window_extension.execute_script(输出图层)
+    # 日志.输出调试(图层)
+    # 图层对象 = 图层.getDefinition("V3")
+    # symLvl2 = 图层对象.renderer.symbol.symbol.symbolLayers[1]
+    # symLvl2.color.values = [140, 70, 20, 20]
+    # 图层.setDefinition(图层对象)
+
+
+# if __name__ == "__main__":
+#     工作空间 = bxarcpy.环境.输入参数获取_以字符串形式(0, r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb")
+#     图层名称 = bxarcpy.环境.输入参数获取_以字符串形式(1, r"DIST_用地规划图", False)
+#     # arcpy.management.MatchLayerSymbologyToAStyle(r"DIST_用地规划图", "地类编号", r"C:\Users\Beixiao\AppConfig\ArcGIS\010.符号系统\符号系统_省国空地类_根据编号.stylx")
+
+#     # 日志.开启()
+#     符号系统设置(图层名称)

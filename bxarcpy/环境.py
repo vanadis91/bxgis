@@ -4,7 +4,7 @@ import arcpy
 
 class 环境:
     class 环境管理器(object):
-        def __init__(self, 输出包含M值="Disabled", 输出包含Z值="Disabled", XY分辨率=0.0001, XY容差=0.001, **kwargs):
+        def __init__(self, 工作空间, 临时工作空间=None, 输出包含M值="Disabled", 输出包含Z值="Disabled", XY分辨率=0.0001, XY容差=0.001, 是否覆盖输出要素=True, **kwargs):
             _参数映射 = {"临时工作空间": "scratchWorkspace", "scratchWorkspace": "scratchWorkspace", "工作空间": "workspace", "workspace": "workspace", "输出包含M值": "outputMFlag", "outputMFlag": "outputMFlag", "输出包含Z值": "outputZFlag", "outputZFlag": "outputZFlag", "XYResolution": "XYResolution", "XY分辨率": "XYResolution", "XYTolerance": "XYTolerance", "XY容差": "XYTolerance"}
             kwargsTemp = {}
             for key, value in kwargs.items():
@@ -14,6 +14,14 @@ class 环境:
             kwargs["outputZFlag"] = 输出包含Z值
             kwargs["XYResolution"] = XY分辨率
             kwargs["XYTolerance"] = XY容差
+            if 临时工作空间 is None:
+                kwargs["scratchWorkspace"] = 工作空间
+            else:
+                kwargs["scratchWorkspace"] = 临时工作空间
+            kwargs["workspace"] = 工作空间
+            from .配置类 import 配置
+
+            配置.是否覆盖输出要素 = 是否覆盖输出要素
 
             self._original_envs = {}
             self._environments = kwargs
