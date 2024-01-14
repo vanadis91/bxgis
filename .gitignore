@@ -1,9 +1,8 @@
 /.condavenv
-/bxarcpy/__pycache__
-/#历史版本
+**/#历史版本
 #历史版本
+**/__pycache__
+__pycache__
 /test
 /bxgis.code-workspace
-__pycache__
-/__pycache__
-__pycache__
+**/.vscode
