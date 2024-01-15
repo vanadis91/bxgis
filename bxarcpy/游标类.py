@@ -1,3 +1,5 @@
+from ast import If
+from sre_constants import IN
 from bxpy import 日志
 import arcpy
 from .常量 import _要素类型反映射
@@ -77,6 +79,12 @@ class 游标类:
         def 点表(self):
             return self._内嵌对象.getPart()
 
+        @property
+        def json格式(self):
+            import json
+
+            return json.loads(self._内嵌对象.JSON)
+
         def 交集(self, 相交要素形状: "游标类.形状类", 类型="面"):
             _交集类型映射表 = {4: 4, "面": 4, 2: 2, "线": 2, 1: 1, "点": 1}
             ret = self._内嵌对象.intersect(相交要素形状._内嵌对象, _交集类型映射表[类型])
@@ -100,6 +108,10 @@ class 游标类:
             return self._内嵌对象.labelPoint
 
         @property
+        def 部件数量(self):
+            return self._内嵌对象.partCount
+
+        @property
         def 折点数量(self):
             return self._内嵌对象.pointCount
 
@@ -107,8 +119,20 @@ class 游标类:
         def 面积(self):
             return self._内嵌对象.area
 
+        def 边界获取(self):
+            return 游标类.形状类(self._内嵌对象.boundary())
+
         def 是否具有孔洞(self):
             return self._内嵌对象.hasOmittedBoundary
+
+        def 是否为多部件要素(self):
+            return self._内嵌对象.isMultipart
+
+        def 是否包含曲线(self):
+            ret = [x for x in self.json格式.keys() if "curve" in x]
+            if len(ret) > 0:
+                return True
+            return False
 
         @property
         def 孔洞数量(self):
@@ -121,13 +145,6 @@ class 游标类:
         # @property
         # def 孔洞数量(self):
         #     return self._内嵌对象.interiorRingCount()
-
-        def 是否为多部件要素(self):
-            return self._内嵌对象.isMultipart
-
-        @property
-        def 部件数量(self):
-            return self._内嵌对象.partCount
 
         # def 边界部件获取(self, 索引):
         #     return self._内嵌对象[索引]
@@ -150,11 +167,11 @@ class 游标类:
                 需更新的字段名称列表temp.append(x)
         需操作的字段名称列表 = 需更新的字段名称列表temp
         if 游标类型 in ["更新"]:
-            self._内嵌对象 = arcpy.da.UpdateCursor(输入要素名称, 需操作的字段名称列表)
+            self._内嵌对象 = arcpy.da.UpdateCursor(输入要素名称, 需操作的字段名称列表)  # type: ignore
         elif 游标类型 in ["插入", "新增"]:
-            self._内嵌对象 = arcpy.da.InsertCursor(输入要素名称, 需操作的字段名称列表)
+            self._内嵌对象 = arcpy.da.InsertCursor(输入要素名称, 需操作的字段名称列表)  # type: ignore
         elif 游标类型 in ["查找", "读取", "查询"]:
-            self._内嵌对象 = arcpy.da.SearchCursor(输入要素名称, 需操作的字段名称列表)
+            self._内嵌对象 = arcpy.da.SearchCursor(输入要素名称, 需操作的字段名称列表)  # type: ignore
 
     def __enter__(self):
         self._内嵌对象 = self._内嵌对象.__enter__()

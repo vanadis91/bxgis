@@ -2,7 +2,7 @@ from bxpy import 日志, 时间
 import arcpy
 import time
 from . import 常量
-from typing import Union
+from typing import Union, Literal
 
 
 class 要素类:
@@ -410,6 +410,12 @@ class 要素类:
         # arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]
         return self
 
+    def 要素增密(self, 增密方法: Literal["固定距离", "弦高", "偏转角度"] = "偏转角度", 固定距离="10 Meters", 弦高="0.1 Meters", 偏转角度=10, 最大折点计数=None):
+        _增密方法映射 = {"固定距离": "DISTANCE", "固定距离": "DISTANCE", "弦高": "OFFSET", "弦高": "OFFSET", "偏转角度": "ANGLE", "偏转角度": "ANGLE"}
+        增密方法raw = _增密方法映射[增密方法]
+        arcpy.edit.Densify(in_features=self.名称, densification_method=增密方法raw, distance=固定距离, max_deviation=弦高, max_angle=偏转角度, max_vertex_per_segment=最大折点计数)  # type: ignore
+        return self
+
     def 选择集创建_通过属性(self, 选择方式="新建选择集", SQL语句=""):
         from .图层类 import 图层类
 
@@ -445,7 +451,7 @@ class 要素类:
                 arcpy.management.DeleteField(in_table=self.名称, drop_field=字段名称列表, method="DELETE_FIELDS")[0]  # type: ignore
         return self
 
-    def 字段添加(self, 字段名称, 字段类型="字符串", 字段长度=100, 字段别称=""):
+    def 字段添加(self, 字段名称, 字段类型="字符串", 字段长度: Union[None, int] = 100, 字段别称=""):
         from . import 常量
 
         字段类型 = 常量._字段类型映射[字段类型]
