@@ -1,7 +1,9 @@
+from ast import Del
+from sre_constants import IN
 from bxpy import 日志, 时间
 import arcpy
 import time
-from . import 常量
+from . import 常量, 工具集
 from typing import Union, Literal
 
 
@@ -42,7 +44,7 @@ class 要素类:
         from . import 常量
 
         if 要素名称 == "AA_新建":
-            要素名称 = 要素名称 + "_" + 常量.当前时间()
+            要素名称 = 要素名称 + "_" + 工具集.生成SUUID()
         if 数据库路径 is None:
             数据库路径 = 配置.当前工作空间
         elif 数据库路径.upper() in ["临时", "IN_MEMORY", "MEMORY"]:
@@ -56,7 +58,7 @@ class 要素类:
 
     def 要素创建_通过复制(self, 输出要素名称="in_memory\\AA_复制"):
         if 输出要素名称 == "in_memory\\AA_复制":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
         return 要素类(名称=输出要素名称)
 
@@ -66,12 +68,12 @@ class 要素类:
         from .环境 import 环境
 
         if 输出要素名称 == "in_memory\\AA_复制":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         database = 数据库类.数据库读取_通过路径(配置.当前工作空间)
         要素名称列表 = database.要素名称列表获取()
         if 输出要素名称 in 要素名称列表:
             时间.等待(1)
-            重命名后名称 = 输出要素名称 + "_" + 常量.当前时间()
+            重命名后名称 = 输出要素名称 + "_" + 工具集.生成当前时间()
             if 重名要素后缀 is not None:
                 重命名后名称 = 重命名后名称 + "_" + 重名要素后缀
             try:
@@ -102,25 +104,25 @@ class 要素类:
         _输入要素路径列表 = [self.名称]
         _输入要素路径列表.extend(输入要素名称列表)
         if 输出要素名称 == "in_memory\\AA_合并":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         arcpy.management.Merge(inputs=_输入要素路径列表, output=输出要素名称, field_mappings="", add_source="NO_SOURCE_INFO")  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过裁剪(self, 裁剪要素名称, 输出要素名称="in_memory\\AA_裁剪"):
         if 输出要素名称 == "in_memory\\AA_裁剪":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         arcpy.analysis.Clip(in_features=self.名称, clip_features=裁剪要素名称, out_feature_class=输出要素名称, cluster_tolerance="")  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过擦除(self, 擦除要素名称, 输出要素名称="in_memory\\AA_擦除"):
         if 输出要素名称 == "in_memory\\AA_擦除":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         arcpy.analysis.Erase(in_features=self.名称, erase_features=擦除要素名称, out_feature_class=输出要素名称, cluster_tolerance="")  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过擦除并几何修复(self, 擦除要素名称, 输出要素名称="in_memory\\AA_擦除并几何修复"):
         if 输出要素名称 == "in_memory\\AA_擦除并几何修复":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         输入 = self.要素几何修复()
         擦除 = 要素类.要素读取_通过名称(擦除要素名称).要素几何修复()
         arcpy.analysis.Erase(in_features=输入.名称, erase_features=擦除.名称, out_feature_class=输出要素名称, cluster_tolerance="")  # type: ignore
@@ -130,29 +132,37 @@ class 要素类:
         _输入要素路径列表 = [self.名称]
         _输入要素路径列表.extend(输入要素名称列表)
         if 输出要素路径 == "in_memory\\AA_相交":
-            输出要素路径 = 输出要素路径 + "_" + 常量.当前时间()
+            输出要素路径 = 输出要素路径 + "_" + 工具集.生成SUUID()
         _输入要素路径列表 = [[x, ""] for x in _输入要素路径列表]
         arcpy.analysis.Intersect(in_features=_输入要素路径列表, out_feature_class=输出要素路径, join_attributes="ALL", cluster_tolerance="", output_type="INPUT")  # type: ignore
         return 要素类(名称=输出要素路径)
 
-    def 要素创建_通过联合(self, 输入要素名称列表=[], 是否保留周长和面积=False, 输出要素名称="in_memory\\AA_联合"):
+    def 要素创建_通过联合(self, 输入要素名称列表=[], 是否保留周长和面积=False, 输出要素名称="in_memory\\AA_联合", 是否保留FID=True):
         _输入要素名称列表 = [self.名称]
         _输入要素名称列表.extend(输入要素名称列表)
         if 输出要素名称 == "in_memory\\AA_联合":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
-        _输入要素名称列表 = [[x, ""] for x in _输入要素名称列表]
-        arcpy.analysis.Union(in_features=_输入要素名称列表, out_feature_class=输出要素名称, join_attributes="ALL", cluster_tolerance=None, gaps="GAPS")  # type: ignore
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
+        _输入要素名称列表_格式化 = [[x, ""] for x in _输入要素名称列表]
+        arcpy.analysis.Union(in_features=_输入要素名称列表_格式化, out_feature_class=输出要素名称, join_attributes="ALL", cluster_tolerance=None, gaps="GAPS")  # type: ignore
         联合后要素 = 要素类(名称=输出要素名称)
         if 是否保留周长和面积 is False:
             字段名称列表 = 联合后要素.字段名称列表获取()
             for 字段名称 in 字段名称列表:
                 if "Shape_Length" in 字段名称 or "Shape_Area" in 字段名称:
                     联合后要素.字段删除([字段名称])
+        if 是否保留FID is False:
+            带FID要素名称列表 = [("FID_" + x.split("\\")[-1]) for x in _输入要素名称列表]
+            # 日志.输出控制台(带FID要素名称列表)
+            字段名称列表 = 联合后要素.字段名称列表获取()
+            for 字段名称 in 字段名称列表:
+                # 日志.输出控制台(字段名称)
+                if 字段名称 in 带FID要素名称列表:
+                    联合后要素.字段删除([字段名称])
         return 联合后要素
 
     def 要素创建_通过联合并赋值字段(self, 区域要素名称="JX_街区范围线", 字段映射列表=[["所属街区", "街区编号"]], 输出要素名称="in_memory\\AA_联合并赋值字段"):
         if 输出要素名称 == "in_memory\\AA_联合并赋值字段":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         输入要素 = 要素类.要素读取_通过名称(self.名称)
         输入要素原始无路径名称 = 输入要素.名称_无路径
         输入要素 = 输入要素.要素创建_通过复制()
@@ -227,7 +237,7 @@ class 要素类:
 
     def 要素创建_通过融合(self, 融合字段列表=[], 统计字段列表=None, 是否单部件=True, 输出要素名称="in_memory\\AA_融合"):
         if 输出要素名称 == "in_memory\\AA_融合":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         if 是否单部件 == True:
             是否单部件 = "SINGLE_PART"
         else:
@@ -237,26 +247,26 @@ class 要素类:
 
     def 要素创建_通过更新(self, 更新要素名称, 输出要素名称="in_memory\\AA_更新"):
         if 输出要素名称 == "in_memory\\AA_更新":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         arcpy.analysis.Update(self.名称, 更新要素名称, 输出要素名称)  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过更新并合并字段(self, 更新要素名称, 输出要素名称="in_memory\\AA_更新并合并字段"):
         if 输出要素名称 == "in_memory\\AA_更新并合并字段":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         输出 = self.要素创建_通过擦除(更新要素名称)
         输出 = 输出.要素创建_通过合并([更新要素名称], 输出要素名称)
         return 输出
 
     def 要素创建_通过筛选(self, SQL语句="", 输出要素名称="in_memory\\AA_筛选"):
         if 输出要素名称 == "in_memory\\AA_筛选":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         arcpy.analysis.Select(in_features=self.名称, out_feature_class=输出要素名称, where_clause=SQL语句)  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过排序(self, 排序字段及顺序列表=[["DATE_REP", "ASCENDING"]], 空间排序方式="UR", 输出要素名称="in_memory\\AA_排序"):
         if 输出要素名称 == "in_memory\\AA_排序":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         排序字段及顺序列表temp = []
         for x in 排序字段及顺序列表:
             if x[1] == "ASCENDING" or x[1] == "正序":
@@ -269,7 +279,7 @@ class 要素类:
 
     def 要素创建_通过多部件至单部件(self, 输出要素名称="in_memory\\AA_多部件至单部件"):
         if 输出要素名称 == "in_memory\\AA_多部件至单部件":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         try:
             arcpy.management.MultipartToSinglepart(in_features=self.名称, out_feature_class=输出要素名称)  # type: ignore
         except Exception as e:
@@ -278,24 +288,34 @@ class 要素类:
             arcpy.management.MultipartToSinglepart(in_features=self.名称, out_feature_class=输出要素名称)  # type: ignore
         return 要素类(名称=输出要素名称)
 
-    def 要素创建_通过空间连接(self, 连接要素名称, 连接方式="包含连接要素", 输出要素名称="in_memory\\AA_空间连接") -> "要素类":
+    def 要素创建_通过空间连接(self, 连接要素名称, 连接方式: Literal["相交", "包含连接要素", "完全包含连接要素", "在连接要素内", "完全在连接要素内", "包含连接要素内点", "内点在连接要素内", "形心在连接要素内"] = "包含连接要素", 输出要素名称="in_memory\\AA_空间连接") -> "要素类":
         _连接方式映射表 = {"INTERSECT": "INTERSECT", "相交": "INTERSECT", "CONTAINS": "CONTAINS", "包含连接要素": "CONTAINS", "COMPLETELY_CONTAINS": "COMPLETELY_CONTAINS", "完全包含连接要素": "COMPLETELY_CONTAINS", "在连接要素内": "WITHIN", "WITHIN": "WITHIN", "完全在连接要素内": "COMPLETELY_WITHIN", "COMPLETELY_WITHIN": "COMPLETELY_WITHIN", "包含连接要素内点": "包含连接要素内点", "内点在连接要素内": "内点在连接要素内", "形心在连接要素内": "HAVE_THEIR_CENTER_IN", "HAVE_THEIR_CENTER_IN": "HAVE_THEIR_CENTER_IN"}
-        连接方式 = _连接方式映射表[连接方式]
+
+        连接方式raw = _连接方式映射表[连接方式]
+
         if 输出要素名称 == "in_memory\\AA_空间连接":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
-        if 连接方式 == "包含连接要素内点":
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
+
+        if 连接方式raw == "包含连接要素内点":
             arcpy.management.RepairGeometry(in_features=连接要素名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]  # type: ignore
             连接要素 = 要素类.要素读取_通过名称(连接要素名称)
             连接要素转点后要素 = 连接要素.要素创建_通过转点()
-            # 连接要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=连接要素名称, out_feature_class="in_memory\\AA_要素转点" + "_" + 常量.当前时间(), point_location="INSIDE")
+            # 连接要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=连接要素名称, out_feature_class="in_memory\\AA_要素转点" + "_" + 工具集.生成SUUID(), point_location="INSIDE")
             return self.要素创建_通过空间连接(连接要素转点后要素.名称, 输出要素名称=输出要素名称, 连接方式="包含连接要素")
-        if 连接方式 == "内点在连接要素内":
+        if 连接方式raw == "内点在连接要素内":
             arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]  # type: ignore
-            # 目标要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=self.名称, out_feature_class="in_memory\\AA_要素转点" + "_" + 常量.当前时间(), point_location="INSIDE")
+            # 目标要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=self.名称, out_feature_class="in_memory\\AA_要素转点" + "_" + 工具集.生成SUUID(), point_location="INSIDE")
             目标要素转点后要素 = self.要素创建_通过转点()
+            连接要素 = 要素类.要素读取_通过名称(连接要素名称)
+            # print("目标要素转点后要素" + str(目标要素转点后要素.字段名称列表获取()))
             目标要素 = 要素类.要素读取_通过名称(目标要素转点后要素.名称)
-            目标要素连接后 = 目标要素.要素创建_通过空间连接(连接要素名称, "in_memory\\AA_空间连接", "在连接要素内")
-            return self.要素创建_通过空间连接(目标要素连接后.名称, 输出要素名称=输出要素名称, 连接方式="包含连接要素")
+            目标要素连接后 = 目标要素.要素创建_通过空间连接(连接要素.名称, "在连接要素内", "in_memory\\AA_空间连接")
+            目标要素连接后.字段删除(保留字段名称列表=连接要素.字段名称列表获取())
+            # print("目标要素连接后" + str(目标要素连接后.字段名称列表获取()))
+            ret = self.要素创建_通过空间连接(目标要素连接后.名称, 输出要素名称=输出要素名称, 连接方式="包含连接要素")
+            # print("ret" + str(ret.字段名称列表获取()))
+
+            return ret
         arcpy.analysis.SpatialJoin(  # type: ignore
             target_features=self.名称,
             join_features=连接要素名称,
@@ -303,7 +323,7 @@ class 要素类:
             join_operation="JOIN_ONE_TO_ONE",
             join_type="KEEP_ALL",
             # field_mapping='Shape_Length "Shape_Length" false true true 8 Double 0 0,First,#,YD_用地\\YD_不动产登记2,Shape_Length,-1,-1;Shape_Area "Shape_Area" false true true 8 Double 0 0,First,#,YD_用地\\YD_不动产登记2,Shape_Area,-1,-1;地类编号 "地类编号" true true false 50 Text 0 0,First,#,YD_用地\\YD_不动产登记2,地类编号,0,50;Shape_Length_1 "Shape_Length" true true true 8 Double 0 0,First,#,C:\\Users\\common\\project\\F富阳受降控规\\受降北_数据库.gdb\\YD_不动产登记2_FeatureToPoint,Shape_Length,-1,-1;Shape_Area_1 "Shape_Area" true true true 8 Double 0 0,First,#,C:\\Users\\common\\project\\F富阳受降控规\\受降北_数据库.gdb\\YD_不动产登记2_FeatureToPoint,Shape_Area,-1,-1;地类编号_1 "地类编号" true true false 100 Text 0 0,First,#,C:\\Users\\common\\project\\F富阳受降控规\\受降北_数据库.gdb\\YD_不动产登记2_FeatureToPoint,地类编号,0,100;ORIG_FID "ORIG_FID" true true false 0 Long 0 0,First,#,C:\\Users\\common\\project\\F富阳受降控规\\受降北_数据库.gdb\\YD_不动产登记2_FeatureToPoint,ORIG_FID,-1,-1',
-            match_option=连接方式,
+            match_option=连接方式raw,
             search_radius="",
             distance_field_name="",
         )
@@ -313,7 +333,7 @@ class 要素类:
         # 常用_填充空隙后
         # To allow overwriting outputs change overwriteOutput option to True.
         if 输出要素名称 == "in_memory\\AA_填充空隙":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
 
         # Process: 复制要素 (复制要素) (management)
         输入要素 = 要素类.要素读取_通过名称(self.名称).要素创建_通过复制()
@@ -325,7 +345,7 @@ class 要素类:
 
     def 要素创建_通过切分(self, 折点数量=200, 输出要素名称="in_memory\\AA_切分"):
         if 输出要素名称 == "in_memory\\AA_切分":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         arcpy.management.Dice(self.名称, 输出要素名称, 折点数量)  # type: ignore
         return 要素类(名称=输出要素名称)
 
@@ -333,8 +353,8 @@ class 要素类:
         from .游标类 import 游标类
 
         if 输出要素名称 == "in_memory\\AA_转点":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
-        点要素 = 要素类.要素创建_通过名称("AA_转点" + "_" + 常量.当前时间(), "点", 模板=self.名称)
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
+        点要素 = 要素类.要素创建_通过名称("AA_转点" + "_" + 工具集.生成SUUID(), "点", 模板=self.名称)
         点要素复制后 = 点要素.要素创建_通过复制(输出要素名称)
         点要素.要素删除()
         点要素 = 点要素复制后
@@ -354,28 +374,28 @@ class 要素类:
                 for x in 面要素游标对象:
                     try:
                         # 日志.输出调试(f"x[0]是{x[0]._内嵌对象}")
-                        x[0] = x[0].内点
-                        x.pop(1)
+                        x["_形状"] = x["_形状"].内点
+                        del x["_ID"]
                         # 日志.输出调试(f"内点是{内点}")
                         点要素游标对象.行插入(x)
                     except Exception as e:
                         print(f"内点获取发生错误：{e}")
-                        print(f"ID为 {x[1]} 的对象无法获取到内点，取了端点")
-                        x[0] = x[0].点表[0][0]
-                        x.pop(1)
+                        print(f"ID为 {x['_ID']} 的对象无法获取到内点，取了端点")
+                        x["_形状"] = x["_形状"].点表[0][0]
+                        del x["_ID"]
                         # 日志.输出调试(f"端点是{端点}")
                         点要素游标对象.行插入(x)
         return 点要素.要素创建_通过复制并重命名重名要素(输出要素名称)
 
     def 要素创建_通过转线(self, 输出要素名称="in_memory\\AA_转线"):
         if 输出要素名称 == "in_memory\\AA_转线":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         arcpy.management.FeatureToLine(in_features=self.名称, out_feature_class=输出要素名称)  # type: ignore
         return 要素类.要素读取_通过名称(输出要素名称)
 
     def 要素创建_通过面转线(self, 是否识别并存储面邻域信息=True, 输出要素名称="in_memory\\AA_面转线"):
         if 输出要素名称 == "in_memory\\AA_面转线":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         if 是否识别并存储面邻域信息:
             arcpy.management.PolygonToLine(in_features=self.名称, out_feature_class=输出要素名称, neighbor_option="IDENTIFY_NEIGHBORS")  # type: ignore
         else:
@@ -384,7 +404,7 @@ class 要素类:
 
     def 要素创建_通过缓冲(self, 距离或字段名称, 融合类型="不融合", 融合字段名称列表=None, 末端类型="圆形", 输出要素名称="in_memory\\AA_缓冲"):
         if 输出要素名称 == "in_memory\\AA_缓冲":
-            输出要素名称 = 输出要素名称 + "_" + 常量.当前时间()
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
         _融合类型映射表 = {"不融合": "NONE", "NONE": "NONE", "融合为单个": "ALL", "ALL": "ALL", "融合按字段": "LIST", "LIST": "LIST"}
         融合类型 = _融合类型映射表[融合类型]
         _末端类型映射表 = {"圆形": "ROUND", "ROUND": "ROUND", "方形": "FLAT", "FLAT": "FLAT"}
@@ -410,10 +430,10 @@ class 要素类:
         # arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]
         return self
 
-    def 要素增密(self, 增密方法: Literal["固定距离", "弦高", "偏转角度"] = "偏转角度", 固定距离="10 Meters", 弦高="0.1 Meters", 偏转角度=10, 最大折点计数=None):
-        _增密方法映射 = {"固定距离": "DISTANCE", "固定距离": "DISTANCE", "弦高": "OFFSET", "弦高": "OFFSET", "偏转角度": "ANGLE", "偏转角度": "ANGLE"}
+    def 要素增密(self, 增密方法: Literal["固定距离", "偏转距离", "偏转角度"] = "偏转距离", 固定距离="10 Meters", 偏转距离="0.0001 Meters", 偏转角度=1, 最大折点计数=None):
+        _增密方法映射 = {"固定距离": "DISTANCE", "DISTANCE": "DISTANCE", "偏转距离": "OFFSET", "OFFSET": "OFFSET", "偏转角度": "ANGLE", "ANGLE": "ANGLE"}
         增密方法raw = _增密方法映射[增密方法]
-        arcpy.edit.Densify(in_features=self.名称, densification_method=增密方法raw, distance=固定距离, max_deviation=弦高, max_angle=偏转角度, max_vertex_per_segment=最大折点计数)  # type: ignore
+        arcpy.edit.Densify(in_features=self.名称, densification_method=增密方法raw, distance=固定距离, max_deviation=偏转距离, max_angle=偏转角度, max_vertex_per_segment=最大折点计数)  # type: ignore
         return self
 
     def 选择集创建_通过属性(self, 选择方式="新建选择集", SQL语句=""):
@@ -437,17 +457,17 @@ class 要素类:
         from bxpy import 日志
 
         if 保留字段名称列表 is None:
+            # 日志.输出控制台(f"即将被删除的字段为：" + str(删除字段名称列表))
             arcpy.management.DeleteField(in_table=self.名称, drop_field=删除字段名称列表, method="DELETE_FIELDS")[0]  # type: ignore
         elif 删除字段名称列表 is None:
-            字段对象列表 = 要素类(名称=self.名称).字段列表获取()
-            字段名称列表 = [x.名称 for x in 字段对象列表]
-            日志.输出调试(f"要素拥有的所有字段为：" + str(字段名称列表))
+            字段名称列表 = 要素类(名称=self.名称).字段名称列表获取()
+            # 日志.输出调试(f"要素拥有的所有字段为：" + str(字段名称列表))
             保留字段名称列表.extend(["OID", "OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length"])
             for x in 保留字段名称列表:
                 if x in 字段名称列表:
                     字段名称列表.remove(x)
-            日志.输出调试(f"即将被删除的字段为：" + str(字段名称列表))
-            if 字段名称列表:
+            # 日志.输出调试(f"即将被删除的字段为：" + str(字段名称列表))
+            if len(字段名称列表) > 0:
                 arcpy.management.DeleteField(in_table=self.名称, drop_field=字段名称列表, method="DELETE_FIELDS")[0]  # type: ignore
         return self
 
@@ -509,7 +529,7 @@ class 要素类:
 
         for x in 输入要素名称列表:
             输入要素 = 要素类.要素读取_通过名称(x)
-            要素数据集中的要素 = 输入要素.导出到要素(要素数据集.名称 + "\\" + 输入要素.名称 + "_1")
+            要素数据集中的要素 = 输入要素.导出到要素(要素数据集.名称 + "\\" + 输入要素.名称_无路径 + "_1")
             日志.输出调试(f"准备添加要素的名称是：{要素数据集中的要素.名称}")
             拓扑对象.拓扑中添加要素(要素数据集中的要素.名称)
             日志.输出调试(f"准备添加要素的类型是：{要素数据集中的要素.几何类型}")

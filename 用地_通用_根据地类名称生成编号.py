@@ -3,7 +3,7 @@ import bxarcpy
 
 def 用地创建_通过根据地类名称生成编号(输入要素名称, 地类名称字段名称="地类名称", 输出要素名称="in_memory\\AA_计算地类编号"):
     if 输出要素名称 == "in_memory\\AA_计算地类编号":
-        输出要素名称 = 输出要素名称 + "_" + bxarcpy.常量.当前时间()
+        输出要素名称 = 输出要素名称 + "_" + bxarcpy.工具集.生成SUUID()
     from bxpandas import 类 as pd
 
     a = pd.转换.excel转数据框架(r"C:\Users\beixiao\AppConfig\Bxcad\Config\设计配置\设计参数\地块_指标测算表.xlsx", 要读取的列=(1, 3, 4), 列数据类型={"性质名称": str, "地块性质": str, "地类标准": str})

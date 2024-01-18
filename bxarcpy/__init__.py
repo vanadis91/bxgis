@@ -7,3 +7,4 @@ from .图层类 import 图层类
 from .图层文件类 import 图层文件类
 from .要素数据集类 import 要素数据集类
 from . import 常量
+from . import 工具集

@@ -3,12 +3,12 @@ import bxarcpy
 
 def 基期创建_通过三调初步转换(输入要素名称, 输出要素名称="in_memory\\AA_三调初步转换"):
     if 输出要素名称 == "in_memory\\AA_三调初步转换":
-        输出要素名称 = 输出要素名称 + "_" + bxarcpy.常量.当前时间()
+        输出要素名称 = 输出要素名称 + "_" + bxarcpy.工具集.生成SUUID()
 
     from bxpandas import 类 as pd
 
     a = pd.转换.excel转数据框架(r"C:\Users\common\AppConfig\ArcGIS\020.地类转换\地类转换_三调与国空基数转换.xls", 要读取的列=range(0, 5, 1), 列数据类型={"三调编码": str, "国空代码": str})
-    基数转换映射表 = pd.转换.数据框架转json(a) # type: ignore
+    基数转换映射表 = pd.转换.数据框架转json(a)  # type: ignore
 
     输入要素 = bxarcpy.要素类.要素读取_通过名称(输入要素名称).要素创建_通过复制()
     输入要素.字段添加("地类编号_国空")

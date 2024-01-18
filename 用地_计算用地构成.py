@@ -2,8 +2,9 @@ import bxarcpy
 
 
 def 用地创建_通过计算用地构成(输入要素名称, 输出要素名称="in_memory\\AA_计算用地构成"):
+    # 城镇建设用地 村庄建设用地 其他建设用地 区域基础设施用地 林草地 农业设施建设用地 农园地 水域 其他土地
     if 输出要素名称 == "in_memory\\AA_计算用地构成":
-        输出要素名称 = 输出要素名称 + "_" + bxarcpy.常量.当前时间()
+        输出要素名称 = 输出要素名称 + "_" + bxarcpy.工具集.生成SUUID()
     from bxpandas import 类 as pd
 
     a = pd.转换.excel转数据框架(r"C:\Users\beixiao\AppConfig\Bxcad\Config\设计配置\设计参数\地块_指标测算表.xlsx", 要读取的列=(3, 4, 86), 列数据类型={"地块性质": str, "地类标准": str, "用地构成": str})
@@ -27,4 +28,4 @@ if __name__ == "__main__":
     # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
     工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with bxarcpy.环境.环境管理器(工作空间):
-        用地创建_通过计算用地构成("DIST_用地规划图", 输出要素名称="in_memory\\AA_计算用地构成")
+        用地创建_通过计算用地构成("DIST_用地规划图", 输出要素名称="DIST_用地规划图")
