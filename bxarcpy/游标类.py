@@ -19,6 +19,10 @@ class 游标类:
         "SHAPE@CENTROID": "SHAPE@CENTROID",
         "_外接矩形": "SHAPE@EXTENT",
         "SHAPE@EXTENT": "SHAPE@EXTENT",
+        "_外接矩形": "SHAPE@EXTENT",
+        "SHAPE@EXTENT": "SHAPE@EXTENT",
+        "_坐标": "SHAPE@XY",
+        "SHAPE@XY": "SHAPE@XY",
     }
 
     # class 行对象类:
@@ -156,7 +160,16 @@ class 游标类:
     def 游标创建_通过名称(游标类型, 输入要素名称, 需操作的字段名称列表):
         return 游标类(游标类型, 输入要素名称, 需操作的字段名称列表)
 
-    def __init__(self, 游标类型, 输入要素名称, 需操作的字段名称列表):
+    def __init__(self, 游标类型, 输入要素名称, 需操作的字段名称列表: list):
+        for x in 需操作的字段名称列表:
+            if x == "*":
+                from bxarcpy import 要素类
+
+                要素 = 要素类.要素读取_通过名称(输入要素名称)
+                所有字段名称列表 = 要素.字段名称列表获取()
+                需操作的字段名称列表.extend(所有字段名称列表)
+                需操作的字段名称列表.remove("*")
+
         self.字段名称列表 = 需操作的字段名称列表
         self.游标类型 = 游标类型
         需更新的字段名称列表temp = []
@@ -166,6 +179,7 @@ class 游标类:
             else:
                 需更新的字段名称列表temp.append(x)
         需操作的字段名称列表 = 需更新的字段名称列表temp
+        # print(需操作的字段名称列表)
         if 游标类型 in ["更新"]:
             self._内嵌对象 = arcpy.da.UpdateCursor(输入要素名称, 需操作的字段名称列表)  # type: ignore
         elif 游标类型 in ["插入", "新增"]:

@@ -1,5 +1,3 @@
-from ast import Del
-from sre_constants import IN
 from bxpy import 日志, 时间
 import arcpy
 import time
@@ -304,18 +302,46 @@ class 要素类:
             return self.要素创建_通过空间连接(连接要素转点后要素.名称, 输出要素名称=输出要素名称, 连接方式="包含连接要素")
         if 连接方式raw == "内点在连接要素内":
             arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]  # type: ignore
-            # 目标要素转内点后名称 = arcpy.management.FeatureToPoint(in_features=self.名称, out_feature_class="in_memory\\AA_要素转点" + "_" + 工具集.生成SUUID(), point_location="INSIDE")
-            目标要素转点后要素 = self.要素创建_通过转点()
+            目标要素 = self.要素创建_通过复制()
+            目标要素转点后要素 = 目标要素.要素创建_通过转点()
+
+            # 日志.输出控制台(f"目标要素转点后要素字段列表{目标要素转点后要素.字段名称列表获取()}")
+            # 日志.输出控制台(f"目标要素名称{目标要素.名称_无路径}")
+
             连接要素 = 要素类.要素读取_通过名称(连接要素名称)
-            # print("目标要素转点后要素" + str(目标要素转点后要素.字段名称列表获取()))
-            目标要素 = 要素类.要素读取_通过名称(目标要素转点后要素.名称)
-            目标要素连接后 = 目标要素.要素创建_通过空间连接(连接要素.名称, "在连接要素内", "in_memory\\AA_空间连接")
-            目标要素连接后.字段删除(保留字段名称列表=连接要素.字段名称列表获取())
-            # print("目标要素连接后" + str(目标要素连接后.字段名称列表获取()))
-            ret = self.要素创建_通过空间连接(目标要素连接后.名称, 输出要素名称=输出要素名称, 连接方式="包含连接要素")
+
+            目标要素转点后带连接要素字段 = 目标要素转点后要素.要素创建_通过空间连接(连接要素.名称, "在连接要素内")
+
+            保留字段名称列表raw = 连接要素.字段名称列表获取(含系统字段=False)
+            保留字段名称列表raw.append("FID_" + 目标要素.名称_无路径)
+            目标要素转点后带连接要素字段.字段删除(保留字段名称列表=保留字段名称列表raw)
+
+            连接要素字段列表 = 连接要素.字段列表获取(含系统字段=False)
+            for x in 连接要素字段列表:
+                目标要素.字段添加_通过字段对象(x)
+
+            from bxarcpy import 游标类
+
+            with 游标类.游标创建_通过名称("更新", 目标要素.名称, ["_ID", *连接要素.字段名称列表获取(含系统字段=False)]) as 面要素游标对象:  # type: ignore
+                with 游标类.游标创建_通过名称("查询", 目标要素转点后带连接要素字段.名称, 目标要素转点后带连接要素字段.字段名称列表获取(含系统字段=False)) as 点要素游标对象:
+                    for x in 面要素游标对象:
+                        findFlag = False
+                        for y in 点要素游标对象:
+                            if int(x["_ID"]) == y["FID_" + 目标要素.名称_无路径]:
+                                y["_ID"] = x["_ID"]
+                                del y["FID_" + 目标要素.名称_无路径]
+                                面要素游标对象.行更新(y)
+                                findFlag = True
+                                break
+                        if findFlag == False:
+                            日志.输出控制台(f'未找到ID为{x["_ID"]}的对象所对应的点')
+
+            输出要素 = 目标要素.要素创建_通过复制并重命名重名要素(输出要素名称)
+
+            # ret = self.要素创建_通过空间连接(目标要素连接后.名称, 输出要素名称=输出要素名称, 连接方式="包含连接要素")
             # print("ret" + str(ret.字段名称列表获取()))
 
-            return ret
+            return 输出要素
         arcpy.analysis.SpatialJoin(  # type: ignore
             target_features=self.名称,
             join_features=连接要素名称,
@@ -354,10 +380,13 @@ class 要素类:
 
         if 输出要素名称 == "in_memory\\AA_转点":
             输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
+
         点要素 = 要素类.要素创建_通过名称("AA_转点" + "_" + 工具集.生成SUUID(), "点", 模板=self.名称)
-        点要素复制后 = 点要素.要素创建_通过复制(输出要素名称)
+        点要素复制后 = 点要素.要素创建_通过复制("in_memory\\AA_转点" + "_" + 工具集.生成SUUID())
         点要素.要素删除()
         点要素 = 点要素复制后
+        点要素.字段添加("FID_" + self.名称_无路径, "长整型")
+
         字段列表 = self.字段名称列表获取()
         字段列表.remove("OBJECTID")
         字段列表.remove("Shape")
@@ -366,8 +395,11 @@ class 要素类:
         字段列表.insert(0, "_ID")
         字段列表.insert(0, "_形状")
         # print(字段列表)
+
         点字段列表 = [x for x in 字段列表]
         点字段列表.pop(1)
+        点字段列表.insert(0, "FID_" + self.名称_无路径)
+
         # print(点字段列表)
         with 游标类.游标创建_通过名称("查找", self.名称, 字段列表) as 面要素游标对象:
             with 游标类.游标创建_通过名称("插入", 点要素.名称, 点字段列表) as 点要素游标对象:
@@ -375,6 +407,7 @@ class 要素类:
                     try:
                         # 日志.输出调试(f"x[0]是{x[0]._内嵌对象}")
                         x["_形状"] = x["_形状"].内点
+                        x["FID_" + self.名称_无路径] = x["_ID"]
                         del x["_ID"]
                         # 日志.输出调试(f"内点是{内点}")
                         点要素游标对象.行插入(x)
@@ -382,6 +415,7 @@ class 要素类:
                         print(f"内点获取发生错误：{e}")
                         print(f"ID为 {x['_ID']} 的对象无法获取到内点，取了端点")
                         x["_形状"] = x["_形状"].点表[0][0]
+                        x["FID_" + self.名称_无路径] = x["_ID"]
                         del x["_ID"]
                         # 日志.输出调试(f"端点是{端点}")
                         点要素游标对象.行插入(x)
@@ -414,6 +448,15 @@ class 要素类:
         arcpy.analysis.Buffer(in_features=self.名称, out_feature_class=输出要素名称, buffer_distance_or_field=距离或字段名称, line_side="FULL", line_end_type=末端类型, dissolve_option=融合类型, dissolve_field=融合字段名称列表, method="PLANAR")  # type: ignore
         return 要素类.要素读取_通过名称(输出要素名称)
 
+    def 要素创建_通过增密(self, 增密方法: Literal["固定距离", "偏转距离", "偏转角度"] = "偏转距离", 固定距离="10 Meters", 偏转距离="0.0001 Meters", 偏转角度=1, 最大折点计数=None, 输出要素名称="in_memory\\AA_增密"):
+        if 输出要素名称 == "in_memory\\AA_增密":
+            输出要素名称 = 输出要素名称 + "_" + 工具集.生成SUUID()
+        _增密方法映射 = {"固定距离": "DISTANCE", "DISTANCE": "DISTANCE", "偏转距离": "OFFSET", "OFFSET": "OFFSET", "偏转角度": "ANGLE", "ANGLE": "ANGLE"}
+        复制后要素 = self.要素创建_通过复制(输出要素名称)
+        增密方法raw = _增密方法映射[增密方法]
+        arcpy.edit.Densify(in_features=复制后要素.名称, densification_method=增密方法raw, distance=固定距离, max_deviation=偏转距离, max_angle=偏转角度, max_vertex_per_segment=最大折点计数)  # type: ignore
+        return 复制后要素
+
     def 要素删除(self):
         return arcpy.management.Delete(in_data=[self.名称], data_type="")[0]  # type: ignore
 
@@ -430,12 +473,6 @@ class 要素类:
         # arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]
         return self
 
-    def 要素增密(self, 增密方法: Literal["固定距离", "偏转距离", "偏转角度"] = "偏转距离", 固定距离="10 Meters", 偏转距离="0.0001 Meters", 偏转角度=1, 最大折点计数=None):
-        _增密方法映射 = {"固定距离": "DISTANCE", "DISTANCE": "DISTANCE", "偏转距离": "OFFSET", "OFFSET": "OFFSET", "偏转角度": "ANGLE", "ANGLE": "ANGLE"}
-        增密方法raw = _增密方法映射[增密方法]
-        arcpy.edit.Densify(in_features=self.名称, densification_method=增密方法raw, distance=固定距离, max_deviation=偏转距离, max_angle=偏转角度, max_vertex_per_segment=最大折点计数)  # type: ignore
-        return self
-
     def 选择集创建_通过属性(self, 选择方式="新建选择集", SQL语句=""):
         from .图层类 import 图层类
 
@@ -444,22 +481,27 @@ class 要素类:
         a = arcpy.management.SelectLayerByAttribute(in_layer_or_view=self.名称, selection_type=选择方式, where_clause=SQL语句, invert_where_clause="")[0]  # type: ignore
         return 图层类(a)
 
-    def 字段列表获取(self):
+    def 字段列表获取(self, 含系统字段=True):
         from .字段类 import 字段类
 
-        return [字段类(x) for x in arcpy.ListFields(self.名称)]  # type: ignore
+        if 含系统字段:
+            字段列表 = [字段类(x) for x in arcpy.ListFields(self.名称)]  # type: ignore
+        else:
+            字段列表 = [字段类(x) for x in arcpy.ListFields(self.名称)]  # type: ignore
+            字段列表 = [x for x in 字段列表 if x.名称 not in ["OBJECTID", "OBJECTID_1", "Shape", "Shape_1", "Shape_Length", "Shape_Length_1", "Shape_Area", "Shape_Area_1"]]
+        return 字段列表
 
-    def 字段名称列表获取(self):
-        字段列表 = self.字段列表获取()
+    def 字段名称列表获取(self, 含系统字段=True):
+        字段列表 = self.字段列表获取(含系统字段=含系统字段)
         return [x.名称 for x in 字段列表]
 
     def 字段删除(self, 删除字段名称列表=None, 保留字段名称列表=None):
         from bxpy import 日志
 
-        if 保留字段名称列表 is None:
+        if 删除字段名称列表:
             # 日志.输出控制台(f"即将被删除的字段为：" + str(删除字段名称列表))
             arcpy.management.DeleteField(in_table=self.名称, drop_field=删除字段名称列表, method="DELETE_FIELDS")[0]  # type: ignore
-        elif 删除字段名称列表 is None:
+        if 保留字段名称列表:
             字段名称列表 = 要素类(名称=self.名称).字段名称列表获取()
             # 日志.输出调试(f"要素拥有的所有字段为：" + str(字段名称列表))
             保留字段名称列表.extend(["OID", "OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length"])
@@ -477,6 +519,10 @@ class 要素类:
         字段类型 = 常量._字段类型映射[字段类型]
         arcpy.management.DeleteField(in_table=self.名称, drop_field=[字段名称], method="DELETE_FIELDS")  # type: ignore
         arcpy.management.AddField(in_table=self.名称, field_name=字段名称, field_type=字段类型, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")  # type: ignore
+        return self
+
+    def 字段添加_通过字段对象(self, 字段对象):
+        self.字段添加(字段名称=字段对象.名称, 字段类型=字段对象.类型, 字段长度=字段对象.长度, 字段别称=字段对象.别称)
         return self
 
     def 字段计算(self, 字段名称, 表达式, 字段类型="字符串", 语言类型="PYTHON3", 代码块=""):

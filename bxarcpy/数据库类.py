@@ -1,5 +1,4 @@
 from ast import List
-from re import L
 from bxpy import 日志
 import arcpy
 
