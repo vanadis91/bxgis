@@ -4,10 +4,10 @@ import bxarcpy
 def 用地创建_通过根据地类名称生成编号(输入要素名称, 地类名称字段名称="地类名称", 输出要素名称="in_memory\\AA_计算地类编号"):
     if 输出要素名称 == "in_memory\\AA_计算地类编号":
         输出要素名称 = 输出要素名称 + "_" + bxarcpy.工具集.生成SUUID()
-    from bxpandas import 类 as pd
+    import bxpandas as pd
 
-    a = pd.转换.excel转数据框架(r"C:\Users\beixiao\AppConfig\Bxcad\Config\设计配置\设计参数\地块_指标测算表.xlsx", 要读取的列=(1, 3, 4), 列数据类型={"性质名称": str, "地块性质": str, "地类标准": str})
-    基数转换映射表 = pd.转换.数据框架转json(a)  # type: ignore
+    a = pd.转换.excel文件转数据框架(r"C:\Users\beixiao\AppConfig\Bxcad\Config\设计配置\设计参数\地块_指标测算表.xlsx", 要读取的列=[1, 3, 4], 数据类型={"性质名称": str, "地块性质": str, "地类标准": str})
+    基数转换映射表 = pd.转换.数据框架转字典(a)  # type: ignore
 
     输入要素 = bxarcpy.要素类.要素读取_通过名称(输入要素名称).要素创建_通过复制()
     输入要素.字段添加("地类编号")

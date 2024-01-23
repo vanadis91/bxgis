@@ -7,10 +7,10 @@ def 用地创建_通过根据地类编号生成名称(输入要素名称, 地类
 
     输入要素 = bxarcpy.要素类.要素读取_通过名称(输入要素名称).要素创建_通过复制()
 
-    from bxpandas import 类 as pd
+    import bxpandas as pd
 
-    a = pd.转换.excel转数据框架(r"C:\Users\beixiao\AppConfig\Bxcad\Config\设计配置\设计参数\地块_指标测算表.xlsx", 要读取的列=(1, 3, 4, 5, 86), 列数据类型={"性质名称": str, "地块性质": str, "地类标准": str, "地块性质别称": str, "用地构成": str})
-    基数转换映射表 = pd.转换.数据框架转json(a)  # type: ignore
+    a = pd.转换.excel文件转数据框架(r"C:\Users\beixiao\AppConfig\Bxcad\Config\设计配置\设计参数\地块_指标测算表.xlsx", 要读取的列=[1, 3, 4, 5, 86], 数据类型={"性质名称": str, "地块性质": str, "地类标准": str, "地块性质别称": str, "用地构成": str})
+    基数转换映射表 = pd.转换.数据框架转字典(a)  # type: ignore
 
     输入要素.字段添加(性质名称字段名称).字段添加(地块性质别称字段名称).字段添加(用地构成字段名称)
     with bxarcpy.游标类.游标创建_通过名称("更新", 输入要素.名称, [地类编号字段名称, 性质名称字段名称, 地块性质别称字段名称, 用地构成字段名称]) as 游标:
