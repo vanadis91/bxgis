@@ -67,7 +67,7 @@ def 转换_导出到CAD(输入要素名称, 范围要素名称: Union[str, None]
                         shapeList = []
                         for pt in part:
                             if pt is not None:
-                                ptList.append((bxarcpy.bxArcpy点.X坐标获取(pt), bxarcpy.bxArcpy点.Y坐标获取(pt)))
+                                ptList.append((bxarcpy.点.X坐标获取(pt), bxarcpy.点.Y坐标获取(pt)))
                             else:
                                 shapeList.append(ptList)
                                 ptList = []
@@ -85,13 +85,13 @@ def 转换_导出到CAD(输入要素名称, 范围要素名称: Union[str, None]
                             a = bxgeo.环.多部件连接(a, b)  # type: ignore
                     点表 = bxgeo.线.坐标获取(a)  # type: ignore
 
-                    array = bxarcpy.bxArcpy数组.bxArcpy数组创建()
-                    part_array = bxarcpy.bxArcpy数组.bxArcpy数组创建()
+                    array = bxarcpy.数组.bxArcpy数组创建()
+                    part_array = bxarcpy.数组.bxArcpy数组创建()
                     for pt in 点表:
-                        点 = bxarcpy.bxArcpy点.bxArcpy点创建(*pt)
-                        bxarcpy.bxArcpy数组.项插入(part_array, 点)
-                    bxarcpy.bxArcpy数组.项插入(array, part_array)
-                    polyline = bxarcpy.bxArcpy线.bxArcpy线创建(array)
+                        点 = bxarcpy.点.bxArcpy点创建(*pt)
+                        bxarcpy.数组.项插入(part_array, 点)
+                    bxarcpy.数组.项插入(array, part_array)
+                    polyline = bxarcpy.线.bxArcpy线创建(array)
                     x["_形状"] = bxarcpy.游标类.形状类(polyline)
 
                     游标_线.行插入(x)
