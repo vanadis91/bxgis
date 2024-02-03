@@ -10,7 +10,7 @@ def 生成当前时间_微秒():
     return datetime.datetime.now().strftime(r"%Y%m%d%H%M%f")
 
 
-def 生成SUUID():
+def 生成短GUID():
     from bxpy import 字
 
-    return 字.字符串生成_SUUID()
+    return 字.字符串生成_短GUID()

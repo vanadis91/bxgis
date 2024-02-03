@@ -9,3 +9,4 @@ from .要素数据集类 import 要素数据集类
 from .数据库类 import 数据库类
 from . import 常量
 from . import 工具集
+from .通用类 import bxArcpy数组, bxArcpy点, bxArcpy线

@@ -3,7 +3,7 @@ import bxarcpy
 
 def 基期创建_通过三调初步转换(输入要素名称, 输出要素名称="in_memory\\AA_三调初步转换"):
     if 输出要素名称 == "in_memory\\AA_三调初步转换":
-        输出要素名称 = 输出要素名称 + "_" + bxarcpy.工具集.生成SUUID()
+        输出要素名称 = 输出要素名称 + "_" + bxarcpy.工具集.生成短GUID()
 
     import bxpandas as pd
 

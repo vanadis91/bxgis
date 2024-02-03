@@ -61,15 +61,13 @@ def 转换_导出到CAD(输入要素名称, 范围要素名称: Union[str, None]
         with bxarcpy.游标类.游标创建_通过名称("插入", DIST_用地规划图线.名称, [*线要素字段名称列表, "_形状"]) as 游标_线:
             with bxarcpy.游标类.游标创建_通过名称("查询", 切分后要素.名称, [*线要素字段名称列表, "_形状"]) as 游标_面:
                 for x in 游标_面:
-                    import arcpy
-
                     partList = []
                     for part in x["_形状"].点表:
                         ptList = []
                         shapeList = []
                         for pt in part:
                             if pt is not None:
-                                ptList.append((pt.X, pt.Y))
+                                ptList.append((bxarcpy.bxArcpy点.X坐标获取(pt), bxarcpy.bxArcpy点.Y坐标获取(pt)))
                             else:
                                 shapeList.append(ptList)
                                 ptList = []
@@ -84,16 +82,16 @@ def 转换_导出到CAD(输入要素名称, 范围要素名称: Union[str, None]
                     if len(扁平List) > 1:
                         for shape in 扁平List[1:]:
                             b = bxgeo.环.环创建_通过点表(shape)
-                            a = bxgeo.环.多部件连接(a, b)
-                    点表 = bxgeo.线.坐标获取(a)
+                            a = bxgeo.环.多部件连接(a, b)  # type: ignore
+                    点表 = bxgeo.线.坐标获取(a)  # type: ignore
 
-                    array = arcpy.Array()
-                    part_array = arcpy.Array()
+                    array = bxarcpy.bxArcpy数组.bxArcpy数组创建()
+                    part_array = bxarcpy.bxArcpy数组.bxArcpy数组创建()
                     for pt in 点表:
-                        part_array.add(arcpy.Point(*pt))
-                    array.add(part_array)
-
-                    polyline = arcpy.Polyline(array)
+                        点 = bxarcpy.bxArcpy点.bxArcpy点创建(*pt)
+                        bxarcpy.bxArcpy数组.项插入(part_array, 点)
+                    bxarcpy.bxArcpy数组.项插入(array, part_array)
+                    polyline = bxarcpy.bxArcpy线.bxArcpy线创建(array)
                     x["_形状"] = bxarcpy.游标类.形状类(polyline)
 
                     游标_线.行插入(x)
