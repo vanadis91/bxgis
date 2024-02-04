@@ -85,13 +85,13 @@ def 转换_导出到CAD(输入要素名称, 范围要素名称: Union[str, None]
                             a = bxgeo.环.多部件连接(a, b)  # type: ignore
                     点表 = bxgeo.线.坐标获取(a)  # type: ignore
 
-                    array = bxarcpy.数组.bxArcpy数组创建()
-                    part_array = bxarcpy.数组.bxArcpy数组创建()
+                    array = bxarcpy.数组.数组创建()._内嵌对象
+                    part_array = bxarcpy.数组.数组创建()._内嵌对象
                     for pt in 点表:
-                        点 = bxarcpy.点.bxArcpy点创建(*pt)
-                        bxarcpy.数组.项插入(part_array, 点)
-                    bxarcpy.数组.项插入(array, part_array)
-                    polyline = bxarcpy.线.bxArcpy线创建(array)
+                        点 = bxarcpy.点.点创建(*pt)._内嵌对象
+                        bxarcpy.数组.项插入(part_array, 点)  # type: ignore
+                    bxarcpy.数组.项插入(array, part_array)  # type: ignore
+                    polyline = bxarcpy.线.线创建(array)._内嵌对象
                     x["_形状"] = bxarcpy.游标类.形状类(polyline)
 
                     游标_线.行插入(x)

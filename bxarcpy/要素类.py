@@ -54,25 +54,25 @@ class 要素类:
         #     ret = ret.要素创建_通过复制并重命名重名要素(f"in_memory\\{要素名称}")
         return ret
 
-    def 要素创建_通过复制(self, 输出要素名称="in_memory\\AA_复制"):
-        if 输出要素名称 == "in_memory\\AA_复制":
-            输出要素名称 = 输出要素名称 + "_" + 工具集.生成短GUID()
+    def 要素创建_通过复制(self, 输出要素名称="内存临时"):
+        if 输出要素名称 == "内存临时":
+            输出要素名称 = "in_memory\\AA_" + self.名称 + "_" + 工具集.生成短GUID()
         arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
         return 要素类(名称=输出要素名称)
 
-    def 要素创建_通过复制并重命名重名要素(self, 输出要素名称="in_memory\\AA_复制", 重名要素后缀=None):
+    def 要素创建_通过复制并重命名重名要素(self, 输出要素名称="内存临时", 重名要素后缀=""):
         from .数据库类 import 数据库类
         from .配置类 import 配置
         from .环境 import 环境
 
-        if 输出要素名称 == "in_memory\\AA_复制":
-            输出要素名称 = 输出要素名称 + "_" + 工具集.生成短GUID()
+        if 输出要素名称 == "内存临时":
+            输出要素名称 = "in_memory\\AA_" + self.名称 + "_" + 工具集.生成短GUID()
         database = 数据库类.数据库读取_通过路径(配置.当前工作空间)
         要素名称列表 = database.要素名称列表获取()
         if 输出要素名称 in 要素名称列表:
             时间.等待(1)
             重命名后名称 = 输出要素名称 + "_" + 工具集.生成当前时间()
-            if 重名要素后缀 is not None:
+            if 重名要素后缀 is not "":
                 重命名后名称 = 重命名后名称 + "_" + 重名要素后缀
             try:
                 要素类.要素读取_通过名称(输出要素名称).要素创建_通过复制(重命名后名称)
@@ -84,9 +84,10 @@ class 要素类:
             #     环境.输出消息(f"将重名要素 {self.名称} 删除")
             # except Exception as e:
             #     环境.输出消息(f"重名要素删除失败")
-
         try:
-            arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
+            要素类.要素读取_通过名称(输出要素名称).要素删除()
+            要素类.要素读取_通过名称(self.名称).要素创建_通过复制(输出要素名称)
+            # arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
         except Exception as e:
             from .环境 import 环境
 
@@ -94,7 +95,8 @@ class 要素类:
             输出要素名称 = 输出要素名称 + "_new"
 
             环境.输出消息(f"覆盖失败，输出要素被重命名为：{输出要素名称}")
-            arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
+            要素类.要素读取_通过名称(self.名称).要素创建_通过复制(输出要素名称)
+            # arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
 
         return 要素类(名称=输出要素名称)
 
@@ -190,6 +192,7 @@ class 要素类:
         元素属性列表 = []
         分割要素已插入列表 = []
         from .游标类 import 游标类
+        from .环境 import 环境
 
         with 游标类.游标创建_通过名称("查找", 联合后要素.名称, 联合后要素字段列表) as 联合后要素游标:
             with 游标类.游标创建_通过名称("插入", 应填色但是没填的区域要素.名称, 联合后要素字段列表) as 应填色但是没填的区域要素游标:
@@ -201,7 +204,7 @@ class 要素类:
                             if x[f"FID_{区域要素.名称_无路径}"] == -1:
                                 不应填色但是填色的区域要素游标.行插入(x)
                             if x[f"FID_{输入要素.名称_无路径}"] in 元素FID列表 and x[f"FID_{输入要素.名称_无路径}"] != -1:
-                                日志.输出调试(f'这个图元被分割了，FID_{输入要素.名称_无路径}是：{x[f"FID_{输入要素.名称_无路径}"]}')
+                                环境.输出消息(f'这个图元被分割了，FID_{输入要素.名称_无路径}是：{x[f"FID_{输入要素.名称_无路径}"]}')
                                 if x[f"FID_{输入要素.名称_无路径}"] in 分割要素已插入列表:
                                     被范围线分割的要素游标.行插入(x)
                                 else:
@@ -212,19 +215,16 @@ class 要素类:
                             元素属性列表.append(x)
         for x in 字段映射列表:
             联合后要素.字段添加(x[0]).字段计算(x[0], f"!{x[1]}!")
-        if 应填色但是没填的区域要素.几何数量 > 0:
-            from .环境 import 环境
 
+        if 应填色但是没填的区域要素.几何数量 > 0:
             环境.输出消息(f"{输入要素原始无路径名称}与{区域要素原始无路径名称}之间存在应填未填区域")
             应填色但是没填的区域要素.要素创建_通过复制并重命名重名要素(f"AA_{输入要素原始无路径名称}与{区域要素原始无路径名称}之间应填未填区域").导出到CAD(rf"C:\Users\beixiao\Desktop\AA_{输入要素原始无路径名称}与{区域要素原始无路径名称}之间应填未填区域.dwg")
-        if 不应填色但是填色的区域要素.几何数量 > 0:
-            from .环境 import 环境
 
+        if 不应填色但是填色的区域要素.几何数量 > 0:
             环境.输出消息(f"{输入要素原始无路径名称}与{区域要素原始无路径名称}之间存在不应填但被填区域")
             不应填色但是填色的区域要素.要素创建_通过复制并重命名重名要素(f"AA_{输入要素原始无路径名称}与{区域要素原始无路径名称}之间不应填但被填区域").导出到CAD(rf"C:\Users\beixiao\Desktop\AA_{输入要素原始无路径名称}与{区域要素原始无路径名称}之间不应填但被填区域.dwg")
-        if 被范围线分割的要素.几何数量 > 0:
-            from .环境 import 环境
 
+        if 被范围线分割的要素.几何数量 > 0:
             环境.输出消息(f"{输入要素原始无路径名称}被{区域要素原始无路径名称}联合后有些要素被分割")
             被范围线分割的要素.要素创建_通过复制并重命名重名要素(f"AA_{输入要素原始无路径名称}被{区域要素原始无路径名称}联合后被分割图形").导出到CAD(rf"C:\Users\beixiao\Desktop\AA_{输入要素原始无路径名称}被{区域要素原始无路径名称}联合后被分割图形.dwg")
 
@@ -513,12 +513,22 @@ class 要素类:
                 arcpy.management.DeleteField(in_table=self.名称, drop_field=字段名称列表, method="DELETE_FIELDS")[0]  # type: ignore
         return self
 
-    def 字段添加(self, 字段名称, 字段类型="字符串", 字段长度: Union[None, int] = 100, 字段别称=""):
+    def 字段添加(self, 字段名称, 字段类型="字符串", 字段长度: Union[None, int] = 100, 字段别称="", 删除既有字段=True):
         from . import 常量
 
         字段类型 = 常量._字段类型映射[字段类型]
-        arcpy.management.DeleteField(in_table=self.名称, drop_field=[字段名称], method="DELETE_FIELDS")  # type: ignore
-        arcpy.management.AddField(in_table=self.名称, field_name=字段名称, field_type=字段类型, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")  # type: ignore
+
+        if 删除既有字段:
+            arcpy.management.DeleteField(in_table=self.名称, drop_field=[字段名称], method="DELETE_FIELDS")  # type: ignore
+
+        字段名称列表 = self.字段名称列表获取()
+        if 字段名称 not in 字段名称列表:
+            arcpy.management.AddField(in_table=self.名称, field_name=字段名称, field_type=字段类型, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")  # type: ignore
+        else:
+            from . import 环境
+
+            环境.输出消息(f"{self.名称}中已存在{字段名称}字段")
+
         return self
 
     def 字段添加_通过字段对象(self, 字段对象):
