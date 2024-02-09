@@ -7,3 +7,5 @@ __pycache__
 /bxgis.code-workspace
 **/.vscode
 /common/dist.bat
+/Pipfile.lock
+/*.xml
