@@ -6,6 +6,7 @@ import os
 sys.path.append(工具箱所在目录)
 sys.path.append(工具箱所在目录 + ".venv\\Lib\\site-packages")
 sys.path.append(工具箱所在目录 + "common")
+sys.path.append(工具箱所在目录 + "src")
 
 import arcpy
 import bxarcpy

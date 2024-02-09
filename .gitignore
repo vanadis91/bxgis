@@ -1,11 +1,10 @@
-/.condavenv
+**/.condavenv
+**/.venv
 **/#历史版本
-#历史版本
 **/__pycache__
-__pycache__
-/test
-/bxgis.code-workspace
+**/test
 **/.vscode
+/bxgis.code-workspace
 /common/dist.bat
 /Pipfile.lock
 /*.xml
