@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r""""""
-__all__ = ['ExportToCAD']
+__all__ = ['ExportToCAD', 'ImportFromCAD']
 __alias__ = 'BXGIS工具箱'
 from arcpy.geoprocessing._base import gptooldoc, gp, gp_fixargs
 from arcpy.arcobjects.arcobjectconversion import convertArcObjectToPythonObject
@@ -39,6 +39,33 @@ def ExportToCAD(parameter_1=None, parameter_2=None, parameter_3=None, parameter_
     from arcpy.arcobjects.arcobjectconversion import convertArcObjectToPythonObject
     try:
         retval = convertArcObjectToPythonObject(gp.ExportToCAD_BXGIS工具箱(*gp_fixargs((parameter_1, parameter_2, parameter_3, parameter_4, parameter_5, parameter_6, parameter_7, parameter_8, parameter_9, parameter_10, parameter_11), True)))
+        return retval
+    except Exception as e:
+        raise e
+
+@gptooldoc('ImportFromCAD_BXGIS工具箱', None)
+def ImportFromCAD(parameter_1=None, parameter_2=None, parameter_3=None, parameter_4=None, parameter_5=None, parameter_6=None):
+    """ImportFromCAD(parameter_1, {parameter_2}, {parameter_3}, {parameter_4}, {parameter_5}, {parameter_6})
+
+     INPUTS:
+      输入CAD路径列表 (CAD 工程图数据集):
+          输入CAD路径列表
+      输入CAD图层名称 {字符串}:
+          输入CAD图层名称
+      是否拓扑检查 {布尔}:
+          是否拓扑检查
+      是否范围检查 {布尔}:
+          是否范围检查
+      是否转曲 {布尔}:
+          是否转曲
+
+     OUTPUTS:
+      输出要素名称 {要素类}:
+          输出要素名称"""
+    from arcpy.geoprocessing._base import gp, gp_fixargs
+    from arcpy.arcobjects.arcobjectconversion import convertArcObjectToPythonObject
+    try:
+        retval = convertArcObjectToPythonObject(gp.ImportFromCAD_BXGIS工具箱(*gp_fixargs((parameter_1, parameter_2, parameter_3, parameter_4, parameter_5, parameter_6), True)))
         return retval
     except Exception as e:
         raise e

@@ -56,7 +56,7 @@ class 要素类:
 
     def 要素创建_通过复制(self, 输出要素名称="内存临时"):
         if 输出要素名称 == "内存临时":
-            输出要素名称 = "in_memory\\AA_" + self.名称 + "_" + 工具集.生成短GUID()
+            输出要素名称 = "in_memory\\AA_" + self.名称_无路径 + "_" + 工具集.生成短GUID()
         arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
         return 要素类(名称=输出要素名称)
 
