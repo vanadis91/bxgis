@@ -5,6 +5,9 @@
 **/test
 **/.vscode
 /bxgis.code-workspace
-/common/dist.bat
+**/dist.bat
+**/setup.py
 /Pipfile.lock
 /*.xml
+dist.bat
+setup.py
