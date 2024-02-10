@@ -3,7 +3,7 @@ from bxpy import 日志
 from typing import Union, Literal
 
 
-def 转换_导出到CAD(输入要素名称, 范围要素名称: Union[str, None] = "JX_规划范围线", 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg"):
+def 常用_导出到CAD(输入要素名称, 范围要素名称: Union[str, None] = "JX_规划范围线", 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg"):
     # {"折点数量": 10, "孔洞数量": 2, "面积": 1000, "地类编号列表": ["1207"]}
     输入要素 = bxarcpy.要素类.要素读取_通过名称(输入要素名称).要素创建_通过复制()
     # 输入要素.字段删除(保留字段名称列表=["地类编号"])
@@ -112,4 +112,4 @@ if __name__ == "__main__":
     # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
     工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with bxarcpy.环境.环境管理器(工作空间):
-        转换_导出到CAD("DIST_用地规划图", 范围要素名称="JX_规划范围线", 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg")
+        常用_导出到CAD("DIST_用地规划图", 范围要素名称="JX_规划范围线", 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg")
