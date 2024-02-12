@@ -1,4 +1,4 @@
-import bxarcpy
+from bxgis import bxarcpy
 from bxpy import 日志
 from typing import Union, Literal
 

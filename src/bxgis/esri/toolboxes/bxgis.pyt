@@ -1,24 +1,36 @@
 # -*- coding: utf-8 -*-
-# import sys
-# import os
 
-# 项目入口目录 = os.path.dirname(os.path.abspath(__file__))
-# 当前工作目录 = os.getcwd()
-# os.chdir(项目入口目录)
-# 项目根目录 = os.path.abspath("..\\..\\..\\")
-# os.chdir(当前工作目录)
 
-# sys.path.append(项目根目录)
-# sys.path.append(项目根目录 + "\\.venv\\Lib\\site-packages")
-# sys.path.append(项目根目录 + "\\common")
-# sys.path.append(项目根目录 + "\\src")
+def 添加搜索路径():
+    import os
+    import sys
 
+    该文件的目录 = os.path.dirname(__file__)
+    if 该文件的目录.split("\\")[-1] == "bxgis":
+        sys.path.append(该文件的目录 + "\\.venv\\Lib\\site-packages")
+        sys.path.append(该文件的目录 + "\\src\\bxgis\\common")
+        sys.path.append(该文件的目录 + "\\src")
+    elif 该文件的目录.split("\\")[-1] == "toolboxes":
+        当前工作路径 = os.getcwd()
+        os.chdir(该文件的目录)
+        项目根目录 = os.path.abspath("..\\..\\")
+        os.chdir(当前工作路径)
+        sys.path.append(项目根目录 + "\\.venv\\Lib\\site-packages")
+        sys.path.append(项目根目录 + "\\src\\bxgis\\common")
+        sys.path.append(项目根目录 + "\\src")
+    else:
+        raise ValueError("添加搜索路径失败。")
+
+
+添加搜索路径()
 import bxarcpy
 import bxgis
 
 # import importlib
 
+
 # importlib.reload(bxarcpy)
+# importlib.reload(bxgis)
 
 
 class Toolbox(object):
@@ -29,7 +41,14 @@ class Toolbox(object):
         self.alias = "BXGIS工具箱"  # 定义别名
         # self.category可以把工具组织成不同工具集
         # List of tool classes associated with this toolbox 定义了包含的所有工具名称列表
-        self.tools = [ExportToCAD, ImportFromCAD]
+        self.tools = [
+            ExportToCAD,
+            ImportFromCAD,
+            ConvertCurveToPolyline,
+            GenerationOfLandusePlanning,
+            BaseperiodLandtypeConversion,
+            BaseperiodFieldsTranslateAndGenerateSubitems,
+        ]
 
 
 class ExportToCAD(object):
@@ -41,7 +60,7 @@ class ExportToCAD(object):
         self.label = "导出到CAD"
         self.description = ""
         self.canRunInBackground = False
-        self.category = "常用工具"
+        self.category = "常用"
 
     def getParameterInfo(self):
         """Define parameter definitions 定义了参数，类似脚本工具属性中的参数界面"""
@@ -106,6 +125,7 @@ class ExportToCAD(object):
 
     def execute(self, 参数列表, 消息):
         """The source code of the tool 定义工具源码，必要方法，只包括该方法也可以运行工具，但是没有参数界面"""
+        添加搜索路径()
         参数字典 = {k: v for k, v in zip(ExportToCAD.参数名称列表, 参数列表)}
         输入要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["输入要素"])
         范围要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["范围要素"])
@@ -122,7 +142,6 @@ class ExportToCAD(object):
             }
         是否去孔 = bxarcpy.参数类.值读取(参数字典["是否去孔"])
         输出CAD路径 = bxarcpy.参数类.值读取_作为字符串(参数字典["输出CAD路径"])
-
         bxgis.常用.导出到CAD(输入要素名称, 范围要素名称, 需融合地类编号列表=需融合地类编号列表, 切分阈值=切分阈值, 是否去孔=是否去孔, 输出CAD路径=输出CAD路径)
         return None
 
@@ -140,10 +159,10 @@ class ImportFromCAD(object):
         self.label = "导入从CAD"
         self.description = ""
         self.canRunInBackground = False
-        self.category = "常用工具"
+        self.category = "常用"
 
     def getParameterInfo(self):
-        输入CAD路径 = bxarcpy.参数类.参数创建("输入CAD路径列表", "输入CAD路径列表", "CAD数据集", 参数必要性="必填")._内嵌对象
+        输入CAD路径 = bxarcpy.参数类.参数创建("输入CAD路径", "输入CAD路径", "CAD数据集", 参数必要性="必填")._内嵌对象
 
         输入CAD图层名称 = bxarcpy.参数类.参数创建("输入CAD图层名称", "输入CAD图层名称", "字符串", 默认值="控规地块")._内嵌对象
 
@@ -169,7 +188,7 @@ class ImportFromCAD(object):
         return None
 
     def execute(self, 参数列表, 消息):
-        参数字典 = {k: v for k, v in zip(ExportToCAD.参数名称列表, 参数列表)}
+        参数字典 = {k: v for k, v in zip(ImportFromCAD.参数名称列表, 参数列表)}
         输入CAD路径 = bxarcpy.参数类.值读取_作为字符串(参数字典["输入CAD路径"])
         输入CAD图层名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["输入CAD图层名称"])
         是否拓扑检查 = bxarcpy.参数类.值读取(参数字典["是否拓扑检查"])
@@ -183,6 +202,188 @@ class ImportFromCAD(object):
     def postExecute(self, 参数列表):
         """This method takes place after outputs are processed and
         added to the display."""
+        return None
+
+
+class ConvertCurveToPolyline(object):
+    # "曲转折"
+    参数名称列表 = []
+
+    def __init__(self):
+        self.label = "曲转折"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = "常用"
+
+    def getParameterInfo(self):
+        输入要素名称列表 = bxarcpy.参数类.参数创建("输入要素名称列表", "输入要素名称列表", "要素类", 参数必要性="必填", 是否多个值=True)._内嵌对象
+
+        参数列表 = [输入要素名称列表]
+        ConvertCurveToPolyline.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
+        return 参数列表
+
+    def isLicensed(self):
+        return True
+
+    def updateParameters(self, 参数列表):
+        return None
+
+    def updateMessages(self, 参数列表):
+        return None
+
+    def execute(self, 参数列表, 消息):
+        参数字典 = {k: v for k, v in zip(ConvertCurveToPolyline.参数名称列表, 参数列表)}
+        输入要素名称列表 = [bxarcpy.参数类.值读取_作为字符串(x) for x in 参数字典["输入要素名称列表"]]
+
+        bxgis.常用.曲转折(输入要素名称列表)
+        return None
+
+    def postExecute(self, 参数列表):
+        return None
+
+
+class GenerationOfLandusePlanning(object):
+    # "用地规划图生成"
+    参数名称列表 = []
+
+    def __init__(self):
+        self.label = "用地规划图生成"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = "用地"
+
+    def getParameterInfo(self):
+        输入要素名称列表 = bxarcpy.参数类.参数创建("输入要素名称列表", "输入要素名称列表", "要素类", 参数必要性="必填", 是否多个值=True)._内嵌对象
+        CAD导出色块要素名称 = bxarcpy.参数类.参数创建("CAD导出色块要素名称", "CAD导出色块要素名称", "要素类", 默认值="YD_CAD色块")._内嵌对象
+        对CAD导出色块进行调整要素名称 = bxarcpy.参数类.参数创建("对CAD导出色块进行调整要素名称", "对CAD导出色块进行调整要素名称", "要素类", 默认值="YD_CAD色块以外建设用地修改")._内嵌对象
+        SQL_CAD导出色块中未填色区域地类 = bxarcpy.参数类.参数创建("SQL_CAD导出色块中未填色区域地类", "SQL_CAD导出色块中未填色区域地类", "字符串", 默认值="'00'")._内嵌对象
+        SQL_CAD导出色块中保留的地类 = bxarcpy.参数类.参数创建("SQL_CAD导出色块中保留的地类", "SQL_CAD导出色块中保留的地类", "字符串", 默认值="地类编号 LIKE '07%' OR 地类编号 LIKE '08%' OR 地类编号 LIKE '09%' OR 地类编号 LIKE '10%' OR 地类编号 LIKE '11%'  OR 地类编号 LIKE '12%'  OR 地类编号 LIKE '13%'  OR 地类编号 LIKE '14%'  OR 地类编号 LIKE '15%'  OR 地类编号 LIKE '16%'  OR ( 地类编号 LIKE '17%' AND 地类编号 NOT LIKE '1704%' AND 地类编号 NOT LIKE '1705%' )  OR 地类编号 LIKE '23%'")._内嵌对象
+        范围要素 = bxarcpy.参数类.参数创建("范围要素", "范围要素", "要素类", 默认值="JX_规划范围线")._内嵌对象
+        是否拓扑检查 = bxarcpy.参数类.参数创建("是否拓扑检查", "是否拓扑检查", "布尔值", 默认值=False)._内嵌对象
+        是否范围检查 = bxarcpy.参数类.参数创建("是否范围检查", "是否范围检查", "布尔值", 默认值=False)._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数", 默认值="DIST_用地规划图")._内嵌对象
+
+        参数列表 = [输入要素名称列表, CAD导出色块要素名称, 对CAD导出色块进行调整要素名称, SQL_CAD导出色块中未填色区域地类, SQL_CAD导出色块中保留的地类, 范围要素, 是否拓扑检查, 是否范围检查, 输出要素名称]
+        GenerationOfLandusePlanning.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
+        return 参数列表
+
+    def isLicensed(self):
+        return True
+
+    def updateParameters(self, 参数列表):
+        return None
+
+    def updateMessages(self, 参数列表):
+        return None
+
+    def execute(self, 参数列表, 消息):
+        参数字典 = {k: v for k, v in zip(GenerationOfLandusePlanning.参数名称列表, 参数列表)}
+        输入要素名称列表 = [bxarcpy.参数类.值读取_作为字符串(x) for x in 参数字典["输入要素名称列表"]]
+        CAD导出色块要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["CAD导出色块要素名称"])
+        对CAD导出色块进行调整要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["对CAD导出色块进行调整要素名称"])
+        SQL_CAD导出色块中未填色区域地类 = bxarcpy.参数类.值读取(参数字典["SQL_CAD导出色块中未填色区域地类"])
+        SQL_CAD导出色块中保留的地类 = bxarcpy.参数类.值读取(参数字典["SQL_CAD导出色块中保留的地类"])
+        范围要素 = bxarcpy.参数类.值读取_作为字符串(参数字典["范围要素"])
+        是否拓扑检查 = bxarcpy.参数类.值读取(参数字典["是否拓扑检查"])
+        是否范围检查 = bxarcpy.参数类.值读取(参数字典["是否范围检查"])
+        输出要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["输出要素名称"])
+
+        bxgis.用地.用地规划图生成(输入要素名称列表, CAD导出色块要素名称, 对CAD导出色块进行调整要素名称, SQL_CAD导出色块中未填色区域地类, SQL_CAD导出色块中保留的地类, 范围要素, 是否拓扑检查, 是否范围检查, 输出要素名称)
+        return None
+
+    def postExecute(self, 参数列表):
+        return None
+
+
+class BaseperiodLandtypeConversion(object):
+    # "初步基数转换"
+    参数名称列表 = []
+
+    def __init__(self):
+        self.label = "初步基数转换"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = "用地\\基期"
+
+    def getParameterInfo(self):
+        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "输入要素名称", "要素类", 参数必要性="必填", 默认值="CZ_三调_原始")._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+
+        参数列表 = [输入要素名称, 输出要素名称]
+        BaseperiodLandtypeConversion.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
+        return 参数列表
+
+    def isLicensed(self):
+        return True
+
+    def updateParameters(self, 参数列表):
+        return None
+
+    def updateMessages(self, 参数列表):
+        return None
+
+    def execute(self, 参数列表, 消息):
+        参数字典 = {k: v for k, v in zip(BaseperiodLandtypeConversion.参数名称列表, 参数列表)}
+        参数字典temp = {}
+        for k, v in 参数字典.items():
+            if type(bxarcpy.参数类.值读取(v)) in [int, float, str, bool]:
+                参数字典temp[k] = bxarcpy.参数类.值读取(v)
+            elif type(bxarcpy.参数类.值读取(v)) is list:
+                参数字典temp[k] = [bxarcpy.参数类.值读取_作为字符串(x) for x in v]
+            else:
+                参数字典temp[k] = bxarcpy.参数类.值读取_作为字符串(v)
+        参数字典 = 参数字典temp
+
+        bxgis.用地.基期.初步基数转换(参数字典["输入要素名称"], 参数字典["输出要素名称"])
+        return None
+
+    def postExecute(self, 参数列表):
+        return None
+
+
+class BaseperiodFieldsTranslateAndGenerateSubitems(object):
+    # "字段处理并生成分项"
+    参数名称列表 = []
+
+    def __init__(self):
+        self.label = "字段处理并生成分项"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = "用地\\基期"
+
+    def getParameterInfo(self):
+        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "输入要素名称", "要素类", 参数必要性="必填", 默认值="YD_三调")._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+
+        参数列表 = [输入要素名称, 输出要素名称]
+        BaseperiodFieldsTranslateAndGenerateSubitems.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
+        return 参数列表
+
+    def isLicensed(self):
+        return True
+
+    def updateParameters(self, 参数列表):
+        return None
+
+    def updateMessages(self, 参数列表):
+        return None
+
+    def execute(self, 参数列表, 消息):
+        参数字典 = {k: v for k, v in zip(BaseperiodFieldsTranslateAndGenerateSubitems.参数名称列表, 参数列表)}
+        参数字典temp = {}
+        for k, v in 参数字典.items():
+            if type(bxarcpy.参数类.值读取(v)) in [int, float, str, bool]:
+                参数字典temp[k] = bxarcpy.参数类.值读取(v)
+            elif type(bxarcpy.参数类.值读取(v)) is list:
+                参数字典temp[k] = [bxarcpy.参数类.值读取_作为字符串(x) for x in v]
+            else:
+                参数字典temp[k] = bxarcpy.参数类.值读取_作为字符串(v)
+        参数字典 = 参数字典temp
+
+        bxgis.用地.基期.字段处理并生成分项(参数字典["输入要素名称"], 参数字典["输出要素名称"])
+        return None
+
+    def postExecute(self, 参数列表):
         return None
 
 

@@ -129,10 +129,10 @@ class 要素类:
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过相交(self, 输入要素名称列表=[], 输出要素路径="in_memory\\AA_相交"):
-        _输入要素路径列表 = [self.名称]
-        _输入要素路径列表.extend(输入要素名称列表)
         if 输出要素路径 == "in_memory\\AA_相交":
             输出要素路径 = 输出要素路径 + "_" + 工具集.生成短GUID()
+        _输入要素路径列表 = [self.名称]
+        _输入要素路径列表.extend(输入要素名称列表)
         _输入要素路径列表 = [[x, ""] for x in _输入要素路径列表]
         arcpy.analysis.Intersect(in_features=_输入要素路径列表, out_feature_class=输出要素路径, join_attributes="ALL", cluster_tolerance="", output_type="INPUT")  # type: ignore
         return 要素类(名称=输出要素路径)
@@ -296,8 +296,25 @@ class 要素类:
             arcpy.management.MultipartToSinglepart(in_features=self.名称, out_feature_class=输出要素名称)  # type: ignore
         return 要素类(名称=输出要素名称)
 
-    def 要素创建_通过空间连接(self, 连接要素名称, 连接方式: Literal["相交", "包含连接要素", "完全包含连接要素", "在连接要素内", "完全在连接要素内", "包含连接要素内点", "内点在连接要素内", "形心在连接要素内"] = "包含连接要素", 输出要素名称="in_memory\\AA_空间连接") -> "要素类":
-        _连接方式映射表 = {"INTERSECT": "INTERSECT", "相交": "INTERSECT", "CONTAINS": "CONTAINS", "包含连接要素": "CONTAINS", "COMPLETELY_CONTAINS": "COMPLETELY_CONTAINS", "完全包含连接要素": "COMPLETELY_CONTAINS", "在连接要素内": "WITHIN", "WITHIN": "WITHIN", "完全在连接要素内": "COMPLETELY_WITHIN", "COMPLETELY_WITHIN": "COMPLETELY_WITHIN", "包含连接要素内点": "包含连接要素内点", "内点在连接要素内": "内点在连接要素内", "形心在连接要素内": "HAVE_THEIR_CENTER_IN", "HAVE_THEIR_CENTER_IN": "HAVE_THEIR_CENTER_IN"}
+    def 要素创建_通过空间连接(self, 连接要素名称, 连接方式: Literal["相交", "包含连接要素", "完全包含连接要素", "在连接要素内", "完全在连接要素内", "包含连接要素内点", "内点在连接要素内", "形心在连接要素内", "大部分在连接要素内"] = "包含连接要素", 输出要素名称="in_memory\\AA_空间连接") -> "要素类":
+        _连接方式映射表 = {
+            "INTERSECT": "INTERSECT",
+            "相交": "INTERSECT",
+            "CONTAINS": "CONTAINS",
+            "包含连接要素": "CONTAINS",
+            "COMPLETELY_CONTAINS": "COMPLETELY_CONTAINS",
+            "完全包含连接要素": "COMPLETELY_CONTAINS",
+            "WITHIN": "WITHIN",
+            "在连接要素内": "WITHIN",
+            "COMPLETELY_WITHIN": "COMPLETELY_WITHIN",
+            "完全在连接要素内": "COMPLETELY_WITHIN",
+            "HAVE_THEIR_CENTER_IN": "HAVE_THEIR_CENTER_IN",
+            "形心在连接要素内": "HAVE_THEIR_CENTER_IN",
+            "LARGEST_OVERLAP": "LARGEST_OVERLAP",
+            "大部分在连接要素内": "LARGEST_OVERLAP",
+            "包含连接要素内点": "包含连接要素内点",
+            "内点在连接要素内": "内点在连接要素内",
+        }
 
         连接方式raw = _连接方式映射表[连接方式]
 
