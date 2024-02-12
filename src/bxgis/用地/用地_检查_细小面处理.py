@@ -1,6 +1,6 @@
 import bxarcpy
 from bxpy import 日志
-import 配置
+from bxgis import 配置
 
 
 def 用地_检查_细小面处理(用地要素名称, 需保留细小面要素名称=None, 细小面面积阈值="10", 是否输出到CAD=True, 输出要素名称="in_memory\\AA_细小面处理"):

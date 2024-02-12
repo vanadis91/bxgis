@@ -396,6 +396,51 @@ class BaseperiodFieldsTranslateAndGenerateSubitems(object):
 
     def postExecute(self, 参数列表):
         return None
+class LanduseUpdate(object):
+    # 用地更新
+    参数名称列表 = []
+
+    def __init__(self):
+        self.label = "用地更新"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = "用地"
+
+    def getParameterInfo(self):
+        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "输入要素名称", "要素类", 参数必要性="必填", 默认值="DIST_用地规划图")._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+
+        参数列表 = [输入要素名称, 输出要素名称]
+        LanduseUpdate.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
+        return 参数列表
+
+    def isLicensed(self):
+        return True
+
+    def updateParameters(self, 参数列表):
+        return None
+
+    def updateMessages(self, 参数列表):
+        return None
+
+    def execute(self, 参数列表, 消息):
+        添加搜索路径()
+        参数字典 = {k: v for k, v in zip(LanduseUpdate.参数名称列表, 参数列表)}
+        参数字典temp = {}
+        for k, v in 参数字典.items():
+            if type(bxarcpy.参数类.值读取(v)) in [int, float, str, bool]:
+                参数字典temp[k] = bxarcpy.参数类.值读取(v)
+            elif type(bxarcpy.参数类.值读取(v)) is list:
+                参数字典temp[k] = [bxarcpy.参数类.值读取_作为字符串(x) for x in v]
+            else:
+                参数字典temp[k] = bxarcpy.参数类.值读取_作为字符串(v)
+        参数字典 = 参数字典temp
+
+        bxgis.用地.用地更新(参数字典["输入要素名称"], 参数字典["输出要素名称"])
+        return None
+
+    def postExecute(self, 参数列表):
+        return None
 
 
 if __name__ == "__main__":

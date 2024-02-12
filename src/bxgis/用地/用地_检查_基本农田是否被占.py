@@ -1,6 +1,6 @@
 import bxarcpy
 from bxpy import 日志
-import 配置
+from bxgis import 配置
 
 
 def 用地_检查_基本农田是否被占(用地要素名称, 基本农田要素名称, 是否输出到CAD=True, 输出要素名称="in_memory\\AA_基本农田是否被占"):
