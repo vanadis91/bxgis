@@ -103,6 +103,13 @@ class 游标类:
                 return 游标类.形状类(ret)
             else:
                 return ret
+            
+        def 并集(self, 合并要素形状: "游标类.形状类"):
+            ret = self._内嵌对象.union(合并要素形状._内嵌对象)
+            if ret:
+                return 游标类.形状类(ret)
+            else:
+                return ret
 
         # def 转线(self, 输出要素名称):
         #     arcpy.PolygonToLine_management(self._内嵌对象, neighbor_option="IGNORE_NEIGHBORS")

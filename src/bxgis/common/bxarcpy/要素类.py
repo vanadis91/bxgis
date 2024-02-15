@@ -540,17 +540,20 @@ class 要素类:
                 arcpy.management.DeleteField(in_table=self.名称, drop_field=字段名称列表, method="DELETE_FIELDS")[0]  # type: ignore
         return self
 
-    def 字段添加(self, 字段名称, 字段类型="字符串", 字段长度: Union[None, int] = 100, 字段别称="", 删除既有字段=True):
+    def 字段添加(self, 字段名称, 字段类型: Literal["字符串", "双精度", "长整型", "短整型", "日期", "单精度", "对象ID", "定长字符串"] = "字符串", 字段长度: Union[None, int] = 100, 字段别称="", 删除既有字段=True):
+        '''
+        如果输入表是文件地理数据库，则将忽略字段精度值和小数位数值。
+        '''
         from . import 常量
 
-        字段类型 = 常量._字段类型映射[字段类型]
+        字段类型raw = 常量._字段类型映射[字段类型]
 
         if 删除既有字段:
             arcpy.management.DeleteField(in_table=self.名称, drop_field=[字段名称], method="DELETE_FIELDS")  # type: ignore
 
         字段名称列表 = self.字段名称列表获取()
         if 字段名称 not in 字段名称列表:
-            arcpy.management.AddField(in_table=self.名称, field_name=字段名称, field_type=字段类型, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")  # type: ignore
+            arcpy.management.AddField(in_table=self.名称, field_name=字段名称, field_type=字段类型raw, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")  # type: ignore
         else:
             from . import 环境
 

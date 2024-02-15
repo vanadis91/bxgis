@@ -51,9 +51,11 @@ class Toolbox(object):
             ExportToCAD,
             ImportFromCAD,
             ConvertCurveToPolyline,
-            GenerationOfLandusePlanning,
+            LandusePlanningGeneration,
             BaseperiodLandtypeConversion,
             BaseperiodFieldsTranslateAndGenerateSubitems,
+            LanduseUpdate,
+            LanduseCheckIsFarmlandOccupied,
         ]
 
 
@@ -250,7 +252,7 @@ class ConvertCurveToPolyline(object):
         return None
 
 
-class GenerationOfLandusePlanning(object):
+class LandusePlanningGeneration(object):
     # "用地规划图生成"
     参数名称列表 = []
 
@@ -272,7 +274,7 @@ class GenerationOfLandusePlanning(object):
         输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数", 默认值="DIST_用地规划图")._内嵌对象
 
         参数列表 = [输入要素名称列表, CAD导出色块要素名称, 对CAD导出色块进行调整要素名称, SQL_CAD导出色块中未填色区域地类, SQL_CAD导出色块中保留的地类, 范围要素, 是否拓扑检查, 是否范围检查, 输出要素名称]
-        GenerationOfLandusePlanning.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
+        LandusePlanningGeneration.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
         return 参数列表
 
     def isLicensed(self):
@@ -286,7 +288,7 @@ class GenerationOfLandusePlanning(object):
 
     def execute(self, 参数列表, 消息):
         添加搜索路径()
-        参数字典 = {k: v for k, v in zip(GenerationOfLandusePlanning.参数名称列表, 参数列表)}
+        参数字典 = {k: v for k, v in zip(LandusePlanningGeneration.参数名称列表, 参数列表)}
         输入要素名称列表 = [bxarcpy.参数类.值读取_作为字符串(x) for x in 参数字典["输入要素名称列表"]]
         CAD导出色块要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["CAD导出色块要素名称"])
         对CAD导出色块进行调整要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["对CAD导出色块进行调整要素名称"])
@@ -396,6 +398,8 @@ class BaseperiodFieldsTranslateAndGenerateSubitems(object):
 
     def postExecute(self, 参数列表):
         return None
+
+
 class LanduseUpdate(object):
     # 用地更新
     参数名称列表 = []
@@ -408,9 +412,15 @@ class LanduseUpdate(object):
 
     def getParameterInfo(self):
         输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "输入要素名称", "要素类", 参数必要性="必填", 默认值="DIST_用地规划图")._内嵌对象
+        街坊范围线要素名称 = bxarcpy.参数类.参数创建("街坊范围线要素名称", "街坊范围线要素名称", "要素类", 默认值="JX_街坊范围线")._内嵌对象
+        分村范围线要素名称 = bxarcpy.参数类.参数创建("分村范围线要素名称", "分村范围线要素名称", "要素类", 默认值="JX_分村范围线")._内嵌对象
+        城镇集建区要素名称 = bxarcpy.参数类.参数创建("城镇集建区要素名称", "城镇集建区要素名称", "要素类", 默认值="KZX_城镇集建区")._内嵌对象
+        城镇弹性区要素名称 = bxarcpy.参数类.参数创建("城镇弹性区要素名称", "城镇弹性区要素名称", "要素类", 默认值="KZX_城镇弹性区")._内嵌对象
+        有扣除地类系数的要素名称 = bxarcpy.参数类.参数创建("有扣除地类系数的要素名称", "有扣除地类系数的要素名称", "要素类", 默认值="CZ_三调筛选_扣除地类系数")._内嵌对象
+        有坐落单位信息的要素名称 = bxarcpy.参数类.参数创建("有坐落单位信息的要素名称", "有坐落单位信息的要素名称", "要素类", 默认值="CZ_三调筛选_坐落单位名称")._内嵌对象
         输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
 
-        参数列表 = [输入要素名称, 输出要素名称]
+        参数列表 = [输入要素名称, 街坊范围线要素名称, 分村范围线要素名称, 城镇集建区要素名称, 城镇弹性区要素名称, 有扣除地类系数的要素名称, 有坐落单位信息的要素名称, 输出要素名称]
         LanduseUpdate.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
         return 参数列表
 
@@ -436,7 +446,107 @@ class LanduseUpdate(object):
                 参数字典temp[k] = bxarcpy.参数类.值读取_作为字符串(v)
         参数字典 = 参数字典temp
 
-        bxgis.用地.用地更新(参数字典["输入要素名称"], 参数字典["输出要素名称"])
+        bxgis.用地.用地更新(参数字典["输入要素名称"], 参数字典["街坊范围线要素名称"], 参数字典["分村范围线要素名称"], 参数字典["城镇集建区要素名称"], 参数字典["城镇弹性区要素名称"], 参数字典["有扣除地类系数的要素名称"], 参数字典["有坐落单位信息的要素名称"], 参数字典["输出要素名称"])
+        return None
+
+    def postExecute(self, 参数列表):
+        return None
+
+
+class FacilitiesUpdate(object):
+    # 设施更新
+    参数名称列表 = []
+
+    def __init__(self):
+        self.label = "设施更新"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = "设施"
+
+    def getParameterInfo(self):
+        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "输入要素名称", "要素类", 参数必要性="必填", 默认值="SS_配套设施")._内嵌对象
+        规划范围线要素名称 = bxarcpy.参数类.参数创建("规划范围线要素名称", "规划范围线要素名称", "要素类", 默认值="JX_规划范围线")._内嵌对象
+        工业片区范围线要素名称 = bxarcpy.参数类.参数创建("工业片区范围线要素名称", "工业片区范围线要素名称", "要素类", 默认值="JX_工业片区范围线")._内嵌对象
+        城镇集建区要素名称 = bxarcpy.参数类.参数创建("城镇集建区要素名称", "城镇集建区要素名称", "要素类", 默认值="KZX_城镇集建区")._内嵌对象
+        城镇弹性区要素名称 = bxarcpy.参数类.参数创建("城镇弹性区要素名称", "城镇弹性区要素名称", "要素类", 默认值="KZX_城镇弹性区")._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+
+        参数列表 = [输入要素名称, 规划范围线要素名称, 工业片区范围线要素名称, 城镇集建区要素名称, 城镇弹性区要素名称, 输出要素名称]
+        FacilitiesUpdate.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
+        return 参数列表
+
+    def isLicensed(self):
+        return True
+
+    def updateParameters(self, 参数列表):
+        return None
+
+    def updateMessages(self, 参数列表):
+        return None
+
+    def execute(self, 参数列表, 消息):
+        添加搜索路径()
+        参数字典 = {k: v for k, v in zip(FacilitiesUpdate.参数名称列表, 参数列表)}
+        参数字典temp = {}
+        for k, v in 参数字典.items():
+            if type(bxarcpy.参数类.值读取(v)) in [int, float, str, bool]:
+                参数字典temp[k] = bxarcpy.参数类.值读取(v)
+            elif type(bxarcpy.参数类.值读取(v)) is list:
+                参数字典temp[k] = [bxarcpy.参数类.值读取_作为字符串(x) for x in v]
+            else:
+                参数字典temp[k] = bxarcpy.参数类.值读取_作为字符串(v)
+        参数字典 = 参数字典temp
+
+        bxgis.设施.设施更新(参数字典["输入要素名称"], 参数字典["规划范围线要素名称"], 参数字典["工业片区范围线要素名称"], 参数字典["城镇集建区要素名称"], 参数字典["KZX_城镇弹性区"], 参数字典["输出要素名称"])
+        return None
+
+    def postExecute(self, 参数列表):
+        return None
+
+
+class LanduseCheckIsFarmlandOccupied(object):
+    # 基本农田是否被占
+    参数名称列表 = []
+
+    def __init__(self):
+        self.label = "基本农田是否被占"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = "用地\\检查"
+
+    def getParameterInfo(self):
+        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "输入要素名称", "要素类", 参数必要性="必填", 默认值="DIST_用地规划图")._内嵌对象
+        基本农田要素名称 = bxarcpy.参数类.参数创建("基本农田要素名称", "基本农田要素名称", "要素类", 默认值="KZX_永久基本农田")._内嵌对象
+        是否输出到CAD = bxarcpy.参数类.参数创建("是否输出到CAD", "是否输出到CAD", "布尔值", 默认值=True)._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+
+        参数列表 = [输入要素名称, 基本农田要素名称, 是否输出到CAD, 输出要素名称]
+        LanduseCheckIsFarmlandOccupied.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
+        return 参数列表
+
+    def isLicensed(self):
+        return True
+
+    def updateParameters(self, 参数列表):
+        return None
+
+    def updateMessages(self, 参数列表):
+        return None
+
+    def execute(self, 参数列表, 消息):
+        添加搜索路径()
+        参数字典 = {k: v for k, v in zip(LanduseCheckIsFarmlandOccupied.参数名称列表, 参数列表)}
+        参数字典temp = {}
+        for k, v in 参数字典.items():
+            if type(bxarcpy.参数类.值读取(v)) in [int, float, str, bool]:
+                参数字典temp[k] = bxarcpy.参数类.值读取(v)
+            elif type(bxarcpy.参数类.值读取(v)) is list:
+                参数字典temp[k] = [bxarcpy.参数类.值读取_作为字符串(x) for x in v]
+            else:
+                参数字典temp[k] = bxarcpy.参数类.值读取_作为字符串(v)
+        参数字典 = 参数字典temp
+
+        bxgis.用地.检查.基本农田是否被占(参数字典["输入要素名称"], 参数字典["基本农田要素名称"], 参数字典["是否输出到CAD"], 参数字典["输出要素名称"])
         return None
 
     def postExecute(self, 参数列表):
