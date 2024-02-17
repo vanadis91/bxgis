@@ -2,48 +2,29 @@ import arcpy
 from typing import Union, Literal
 
 _数据类型映射 = {
-    "GPFeatureLayer": "GPFeatureLayer",
     "要素图层": "GPFeatureLayer",
-    "DEFeatureClass": "DEFeatureClass",
     "要素类": "DEFeatureClass",
-    "GPBoolean": "GPBoolean",
     "布尔值": "GPBoolean",
-    "GPDouble": "GPDouble",
     "双精度": "GPDouble",
-    "Field": "Field",
     "字段": "Field",
-    "GPLong": "GPLong",
     "长整型": "GPLong",
-    "GPString": "GPString",
     "字符串": "GPString",
-    "DETable": "DETable",
     "表": "DETable",
-    "DEWorkspace": "DEWorkspace",
     "工作空间": "DEWorkspace",
-    "GPValueTable": "GPValueTable",
     "值表": "GPValueTable",
-    "DEFile": "DEFile",
     "文件": "DEFile",
-    "DEFolder": "DEFolder",
     "文件夹": "DEFolder",
-    "GPDataFile": "GPDataFile",
     "数据文件": "GPDataFile",
-    "DECadDrawingDataset": "DECadDrawingDataset",
     "CAD数据集": "DECadDrawingDataset",
 }
 _数据必要性映射 = {
     "必填": "Required",
-    "Required": "Required",
     "选填": "Optional",
-    "Optional": "Optional",
     "隐藏的返回值": "Derived",
-    "Derived": "Derived",
 }
 _参数类型映射 = {
     "输入参数": "Input",
-    "Input": "Input",
     "输出参数": "Output",
-    "Output": "Output",
 }
 
 
@@ -52,10 +33,11 @@ class 参数类:
         self._内嵌对象: arcpy.Parameter = 内嵌对象
 
     @staticmethod
-    def 参数创建(名称, 描述, 数据类型: Literal["要素图层", "要素类", "布尔值", "双精度", "字段", "长整型", "字符串", "表", "工作空间", "值表", "文件", "文件夹", "数据文件", "CAD数据集"], 参数必要性: Literal["必填", "选填", "隐藏的返回值"] = "选填", 参数类型: Literal["输入参数", "输出参数"] = "输入参数", 是否多个值=False, 是否可用=True, 默认值=None):
-        数据类型raw = _数据类型映射[数据类型]
-        参数必要性raw = _数据必要性映射[参数必要性]
-        参数类型raw = _参数类型映射[参数类型]
+    def 参数创建(名称, 数据类型: Literal["要素图层", "要素类", "布尔值", "双精度", "字段", "长整型", "字符串", "表", "工作空间", "值表", "文件", "文件夹", "数据文件", "CAD数据集"], 描述=None, 参数必要性: Literal["必填", "选填", "隐藏的返回值"] = "选填", 参数类型: Literal["输入参数", "输出参数"] = "输入参数", 是否多个值=False, 是否可用=True, 默认值=None):
+        数据类型raw = _数据类型映射[数据类型] if 数据类型 in _数据类型映射 else 数据类型
+        参数必要性raw = _数据必要性映射[参数必要性] if 参数必要性 in _数据必要性映射 else 参数必要性
+        参数类型raw = _参数类型映射[参数类型] if 参数类型 in _参数类型映射 else 参数类型
+        描述 = 名称 if 描述 is None else 描述
         ret = 参数类(
             arcpy.Parameter(
                 name=名称,
@@ -125,6 +107,6 @@ class 参数类:
 
 
 if __name__ == "__main__":
-    a = 参数类.参数创建("输入要素", "输入要素", "要素图层")._内嵌对象
+    a = 参数类.参数创建("输入要素", "要素图层")._内嵌对象
     参数类.值设置(a, 123)
     print(参数类.值读取(a))

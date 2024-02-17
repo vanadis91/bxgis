@@ -3,9 +3,10 @@ from bxpy import 日志
 from typing import Union, Literal
 
 
-def 导出到CAD(输入要素名称, 范围要素名称: Union[str, None] = "JX_规划范围线", 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg"):
+def 导出到CAD(输入要素名称="DIST_用地规划图", 范围要素名称: Union[str, None] = "JX_规划范围线", 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg"):
     # {"折点数量": 10, "孔洞数量": 2, "面积": 1000, "地类编号列表": ["1207"]}
     输入要素 = bxarcpy.要素类.要素读取_通过名称(输入要素名称).要素创建_通过复制()
+    # 日志.输出控制台(输入要素)
     # 输入要素.字段删除(保留字段名称列表=["地类编号"])
 
     if 范围要素名称:

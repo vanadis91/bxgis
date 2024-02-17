@@ -7,14 +7,22 @@ from typing import Union, Literal
 
 class 要素类:
     def __init__(self, 内嵌对象=None, 名称: Union[str, None] = None):
+        # 日志.输出控制台(名称)
         if type(内嵌对象) is 要素类:
             self.名称 = 内嵌对象.名称
             self.名称_无路径 = 内嵌对象.名称_无路径
         elif type(名称) is str:
             self.名称 = 名称
-            self.名称_无路径 = 名称.split("\\")[-1]
+            if 名称[-1] == "\\":
+                self.名称_无路径 = 名称.split("\\")[-2]
+            else:
+                self.名称_无路径 = 名称.split("\\")[-1]
+            # 日志.输出控制台(self.名称)
+            # 日志.输出控制台(self.名称_无路径)
         else:
-            print(f"无法将该对象转换为要素类：内嵌对象：{内嵌对象} 名称：{名称}")
+            from . import 环境
+
+            环境.输出消息(f"无法将该对象转换为要素类：内嵌对象：{内嵌对象} 名称：{名称}")
 
     def __repr__(self) -> str:
         return f"<bxarcpy.要素类 对象 {{名称:{self.名称}, 名称_无路径:{self.名称_无路径}}}>"
@@ -56,6 +64,9 @@ class 要素类:
 
     def 要素创建_通过复制(self, 输出要素名称="内存临时"):
         if 输出要素名称 == "内存临时":
+            # 日志.输出控制台(self)
+            # 日志.输出控制台(self.名称)
+            # 日志.输出控制台(self.名称_无路径)
             输出要素名称 = "in_memory\\AA_" + self.名称_无路径 + "_" + 工具集.生成短GUID()
         arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
         return 要素类(名称=输出要素名称)
@@ -128,14 +139,22 @@ class 要素类:
         arcpy.analysis.Erase(in_features=输入.名称, erase_features=擦除.名称, out_feature_class=输出要素名称, cluster_tolerance="")  # type: ignore
         return 要素类(名称=输出要素名称)
 
-    def 要素创建_通过相交(self, 输入要素名称列表=[], 输出要素路径="in_memory\\AA_相交"):
-        if 输出要素路径 == "in_memory\\AA_相交":
-            输出要素路径 = 输出要素路径 + "_" + 工具集.生成短GUID()
+    def 要素创建_通过相交(self, 输入要素名称列表=[], 输出字段设置: Literal["所有", "除FID外所有字段", "仅FID字段", "仅第一个要素字段"] = "所有", 输出要素路径="内存临时"):
+        if 输出要素路径 == "内存临时":
+            输出要素路径 = "in_memory\\AA_相交" + "_" + 工具集.生成短GUID()
+        _输出字段设施映射 = {"所有": "ALL", "除FID外所有字段": "NO_FID", "仅FID字段": "ONLY_FID"}
+        字段设置raw = _输出字段设施映射[输出字段设置] if 输出字段设置 in _输出字段设施映射 else 输出字段设置
         _输入要素路径列表 = [self.名称]
         _输入要素路径列表.extend(输入要素名称列表)
         _输入要素路径列表 = [[x, ""] for x in _输入要素路径列表]
-        arcpy.analysis.Intersect(in_features=_输入要素路径列表, out_feature_class=输出要素路径, join_attributes="ALL", cluster_tolerance="", output_type="INPUT")  # type: ignore
-        return 要素类(名称=输出要素路径)
+        if 输出字段设置 == "仅第一个要素字段":
+            第一个要素字段名称列表 = self.字段名称列表获取()
+            字段设置raw = "ONLY_FID"
+        arcpy.analysis.Intersect(in_features=_输入要素路径列表, out_feature_class=输出要素路径, join_attributes=字段设置raw, cluster_tolerance="", output_type="INPUT")  # type: ignore
+        输出要素 = 要素类(名称=输出要素路径)
+        if 输出字段设置 == "仅第一个要素字段":
+            输出要素.字段删除(保留字段名称列表=第一个要素字段名称列表)
+        return 输出要素
 
     def 要素创建_通过联合(self, 输入要素名称列表=[], 是否保留周长和面积=False, 输出要素名称="in_memory\\AA_联合", 是否保留FID=True):
         _输入要素名称列表 = [self.名称]
@@ -243,9 +262,9 @@ class 要素类:
         输出要素 = 联合后要素.字段删除(需要删除的字段列表).要素创建_通过复制并重命名重名要素(输出要素名称)
         return 输出要素
 
-    def 要素创建_通过融合(self, 融合字段列表=[], 统计字段列表=None, 是否单部件=True, 输出要素名称="in_memory\\AA_融合"):
-        if 输出要素名称 == "in_memory\\AA_融合":
-            输出要素名称 = 输出要素名称 + "_" + 工具集.生成短GUID()
+    def 要素创建_通过融合(self, 融合字段列表=[], 统计字段列表=None, 是否单部件=True, 输出要素名称="内存临时"):
+        if 输出要素名称 == "内存临时":
+            输出要素名称 = "in_memory\\AA_融合" + "_" + 工具集.生成短GUID()
         if 是否单部件 == True:
             是否单部件 = "SINGLE_PART"
         else:
@@ -296,30 +315,12 @@ class 要素类:
             arcpy.management.MultipartToSinglepart(in_features=self.名称, out_feature_class=输出要素名称)  # type: ignore
         return 要素类(名称=输出要素名称)
 
-    def 要素创建_通过空间连接(self, 连接要素名称, 连接方式: Literal["相交", "包含连接要素", "完全包含连接要素", "在连接要素内", "完全在连接要素内", "包含连接要素内点", "内点在连接要素内", "形心在连接要素内", "大部分在连接要素内"] = "包含连接要素", 输出要素名称="in_memory\\AA_空间连接") -> "要素类":
-        _连接方式映射表 = {
-            "INTERSECT": "INTERSECT",
-            "相交": "INTERSECT",
-            "CONTAINS": "CONTAINS",
-            "包含连接要素": "CONTAINS",
-            "COMPLETELY_CONTAINS": "COMPLETELY_CONTAINS",
-            "完全包含连接要素": "COMPLETELY_CONTAINS",
-            "WITHIN": "WITHIN",
-            "在连接要素内": "WITHIN",
-            "COMPLETELY_WITHIN": "COMPLETELY_WITHIN",
-            "完全在连接要素内": "COMPLETELY_WITHIN",
-            "HAVE_THEIR_CENTER_IN": "HAVE_THEIR_CENTER_IN",
-            "形心在连接要素内": "HAVE_THEIR_CENTER_IN",
-            "LARGEST_OVERLAP": "LARGEST_OVERLAP",
-            "大部分在连接要素内": "LARGEST_OVERLAP",
-            "包含连接要素内点": "包含连接要素内点",
-            "内点在连接要素内": "内点在连接要素内",
-        }
+    def 要素创建_通过空间连接(self, 连接要素名称, 连接方式: Literal["相交", "包含连接要素", "完全包含连接要素", "在连接要素内", "完全在连接要素内", "包含连接要素内点", "内点在连接要素内", "形心在连接要素内", "大部分在连接要素内"] = "包含连接要素", 输出要素名称="内存临时") -> "要素类":
+        _连接方式映射表 = {"相交": "INTERSECT", "包含连接要素": "CONTAINS", "完全包含连接要素": "COMPLETELY_CONTAINS", "在连接要素内": "WITHIN", "完全在连接要素内": "COMPLETELY_WITHIN", "形心在连接要素内": "HAVE_THEIR_CENTER_IN", "大部分在连接要素内": "LARGEST_OVERLAP"}
+        连接方式raw = _连接方式映射表[连接方式] if 连接方式 in _连接方式映射表 else 连接方式
 
-        连接方式raw = _连接方式映射表[连接方式]
-
-        if 输出要素名称 == "in_memory\\AA_空间连接":
-            输出要素名称 = 输出要素名称 + "_" + 工具集.生成短GUID()
+        if 输出要素名称 == "内存临时":
+            输出要素名称 = "in_memory\\AA_空间连接" + "_" + 工具集.生成短GUID()
 
         if 连接方式raw == "包含连接要素内点":
             arcpy.management.RepairGeometry(in_features=连接要素名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]  # type: ignore
@@ -541,9 +542,9 @@ class 要素类:
         return self
 
     def 字段添加(self, 字段名称, 字段类型: Literal["字符串", "双精度", "长整型", "短整型", "日期", "单精度", "对象ID", "定长字符串"] = "字符串", 字段长度: Union[None, int] = 100, 字段别称="", 删除既有字段=True):
-        '''
+        """
         如果输入表是文件地理数据库，则将忽略字段精度值和小数位数值。
-        '''
+        """
         from . import 常量
 
         字段类型raw = 常量._字段类型映射[字段类型]

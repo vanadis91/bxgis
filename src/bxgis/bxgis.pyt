@@ -28,9 +28,35 @@ def 添加搜索路径():
         raise ValueError("添加搜索路径失败。")
 
 
+def 参数组字典生成_转换值(参数列表):
+    参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
+    参数字典 = {k: v for k, v in zip(参数名称列表, 参数列表)}
+    参数字典temp = {}
+
+    def 根据类型取值(参数对象):
+        if type(bxarcpy.参数类.值读取(参数对象)) in [int, float, str, bool]:
+            ret = bxarcpy.参数类.值读取(参数对象)
+        elif type(bxarcpy.参数类.值读取(参数对象)) is list:
+            ret = [根据类型取值(x) for x in 参数对象]
+        else:
+            ret = bxarcpy.参数类.值读取_作为字符串(参数对象)
+        return ret
+
+    for k, v in 参数字典.items():
+        参数字典temp[k] = 根据类型取值(v)
+    return 参数字典temp
+
+
+def 参数组字典生成(参数列表):
+    参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
+    参数字典 = {k: v for k, v in zip(参数名称列表, 参数列表)}
+    return 参数字典
+
+
 添加搜索路径()
 import bxarcpy
 import bxgis
+from bxpy import 日志
 
 # import importlib
 
@@ -61,7 +87,20 @@ class Toolbox(object):
 
 class ExportToCAD(object):
     # "导出到CAD"
-    参数名称列表 = []
+    # 参数名称列表 = []
+    # class 参数组对象:
+    #     参数名称列表 = []
+    #     输入要素 = None
+    #     范围要素 = None
+    #     是否对要素进行融合 = None
+    #     需融合地类编号列表 = None
+    #     是否对要素进行切分 = None
+    #     切分时折点数量阈值 = None
+    #     切分时孔洞数量阈值 = None
+    #     切分时面积阈值 = None
+    #     切分时地类编号限制列表 = None
+    #     是否去孔 = None
+    #     输出CAD路径 = None
 
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
@@ -72,32 +111,70 @@ class ExportToCAD(object):
 
     def getParameterInfo(self):
         """Define parameter definitions 定义了参数，类似脚本工具属性中的参数界面"""
+        # 参数组字典列表 = [
+        #     {"名称": "输入要素", "数据类型": "要素类", "参数必要性": "必填"},
+        #     {"名称": "范围要素", "数据类型": "要素类", "默认值": "JX_规划范围线"},
+        #     {"名称": "是否对要素进行融合", "数据类型": "布尔值", "默认值": False},
+        #     {"名称": "需融合地类编号列表", "数据类型": "字符串", "是否多个值": True, "是否可用": False, "默认值": ["1207"]},
+        #     {"名称": "是否对要素进行切分", "数据类型": "布尔值", "默认值": False},
+        #     {"名称": "切分时折点数量阈值", "数据类型": "长整型", "是否可用": False, "默认值": 15000},
+        #     {"名称": "切分时孔洞数量阈值", "数据类型": "长整型", "是否可用": False, "默认值": 3},
+        #     {"名称": "切分时面积阈值", "数据类型": "双精度", "是否可用": False, "默认值": 500000},
+        #     {"名称": "切分时地类编号限制列表", "数据类型": "字符串", "是否多个值": True, "是否可用": False, "默认值": ["1207"]},
+        #     {"名称": "是否去孔", "数据类型": "布尔值", "默认值": False},
+        #     {"名称": "输出CAD路径", "数据类型": "CAD数据集", "参数类型": "输出参数"},
+        # ]
+        # 参数列表 = []
+        # for x in 参数组字典列表:
+        #     参数组字符串 = ""
+        #     if "名称" in x:
+        #         参数组字符串 = 参数组字符串 + "名称=" + f"'{x['名称']}'" + ", "
+        #     if "描述" in x:
+        #         参数组字符串 = 参数组字符串 + "描述=" + f"'{x['描述']}'" + ", "
+        #     else:
+        #         参数组字符串 = 参数组字符串 + "描述=" + f"'{x['名称']}'" + ", "
+        #     if "数据类型" in x:
+        #         参数组字符串 = 参数组字符串 + "数据类型=" + f"'{x['数据类型']}'" + ", "
+        #     if "参数必要性" in x:
+        #         参数组字符串 = 参数组字符串 + "参数必要性=" + f"'{x['参数必要性']}'" + ", "
+        #     if "参数类型" in x:
+        #         参数组字符串 = 参数组字符串 + "参数类型=" + f"'{x['参数类型']}'" + ", "
+        #     if "是否多个值" in x:
+        #         参数组字符串 = 参数组字符串 + "是否多个值=" + f"{x['是否多个值']}" + ", "
+        #     if "是否可用" in x:
+        #         参数组字符串 = 参数组字符串 + "是否可用=" + f"{x['是否可用']}" + ", "
+        #     if "默认值" in x:
+        #         if type(x["默认值"]) is str:
+        #             参数组字符串 = 参数组字符串 + "默认值=" + f"'{x['默认值']}'" + ", "
+        #         else:
+        #             参数组字符串 = 参数组字符串 + "默认值=" + f"{x['默认值']}" + ", "
+        #     exec(f"{x['名称']} = bxarcpy.参数类.参数创建({参数组字符串})._内嵌对象")
+        #     参数列表.append(eval(x["名称"]))
+        #     ExportToCAD.参数组对象.参数名称列表.append(x["名称"])
 
-        输入要素 = bxarcpy.参数类.参数创建("输入要素", "输入要素", "要素类", 参数必要性="必填")._内嵌对象
+        输入要素 = bxarcpy.参数类.参数创建("输入要素", "要素类", 参数必要性="必填")._内嵌对象
 
-        范围要素 = bxarcpy.参数类.参数创建("范围要素", "范围要素", "要素类", 默认值="JX_规划范围线")._内嵌对象
+        范围要素 = bxarcpy.参数类.参数创建("范围要素", "要素类", 默认值="JX_规划范围线")._内嵌对象
 
-        是否对要素进行融合 = bxarcpy.参数类.参数创建("是否对要素进行融合", "是否对要素进行融合", "布尔值", 默认值=False)._内嵌对象
+        是否对要素进行融合 = bxarcpy.参数类.参数创建("是否对要素进行融合", "布尔值", 默认值=False)._内嵌对象
 
-        需融合地类编号列表 = bxarcpy.参数类.参数创建("需融合地类编号列表", "需融合地类编号列表", "字符串", 是否多个值=True, 是否可用=False, 默认值=["1207"])._内嵌对象
+        需融合地类编号列表 = bxarcpy.参数类.参数创建("需融合地类编号列表", "字符串", 是否多个值=True, 是否可用=False, 默认值=["1207"])._内嵌对象
 
-        是否对要素进行切分 = bxarcpy.参数类.参数创建("是否对要素进行切分", "是否对要素进行切分", "布尔值", 默认值=False)._内嵌对象
+        是否对要素进行切分 = bxarcpy.参数类.参数创建("是否对要素进行切分", "布尔值", 默认值=False)._内嵌对象
 
-        切分时折点数量阈值 = bxarcpy.参数类.参数创建("切分时折点数量阈值", "切分时折点数量阈值", "长整型", 是否可用=False, 默认值=15000)._内嵌对象
+        切分时折点数量阈值 = bxarcpy.参数类.参数创建("切分时折点数量阈值", "长整型", 是否可用=False, 默认值=15000)._内嵌对象
 
-        切分时孔洞数量阈值 = bxarcpy.参数类.参数创建("切分时孔洞数量阈值", "切分时孔洞数量阈值", "长整型", 是否可用=False, 默认值=3)._内嵌对象
+        切分时孔洞数量阈值 = bxarcpy.参数类.参数创建("切分时孔洞数量阈值", "长整型", 是否可用=False, 默认值=3)._内嵌对象
 
-        切分时面积阈值 = bxarcpy.参数类.参数创建("切分时面积阈值", "切分时面积阈值", "双精度", 是否可用=False, 默认值=500000)._内嵌对象
+        切分时面积阈值 = bxarcpy.参数类.参数创建("切分时面积阈值", "双精度", 是否可用=False, 默认值=500000)._内嵌对象
 
-        切分时地类编号限制列表 = bxarcpy.参数类.参数创建("切分时地类编号限制列表", "切分时地类编号限制列表", "字符串", 是否多个值=True, 是否可用=False, 默认值=["1207"])._内嵌对象
+        切分时地类编号限制列表 = bxarcpy.参数类.参数创建("切分时地类编号限制列表", "字符串", 是否多个值=True, 是否可用=False, 默认值=["1207"])._内嵌对象
 
-        是否去孔 = bxarcpy.参数类.参数创建("是否去孔", "是否去孔", "布尔值", 默认值=False)._内嵌对象
+        是否去孔 = bxarcpy.参数类.参数创建("是否去孔", "布尔值", 默认值=False)._内嵌对象
 
-        输出CAD路径 = bxarcpy.参数类.参数创建("输出CAD路径", "输出CAD路径", "CAD数据集", 参数类型="输出参数")._内嵌对象
+        输出CAD路径 = bxarcpy.参数类.参数创建("输出CAD路径", "CAD数据集", 参数类型="输出参数")._内嵌对象
 
-        参数列表 = [输入要素, 范围要素, 是否对要素进行融合, 需融合地类编号列表, 是否对要素进行切分, 切分时折点数量阈值, 切分时孔洞数量阈值, 切分时面积阈值, 切分时地类编号限制列表, 是否去孔, 输出CAD路径]
-        ExportToCAD.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
-        return 参数列表
+        return [输入要素, 范围要素, 是否对要素进行融合, 需融合地类编号列表, 是否对要素进行切分, 切分时折点数量阈值, 切分时孔洞数量阈值, 切分时面积阈值, 切分时地类编号限制列表, 是否去孔, 输出CAD路径]
 
     def isLicensed(self):
         """Set whether tool is licensed to execute 可以控制许可行为，验证能否执行，检入检出许可"""
@@ -107,7 +184,7 @@ class ExportToCAD(object):
         """Modify the values and properties of parameters before internal
         validation is performed.  This method is called whenever a parameter
         has been changed 定义了工具内部验证的过程，比如输入数据达到某个条件，则启用或者禁用某个参数，或者为某个参数设置默认值"""
-        参数字典 = {k: v for k, v in zip(ExportToCAD.参数名称列表, 参数列表)}
+        参数字典 = 参数组字典生成(参数列表)
         if bxarcpy.参数类.值读取(参数字典["是否对要素进行融合"]):
             bxarcpy.参数类.可用性设置(参数字典["需融合地类编号列表"], True)
         else:
@@ -134,23 +211,18 @@ class ExportToCAD(object):
     def execute(self, 参数列表, 消息):
         """The source code of the tool 定义工具源码，必要方法，只包括该方法也可以运行工具，但是没有参数界面"""
         添加搜索路径()
-        参数字典 = {k: v for k, v in zip(ExportToCAD.参数名称列表, 参数列表)}
-        输入要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["输入要素"])
-        范围要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["范围要素"])
-        需融合地类编号列表 = None
-        if bxarcpy.参数类.值读取(参数字典["是否对要素进行融合"]):
-            需融合地类编号列表 = bxarcpy.参数类.值读取(参数字典["是否对要素进行融合"])
-        切分阈值 = None
-        if bxarcpy.参数类.值读取(参数字典["是否对要素进行切分"]):
-            切分阈值 = {
-                "折点数量": bxarcpy.参数类.值读取(参数字典["切分时折点数量阈值"]),
-                "孔洞数量": bxarcpy.参数类.值读取(参数字典["切分时孔洞数量阈值"]),
-                "面积": bxarcpy.参数类.值读取(参数字典["切分时面积阈值"]),
-                "地类编号列表": bxarcpy.参数类.值读取(参数字典["切分时地类编号限制列表"]),
-            }
-        是否去孔 = bxarcpy.参数类.值读取(参数字典["是否去孔"])
-        输出CAD路径 = bxarcpy.参数类.值读取_作为字符串(参数字典["输出CAD路径"])
-        bxgis.常用.导出到CAD(输入要素名称, 范围要素名称, 需融合地类编号列表=需融合地类编号列表, 切分阈值=切分阈值, 是否去孔=是否去孔, 输出CAD路径=输出CAD路径)
+        参数字典 = 参数组字典生成_转换值(参数列表)
+        日志.输出控制台(参数字典)
+        需融合地类编号列表 = 参数字典["需融合地类编号列表"] if 参数字典["是否对要素进行融合"] else None
+        切分阈值 = {"折点数量": 参数字典["切分时折点数量阈值"], "孔洞数量": 参数字典["切分时孔洞数量阈值"], "面积": 参数字典["切分时面积阈值"], "地类编号列表": 参数字典["切分时地类编号限制列表"]} if 参数字典["是否对要素进行切分"] else None
+        bxgis.常用.导出到CAD(
+            输入要素名称=参数字典["输入要素"],
+            范围要素名称=参数字典["范围要素"],
+            需融合地类编号列表=需融合地类编号列表,
+            切分阈值=切分阈值,
+            是否去孔=参数字典["是否去孔"],
+            输出CAD路径=参数字典["输出CAD路径"],
+        )
         return None
 
     def postExecute(self, 参数列表):
@@ -161,8 +233,6 @@ class ExportToCAD(object):
 
 class ImportFromCAD(object):
     # "导入从CAD"
-    参数名称列表 = []
-
     def __init__(self):
         self.label = "导入从CAD"
         self.description = ""
@@ -170,21 +240,19 @@ class ImportFromCAD(object):
         self.category = "常用"
 
     def getParameterInfo(self):
-        输入CAD路径 = bxarcpy.参数类.参数创建("输入CAD路径", "输入CAD路径", "CAD数据集", 参数必要性="必填")._内嵌对象
+        输入CAD路径 = bxarcpy.参数类.参数创建("输入CAD路径", "CAD数据集", 参数必要性="必填")._内嵌对象
 
-        输入CAD图层名称 = bxarcpy.参数类.参数创建("输入CAD图层名称", "输入CAD图层名称", "字符串", 默认值="控规地块")._内嵌对象
+        输入CAD图层名称 = bxarcpy.参数类.参数创建("输入CAD图层名称", "字符串", 默认值="控规地块")._内嵌对象
 
-        是否拓扑检查 = bxarcpy.参数类.参数创建("是否拓扑检查", "是否拓扑检查", "布尔值", 默认值=False)._内嵌对象
+        是否拓扑检查 = bxarcpy.参数类.参数创建("是否拓扑检查", "布尔值", 默认值=False)._内嵌对象
 
-        是否范围检查 = bxarcpy.参数类.参数创建("是否范围检查", "是否范围检查", "布尔值", 默认值=False)._内嵌对象
+        是否范围检查 = bxarcpy.参数类.参数创建("是否范围检查", "布尔值", 默认值=False)._内嵌对象
 
-        是否转曲 = bxarcpy.参数类.参数创建("是否转曲", "是否转曲", "布尔值", 默认值=False)._内嵌对象
+        是否转曲 = bxarcpy.参数类.参数创建("是否转曲", "布尔值", 默认值=False)._内嵌对象
 
-        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数", 默认值="YD_CAD色块")._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "要素类", 参数类型="输出参数", 默认值="YD_CAD色块")._内嵌对象
 
-        参数列表 = [输入CAD路径, 输入CAD图层名称, 是否拓扑检查, 是否范围检查, 是否转曲, 输出要素名称]
-        ImportFromCAD.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
-        return 参数列表
+        return [输入CAD路径, 输入CAD图层名称, 是否拓扑检查, 是否范围检查, 是否转曲, 输出要素名称]
 
     def isLicensed(self):
         return True
@@ -197,15 +265,16 @@ class ImportFromCAD(object):
 
     def execute(self, 参数列表, 消息):
         添加搜索路径()
-        参数字典 = {k: v for k, v in zip(ImportFromCAD.参数名称列表, 参数列表)}
-        输入CAD路径 = bxarcpy.参数类.值读取_作为字符串(参数字典["输入CAD路径"])
-        输入CAD图层名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["输入CAD图层名称"])
-        是否拓扑检查 = bxarcpy.参数类.值读取(参数字典["是否拓扑检查"])
-        是否范围检查 = bxarcpy.参数类.值读取(参数字典["是否范围检查"])
-        是否转曲 = bxarcpy.参数类.值读取(参数字典["是否转曲"])
-        输出要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["输出要素名称"])
+        参数字典 = 参数组字典生成_转换值(参数列表)
 
-        bxgis.常用.导入从CAD([输入CAD路径], 输入CAD图层名称, 是否拓扑检查, 是否范围检查, 是否转曲, 输出要素名称)
+        bxgis.常用.导入从CAD(
+            输入CAD路径列表=[参数字典["输入CAD路径"]],
+            输入CAD图层名称=参数字典["输入CAD图层名称"],
+            是否拓扑检查=参数字典["是否拓扑检查"],
+            是否范围检查=参数字典["是否范围检查"],
+            是否转曲=参数字典["是否转曲"],
+            输出要素名称=参数字典["输出要素名称"],
+        )
         return None
 
     def postExecute(self, 参数列表):
@@ -216,8 +285,6 @@ class ImportFromCAD(object):
 
 class ConvertCurveToPolyline(object):
     # "曲转折"
-    参数名称列表 = []
-
     def __init__(self):
         self.label = "曲转折"
         self.description = ""
@@ -225,11 +292,9 @@ class ConvertCurveToPolyline(object):
         self.category = "常用"
 
     def getParameterInfo(self):
-        输入要素名称列表 = bxarcpy.参数类.参数创建("输入要素名称列表", "输入要素名称列表", "要素类", 参数必要性="必填", 是否多个值=True)._内嵌对象
+        输入要素名称列表 = bxarcpy.参数类.参数创建("输入要素名称列表", "要素类", 参数必要性="必填", 是否多个值=True)._内嵌对象
 
-        参数列表 = [输入要素名称列表]
-        ConvertCurveToPolyline.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
-        return 参数列表
+        return [输入要素名称列表]
 
     def isLicensed(self):
         return True
@@ -242,10 +307,8 @@ class ConvertCurveToPolyline(object):
 
     def execute(self, 参数列表, 消息):
         添加搜索路径()
-        参数字典 = {k: v for k, v in zip(ConvertCurveToPolyline.参数名称列表, 参数列表)}
-        输入要素名称列表 = [bxarcpy.参数类.值读取_作为字符串(x) for x in 参数字典["输入要素名称列表"]]
-
-        bxgis.常用.曲转折(输入要素名称列表)
+        参数字典 = 参数组字典生成_转换值(参数列表)
+        bxgis.常用.曲转折(输入要素名称列表=参数字典["输入要素名称列表"])
         return None
 
     def postExecute(self, 参数列表):
@@ -254,8 +317,6 @@ class ConvertCurveToPolyline(object):
 
 class LandusePlanningGeneration(object):
     # "用地规划图生成"
-    参数名称列表 = []
-
     def __init__(self):
         self.label = "用地规划图生成"
         self.description = ""
@@ -263,43 +324,64 @@ class LandusePlanningGeneration(object):
         self.category = "用地"
 
     def getParameterInfo(self):
-        输入要素名称列表 = bxarcpy.参数类.参数创建("输入要素名称列表", "输入要素名称列表", "要素类", 参数必要性="必填", 是否多个值=True)._内嵌对象
-        CAD导出色块要素名称 = bxarcpy.参数类.参数创建("CAD导出色块要素名称", "CAD导出色块要素名称", "要素类", 默认值="YD_CAD色块")._内嵌对象
-        对CAD导出色块进行调整要素名称 = bxarcpy.参数类.参数创建("对CAD导出色块进行调整要素名称", "对CAD导出色块进行调整要素名称", "要素类", 默认值="YD_CAD色块以外建设用地修改")._内嵌对象
-        SQL_CAD导出色块中未填色区域地类 = bxarcpy.参数类.参数创建("SQL_CAD导出色块中未填色区域地类", "SQL_CAD导出色块中未填色区域地类", "字符串", 默认值="'00'")._内嵌对象
-        SQL_CAD导出色块中保留的地类 = bxarcpy.参数类.参数创建("SQL_CAD导出色块中保留的地类", "SQL_CAD导出色块中保留的地类", "字符串", 默认值="地类编号 LIKE '07%' OR 地类编号 LIKE '08%' OR 地类编号 LIKE '09%' OR 地类编号 LIKE '10%' OR 地类编号 LIKE '11%'  OR 地类编号 LIKE '12%'  OR 地类编号 LIKE '13%'  OR 地类编号 LIKE '14%'  OR 地类编号 LIKE '15%'  OR 地类编号 LIKE '16%'  OR ( 地类编号 LIKE '17%' AND 地类编号 NOT LIKE '1704%' AND 地类编号 NOT LIKE '1705%' )  OR 地类编号 LIKE '23%'")._内嵌对象
-        范围要素 = bxarcpy.参数类.参数创建("范围要素", "范围要素", "要素类", 默认值="JX_规划范围线")._内嵌对象
-        是否拓扑检查 = bxarcpy.参数类.参数创建("是否拓扑检查", "是否拓扑检查", "布尔值", 默认值=False)._内嵌对象
-        是否范围检查 = bxarcpy.参数类.参数创建("是否范围检查", "是否范围检查", "布尔值", 默认值=False)._内嵌对象
-        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数", 默认值="DIST_用地规划图")._内嵌对象
+        输入要素名称列表 = bxarcpy.参数类.参数创建(名称="输入要素名称列表", 数据类型="要素类", 参数必要性="必填", 是否多个值=True)._内嵌对象
 
-        参数列表 = [输入要素名称列表, CAD导出色块要素名称, 对CAD导出色块进行调整要素名称, SQL_CAD导出色块中未填色区域地类, SQL_CAD导出色块中保留的地类, 范围要素, 是否拓扑检查, 是否范围检查, 输出要素名称]
-        LandusePlanningGeneration.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
-        return 参数列表
+        规划范围线要素名称 = bxarcpy.参数类.参数创建(名称="规划范围线要素名称", 数据类型="要素类", 默认值="JX_规划范围线")._内嵌对象
+
+        是否将CAD合并入GIS = bxarcpy.参数类.参数创建(名称="是否将CAD合并入GIS", 数据类型="布尔值", 默认值=False)._内嵌对象
+        CAD导出色块要素名称 = bxarcpy.参数类.参数创建(名称="CAD导出色块要素名称", 数据类型="要素类", 默认值="YD_CAD色块", 是否可用=False)._内嵌对象
+        CAD导出色块中空隙的地类 = bxarcpy.参数类.参数创建("CAD导出色块中空隙的地类", 数据类型="字符串", 默认值="00", 是否可用=False)._内嵌对象
+        CAD导出色块中有效的地类列表 = bxarcpy.参数类.参数创建(名称="CAD导出色块中有效的地类列表描述=", 数据类型="字符串", 默认值=["07%", "08%", "09%", "10%", "11%", "12%", "13%", "14%", "15%", "16%", "1701%", "1702%", "1703%", "23%"], 是否多个值=True, 是否可用=False)._内嵌对象
+        CAD导出色块以外地类调整要素名称 = bxarcpy.参数类.参数创建(名称="CAD导出色块以外地类调整要素名称", 数据类型="要素类", 默认值="YD_CAD色块以外建设用地修改", 是否可用=False)._内嵌对象
+
+        是否处理细小面 = bxarcpy.参数类.参数创建(名称="是否处理细小面", 数据类型="布尔值", 默认值=False)._内嵌对象
+        GIS中已处理的细小面要素名称 = bxarcpy.参数类.参数创建(名称="GIS中已处理的细小面要素名称", 数据类型="要素类", 是否可用=False, 默认值="YD_已处理的细小面")._内嵌对象
+        细小面面积阈值 = bxarcpy.参数类.参数创建(名称="细小面面积阈值", 数据类型="字符串", 是否可用=False, 默认值="10")._内嵌对象
+
+        是否拓扑检查 = bxarcpy.参数类.参数创建(名称="是否拓扑检查", 数据类型="布尔值", 默认值=False)._内嵌对象
+        是否范围检查 = bxarcpy.参数类.参数创建(名称="是否范围检查", 数据类型="布尔值", 默认值=False)._内嵌对象
+
+        输出要素名称 = bxarcpy.参数类.参数创建(名称="输出要素名称", 数据类型="要素类", 参数类型="输出参数", 默认值="DIST_用地规划图")._内嵌对象
+
+        return [输入要素名称列表, 规划范围线要素名称, 是否将CAD合并入GIS, CAD导出色块要素名称, CAD导出色块以外地类调整要素名称, CAD导出色块中空隙的地类, CAD导出色块中有效的地类列表, 是否处理细小面, GIS中已处理的细小面要素名称, 细小面面积阈值, 是否拓扑检查, 是否范围检查, 输出要素名称]
 
     def isLicensed(self):
         return True
 
     def updateParameters(self, 参数列表):
-        return None
+        添加搜索路径()
+        参数字典 = 参数组字典生成(参数列表)
+        if bxarcpy.参数类.值读取(参数字典["是否处理细小面"]):
+            bxarcpy.参数类.可用性设置(参数字典["GIS中已处理的细小面要素名称"], True)
+            bxarcpy.参数类.可用性设置(参数字典["细小面面积阈值"], True)
+        if bxarcpy.参数类.值读取(参数字典["是否将CAD合并入GIS"]):
+            bxarcpy.参数类.可用性设置(参数字典["CAD导出色块要素名称"], True)
+            bxarcpy.参数类.可用性设置(参数字典["CAD导出色块以外地类调整要素名称"], True)
+            bxarcpy.参数类.可用性设置(参数字典["CAD导出色块中空隙的地类"], True)
+            bxarcpy.参数类.可用性设置(参数字典["CAD导出色块中有效的地类列表"], True)
 
     def updateMessages(self, 参数列表):
         return None
 
     def execute(self, 参数列表, 消息):
         添加搜索路径()
-        参数字典 = {k: v for k, v in zip(LandusePlanningGeneration.参数名称列表, 参数列表)}
-        输入要素名称列表 = [bxarcpy.参数类.值读取_作为字符串(x) for x in 参数字典["输入要素名称列表"]]
-        CAD导出色块要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["CAD导出色块要素名称"])
-        对CAD导出色块进行调整要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["对CAD导出色块进行调整要素名称"])
-        SQL_CAD导出色块中未填色区域地类 = bxarcpy.参数类.值读取(参数字典["SQL_CAD导出色块中未填色区域地类"])
-        SQL_CAD导出色块中保留的地类 = bxarcpy.参数类.值读取(参数字典["SQL_CAD导出色块中保留的地类"])
-        范围要素 = bxarcpy.参数类.值读取_作为字符串(参数字典["范围要素"])
-        是否拓扑检查 = bxarcpy.参数类.值读取(参数字典["是否拓扑检查"])
-        是否范围检查 = bxarcpy.参数类.值读取(参数字典["是否范围检查"])
-        输出要素名称 = bxarcpy.参数类.值读取_作为字符串(参数字典["输出要素名称"])
+        参数字典 = 参数组字典生成_转换值(参数列表)
 
-        bxgis.用地.用地规划图生成(输入要素名称列表, CAD导出色块要素名称, 对CAD导出色块进行调整要素名称, SQL_CAD导出色块中未填色区域地类, SQL_CAD导出色块中保留的地类, 范围要素, 是否拓扑检查, 是否范围检查, 输出要素名称)
+        bxgis.用地.用地规划图生成(
+            输入要素名称列表=参数字典["输入要素名称列表"],
+            规划范围线要素名称=参数字典["规划范围线要素名称"],
+            是否将CAD合并入GIS=参数字典["是否将CAD合并入GIS"],
+            CAD导出色块要素名称=参数字典["CAD导出色块要素名称"],
+            CAD导出色块以外地类调整要素名称=参数字典["CAD导出色块以外地类调整要素名称"],
+            CAD导出色块中空隙的地类=参数字典["CAD导出色块中空隙的地类"],
+            CAD导出色块中有效的地类列表=参数字典["CAD导出色块中有效的地类列表"],
+            是否处理细小面=参数字典["是否处理细小面"],
+            GIS中已处理的细小面要素名称=参数字典["GIS中已处理的细小面要素名称"],
+            是否拓扑检查=参数字典["是否拓扑检查"],
+            是否范围检查=参数字典["是否范围检查"],
+            细小面面积阈值=参数字典["细小面面积阈值"],
+            输出要素名称=参数字典["输出要素名称"],
+        )
         return None
 
     def postExecute(self, 参数列表):
@@ -308,8 +390,6 @@ class LandusePlanningGeneration(object):
 
 class BaseperiodLandtypeConversion(object):
     # "初步基数转换"
-    参数名称列表 = []
-
     def __init__(self):
         self.label = "初步基数转换"
         self.description = ""
@@ -317,12 +397,9 @@ class BaseperiodLandtypeConversion(object):
         self.category = "用地\\基期"
 
     def getParameterInfo(self):
-        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "输入要素名称", "要素类", 参数必要性="必填", 默认值="CZ_三调_原始")._内嵌对象
-        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
-
-        参数列表 = [输入要素名称, 输出要素名称]
-        BaseperiodLandtypeConversion.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
-        return 参数列表
+        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "要素类", 参数必要性="必填", 默认值="CZ_三调_原始")._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+        return [输入要素名称, 输出要素名称]
 
     def isLicensed(self):
         return True
@@ -335,18 +412,8 @@ class BaseperiodLandtypeConversion(object):
 
     def execute(self, 参数列表, 消息):
         添加搜索路径()
-        参数字典 = {k: v for k, v in zip(BaseperiodLandtypeConversion.参数名称列表, 参数列表)}
-        参数字典temp = {}
-        for k, v in 参数字典.items():
-            if type(bxarcpy.参数类.值读取(v)) in [int, float, str, bool]:
-                参数字典temp[k] = bxarcpy.参数类.值读取(v)
-            elif type(bxarcpy.参数类.值读取(v)) is list:
-                参数字典temp[k] = [bxarcpy.参数类.值读取_作为字符串(x) for x in v]
-            else:
-                参数字典temp[k] = bxarcpy.参数类.值读取_作为字符串(v)
-        参数字典 = 参数字典temp
-
-        bxgis.用地.基期.初步基数转换(参数字典["输入要素名称"], 参数字典["输出要素名称"])
+        参数字典 = 参数组字典生成_转换值(参数列表)
+        bxgis.用地.基期.初步基数转换(输入要素名称=参数字典["输入要素名称"], 输出要素名称=参数字典["输出要素名称"])
         return None
 
     def postExecute(self, 参数列表):
@@ -355,8 +422,6 @@ class BaseperiodLandtypeConversion(object):
 
 class BaseperiodFieldsTranslateAndGenerateSubitems(object):
     # "字段处理并生成分项"
-    参数名称列表 = []
-
     def __init__(self):
         self.label = "字段处理并生成分项"
         self.description = ""
@@ -364,12 +429,9 @@ class BaseperiodFieldsTranslateAndGenerateSubitems(object):
         self.category = "用地\\基期"
 
     def getParameterInfo(self):
-        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "输入要素名称", "要素类", 参数必要性="必填", 默认值="YD_三调")._内嵌对象
-        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
-
-        参数列表 = [输入要素名称, 输出要素名称]
-        BaseperiodFieldsTranslateAndGenerateSubitems.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
-        return 参数列表
+        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "要素类", 参数必要性="必填", 默认值="YD_三调")._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+        return [输入要素名称, 输出要素名称]
 
     def isLicensed(self):
         return True
@@ -382,18 +444,8 @@ class BaseperiodFieldsTranslateAndGenerateSubitems(object):
 
     def execute(self, 参数列表, 消息):
         添加搜索路径()
-        参数字典 = {k: v for k, v in zip(BaseperiodFieldsTranslateAndGenerateSubitems.参数名称列表, 参数列表)}
-        参数字典temp = {}
-        for k, v in 参数字典.items():
-            if type(bxarcpy.参数类.值读取(v)) in [int, float, str, bool]:
-                参数字典temp[k] = bxarcpy.参数类.值读取(v)
-            elif type(bxarcpy.参数类.值读取(v)) is list:
-                参数字典temp[k] = [bxarcpy.参数类.值读取_作为字符串(x) for x in v]
-            else:
-                参数字典temp[k] = bxarcpy.参数类.值读取_作为字符串(v)
-        参数字典 = 参数字典temp
-
-        bxgis.用地.基期.字段处理并生成分项(参数字典["输入要素名称"], 参数字典["输出要素名称"])
+        参数字典 = 参数组字典生成_转换值(参数列表)
+        bxgis.用地.基期.字段处理并生成分项(输入要素名称=参数字典["输入要素名称"], 输出要素名称=参数字典["输出要素名称"])
         return None
 
     def postExecute(self, 参数列表):
@@ -402,8 +454,6 @@ class BaseperiodFieldsTranslateAndGenerateSubitems(object):
 
 class LanduseUpdate(object):
     # 用地更新
-    参数名称列表 = []
-
     def __init__(self):
         self.label = "用地更新"
         self.description = ""
@@ -411,18 +461,16 @@ class LanduseUpdate(object):
         self.category = "用地"
 
     def getParameterInfo(self):
-        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "输入要素名称", "要素类", 参数必要性="必填", 默认值="DIST_用地规划图")._内嵌对象
-        街坊范围线要素名称 = bxarcpy.参数类.参数创建("街坊范围线要素名称", "街坊范围线要素名称", "要素类", 默认值="JX_街坊范围线")._内嵌对象
-        分村范围线要素名称 = bxarcpy.参数类.参数创建("分村范围线要素名称", "分村范围线要素名称", "要素类", 默认值="JX_分村范围线")._内嵌对象
-        城镇集建区要素名称 = bxarcpy.参数类.参数创建("城镇集建区要素名称", "城镇集建区要素名称", "要素类", 默认值="KZX_城镇集建区")._内嵌对象
-        城镇弹性区要素名称 = bxarcpy.参数类.参数创建("城镇弹性区要素名称", "城镇弹性区要素名称", "要素类", 默认值="KZX_城镇弹性区")._内嵌对象
-        有扣除地类系数的要素名称 = bxarcpy.参数类.参数创建("有扣除地类系数的要素名称", "有扣除地类系数的要素名称", "要素类", 默认值="CZ_三调筛选_扣除地类系数")._内嵌对象
-        有坐落单位信息的要素名称 = bxarcpy.参数类.参数创建("有坐落单位信息的要素名称", "有坐落单位信息的要素名称", "要素类", 默认值="CZ_三调筛选_坐落单位名称")._内嵌对象
-        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "要素类", 参数必要性="必填", 默认值="DIST_用地规划图")._内嵌对象
+        街坊范围线要素名称 = bxarcpy.参数类.参数创建("街坊范围线要素名称", "要素类", 默认值="JX_街坊范围线")._内嵌对象
+        分村范围线要素名称 = bxarcpy.参数类.参数创建("分村范围线要素名称", "要素类", 默认值="JX_分村范围线")._内嵌对象
+        城镇集建区要素名称 = bxarcpy.参数类.参数创建("城镇集建区要素名称", "要素类", 默认值="KZX_城镇集建区")._内嵌对象
+        城镇弹性区要素名称 = bxarcpy.参数类.参数创建("城镇弹性区要素名称", "要素类", 默认值="KZX_城镇弹性区")._内嵌对象
+        有扣除地类系数的要素名称 = bxarcpy.参数类.参数创建("有扣除地类系数的要素名称", "要素类", 默认值="CZ_三调筛选_扣除地类系数")._内嵌对象
+        有坐落单位信息的要素名称 = bxarcpy.参数类.参数创建("有坐落单位信息的要素名称", "要素类", 默认值="CZ_三调筛选_坐落单位名称")._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
 
-        参数列表 = [输入要素名称, 街坊范围线要素名称, 分村范围线要素名称, 城镇集建区要素名称, 城镇弹性区要素名称, 有扣除地类系数的要素名称, 有坐落单位信息的要素名称, 输出要素名称]
-        LanduseUpdate.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
-        return 参数列表
+        return [输入要素名称, 街坊范围线要素名称, 分村范围线要素名称, 城镇集建区要素名称, 城镇弹性区要素名称, 有扣除地类系数的要素名称, 有坐落单位信息的要素名称, 输出要素名称]
 
     def isLicensed(self):
         return True
@@ -435,18 +483,17 @@ class LanduseUpdate(object):
 
     def execute(self, 参数列表, 消息):
         添加搜索路径()
-        参数字典 = {k: v for k, v in zip(LanduseUpdate.参数名称列表, 参数列表)}
-        参数字典temp = {}
-        for k, v in 参数字典.items():
-            if type(bxarcpy.参数类.值读取(v)) in [int, float, str, bool]:
-                参数字典temp[k] = bxarcpy.参数类.值读取(v)
-            elif type(bxarcpy.参数类.值读取(v)) is list:
-                参数字典temp[k] = [bxarcpy.参数类.值读取_作为字符串(x) for x in v]
-            else:
-                参数字典temp[k] = bxarcpy.参数类.值读取_作为字符串(v)
-        参数字典 = 参数字典temp
-
-        bxgis.用地.用地更新(参数字典["输入要素名称"], 参数字典["街坊范围线要素名称"], 参数字典["分村范围线要素名称"], 参数字典["城镇集建区要素名称"], 参数字典["城镇弹性区要素名称"], 参数字典["有扣除地类系数的要素名称"], 参数字典["有坐落单位信息的要素名称"], 参数字典["输出要素名称"])
+        参数字典 = 参数组字典生成_转换值(参数列表)
+        bxgis.用地.用地更新(
+            输入要素名称=参数字典["输入要素名称"],
+            街坊范围线要素名称=参数字典["街坊范围线要素名称"],
+            分村范围线要素名称=参数字典["分村范围线要素名称"],
+            城镇集建区要素名称=参数字典["城镇集建区要素名称"],
+            城镇弹性区要素名称=参数字典["城镇弹性区要素名称"],
+            有扣除地类系数的要素名称=参数字典["有扣除地类系数的要素名称"],
+            有坐落单位信息的要素名称=参数字典["有坐落单位信息的要素名称"],
+            输出要素名称=参数字典["输出要素名称"],
+        )
         return None
 
     def postExecute(self, 参数列表):
@@ -455,8 +502,6 @@ class LanduseUpdate(object):
 
 class FacilitiesUpdate(object):
     # 设施更新
-    参数名称列表 = []
-
     def __init__(self):
         self.label = "设施更新"
         self.description = ""
@@ -464,16 +509,13 @@ class FacilitiesUpdate(object):
         self.category = "设施"
 
     def getParameterInfo(self):
-        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "输入要素名称", "要素类", 参数必要性="必填", 默认值="SS_配套设施")._内嵌对象
-        规划范围线要素名称 = bxarcpy.参数类.参数创建("规划范围线要素名称", "规划范围线要素名称", "要素类", 默认值="JX_规划范围线")._内嵌对象
-        工业片区范围线要素名称 = bxarcpy.参数类.参数创建("工业片区范围线要素名称", "工业片区范围线要素名称", "要素类", 默认值="JX_工业片区范围线")._内嵌对象
-        城镇集建区要素名称 = bxarcpy.参数类.参数创建("城镇集建区要素名称", "城镇集建区要素名称", "要素类", 默认值="KZX_城镇集建区")._内嵌对象
-        城镇弹性区要素名称 = bxarcpy.参数类.参数创建("城镇弹性区要素名称", "城镇弹性区要素名称", "要素类", 默认值="KZX_城镇弹性区")._内嵌对象
-        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
-
-        参数列表 = [输入要素名称, 规划范围线要素名称, 工业片区范围线要素名称, 城镇集建区要素名称, 城镇弹性区要素名称, 输出要素名称]
-        FacilitiesUpdate.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
-        return 参数列表
+        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "要素类", 参数必要性="必填", 默认值="SS_配套设施")._内嵌对象
+        规划范围线要素名称 = bxarcpy.参数类.参数创建("规划范围线要素名称", "要素类", 默认值="JX_规划范围线")._内嵌对象
+        工业片区范围线要素名称 = bxarcpy.参数类.参数创建("工业片区范围线要素名称", "要素类", 默认值="JX_工业片区范围线")._内嵌对象
+        城镇集建区要素名称 = bxarcpy.参数类.参数创建("城镇集建区要素名称", "要素类", 默认值="KZX_城镇集建区")._内嵌对象
+        城镇弹性区要素名称 = bxarcpy.参数类.参数创建("城镇弹性区要素名称", "要素类", 默认值="KZX_城镇弹性区")._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+        return [输入要素名称, 规划范围线要素名称, 工业片区范围线要素名称, 城镇集建区要素名称, 城镇弹性区要素名称, 输出要素名称]
 
     def isLicensed(self):
         return True
@@ -486,18 +528,15 @@ class FacilitiesUpdate(object):
 
     def execute(self, 参数列表, 消息):
         添加搜索路径()
-        参数字典 = {k: v for k, v in zip(FacilitiesUpdate.参数名称列表, 参数列表)}
-        参数字典temp = {}
-        for k, v in 参数字典.items():
-            if type(bxarcpy.参数类.值读取(v)) in [int, float, str, bool]:
-                参数字典temp[k] = bxarcpy.参数类.值读取(v)
-            elif type(bxarcpy.参数类.值读取(v)) is list:
-                参数字典temp[k] = [bxarcpy.参数类.值读取_作为字符串(x) for x in v]
-            else:
-                参数字典temp[k] = bxarcpy.参数类.值读取_作为字符串(v)
-        参数字典 = 参数字典temp
-
-        bxgis.设施.设施更新(参数字典["输入要素名称"], 参数字典["规划范围线要素名称"], 参数字典["工业片区范围线要素名称"], 参数字典["城镇集建区要素名称"], 参数字典["KZX_城镇弹性区"], 参数字典["输出要素名称"])
+        参数字典 = 参数组字典生成_转换值(参数列表)
+        bxgis.设施.设施更新(
+            输入要素名称=参数字典["输入要素名称"],
+            规划范围线要素名称=参数字典["规划范围线要素名称"],
+            工业片区范围线要素名称=参数字典["工业片区范围线要素名称"],
+            城镇集建区要素名称=参数字典["城镇集建区要素名称"],
+            城镇弹性区要素名称=参数字典["KZX_城镇弹性区"],
+            输出要素名称=参数字典["输出要素名称"],
+        )
         return None
 
     def postExecute(self, 参数列表):
@@ -506,8 +545,6 @@ class FacilitiesUpdate(object):
 
 class LanduseCheckIsFarmlandOccupied(object):
     # 基本农田是否被占
-    参数名称列表 = []
-
     def __init__(self):
         self.label = "基本农田是否被占"
         self.description = ""
@@ -515,14 +552,12 @@ class LanduseCheckIsFarmlandOccupied(object):
         self.category = "用地\\检查"
 
     def getParameterInfo(self):
-        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "输入要素名称", "要素类", 参数必要性="必填", 默认值="DIST_用地规划图")._内嵌对象
-        基本农田要素名称 = bxarcpy.参数类.参数创建("基本农田要素名称", "基本农田要素名称", "要素类", 默认值="KZX_永久基本农田")._内嵌对象
-        是否输出到CAD = bxarcpy.参数类.参数创建("是否输出到CAD", "是否输出到CAD", "布尔值", 默认值=True)._内嵌对象
-        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+        输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "要素类", 参数必要性="必填", 默认值="DIST_用地规划图")._内嵌对象
+        基本农田要素名称 = bxarcpy.参数类.参数创建("基本农田要素名称", "要素类", 默认值="KZX_永久基本农田")._内嵌对象
+        是否输出到CAD = bxarcpy.参数类.参数创建("是否输出到CAD", "布尔值", 默认值=True)._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
 
-        参数列表 = [输入要素名称, 基本农田要素名称, 是否输出到CAD, 输出要素名称]
-        LanduseCheckIsFarmlandOccupied.参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
-        return 参数列表
+        return [输入要素名称, 基本农田要素名称, 是否输出到CAD, 输出要素名称]
 
     def isLicensed(self):
         return True
@@ -535,18 +570,14 @@ class LanduseCheckIsFarmlandOccupied(object):
 
     def execute(self, 参数列表, 消息):
         添加搜索路径()
-        参数字典 = {k: v for k, v in zip(LanduseCheckIsFarmlandOccupied.参数名称列表, 参数列表)}
-        参数字典temp = {}
-        for k, v in 参数字典.items():
-            if type(bxarcpy.参数类.值读取(v)) in [int, float, str, bool]:
-                参数字典temp[k] = bxarcpy.参数类.值读取(v)
-            elif type(bxarcpy.参数类.值读取(v)) is list:
-                参数字典temp[k] = [bxarcpy.参数类.值读取_作为字符串(x) for x in v]
-            else:
-                参数字典temp[k] = bxarcpy.参数类.值读取_作为字符串(v)
-        参数字典 = 参数字典temp
+        参数字典 = 参数组字典生成_转换值(参数列表)
 
-        bxgis.用地.检查.基本农田是否被占(参数字典["输入要素名称"], 参数字典["基本农田要素名称"], 参数字典["是否输出到CAD"], 参数字典["输出要素名称"])
+        bxgis.用地.检查.基本农田是否被占(
+            输入要素名称=参数字典["输入要素名称"],
+            基本农田要素名称=参数字典["基本农田要素名称"],
+            是否输出到CAD=参数字典["是否输出到CAD"],
+            输出要素名称=参数字典["输出要素名称"],
+        )
         return None
 
     def postExecute(self, 参数列表):
@@ -554,7 +585,13 @@ class LanduseCheckIsFarmlandOccupied(object):
 
 
 if __name__ == "__main__":
-    # import bxgis
+    # def aaaa():
+    #     print(locals())
+    #     for i in ['a', 'b', 'c']:
+    #         locals()[i] = 1
+    #     print(locals())
+    #     print(a)
+    # aaaa()
 
     # print(bxgis.常用_导出到CAD)
     pass
