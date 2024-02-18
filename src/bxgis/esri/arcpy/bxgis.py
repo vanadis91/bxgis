@@ -2,7 +2,9 @@
 r""""""
 __all__ = ['BaseperiodFieldsTranslateAndGenerateSubitems',
            'BaseperiodLandtypeConversion', 'ConvertCurveToPolyline',
-           'ExportToCAD', 'GenerationOfLandusePlanning', 'ImportFromCAD']
+           'ExportToCAD', 'ImportFromCAD', 'LanduseCheckIsFarmlandOccupied',
+           'LandusePlanningGeneration', 'LanduseUpdate', 'RiverEdgeGeneration',
+           'RoadEdgeGeneration']
 __alias__ = 'BXGIS工具箱'
 from arcpy.geoprocessing._base import gptooldoc, gp, gp_fixargs
 from arcpy.arcobjects.arcobjectconversion import convertArcObjectToPythonObject
@@ -89,23 +91,31 @@ def ImportFromCAD(parameter_1=None, parameter_2=None, parameter_3=None, paramete
 
 
 # 用地 toolset
-@gptooldoc('GenerationOfLandusePlanning_BXGIS工具箱', None)
-def GenerationOfLandusePlanning(parameter_1=None, parameter_2=None, parameter_3=None, parameter_4=None, parameter_5=None, parameter_6=None, parameter_7=None, parameter_8=None, parameter_9=None):
-    """GenerationOfLandusePlanning(parameter_1;parameter_1..., {parameter_2}, {parameter_3}, {parameter_4}, {parameter_5}, {parameter_6}, {parameter_7}, {parameter_8}, {parameter_9})
+@gptooldoc('LandusePlanningGeneration_BXGIS工具箱', None)
+def LandusePlanningGeneration(parameter_1=None, parameter_2=None, parameter_3=None, parameter_4=None, parameter_5=None, parameter_6=None, parameter_7=None, parameter_8=None, parameter_9=None, parameter_10=None, parameter_11=None, parameter_12=None, parameter_13=None):
+    """LandusePlanningGeneration(parameter_1;parameter_1..., {parameter_2}, {parameter_3}, {parameter_4}, {parameter_5}, {parameter_6}, {parameter_7;parameter_7...}, {parameter_8}, {parameter_9}, {parameter_10}, {parameter_11}, {parameter_12}, {parameter_13})
 
      INPUTS:
       输入要素名称列表 (要素类):
           输入要素名称列表
+      规划范围线要素名称 {要素类}:
+          规划范围线要素名称
+      是否将CAD合并入GIS {布尔}:
+          是否将CAD合并入GIS
       CAD导出色块要素名称 {要素类}:
           CAD导出色块要素名称
-      对CAD导出色块进行调整要素名称 {要素类}:
-          对CAD导出色块进行调整要素名称
-      SQL_CAD导出色块中未填色区域地类 {字符串}:
-          SQL_CAD导出色块中未填色区域地类
-      SQL_CAD导出色块中保留的地类 {字符串}:
-          SQL_CAD导出色块中保留的地类
-      范围要素 {要素类}:
-          范围要素
+      CAD导出色块以外地类调整要素名称 {要素类}:
+          CAD导出色块以外地类调整要素名称
+      CAD导出色块中空隙的地类 {字符串}:
+          CAD导出色块中空隙的地类
+      CAD导出色块中有效的地类列表描述= {字符串}:
+          CAD导出色块中有效的地类列表描述=
+      是否处理细小面 {布尔}:
+          是否处理细小面
+      GIS中已处理的细小面要素名称 {要素类}:
+          GIS中已处理的细小面要素名称
+      细小面面积阈值 {字符串}:
+          细小面面积阈值
       是否拓扑检查 {布尔}:
           是否拓扑检查
       是否范围检查 {布尔}:
@@ -117,7 +127,38 @@ def GenerationOfLandusePlanning(parameter_1=None, parameter_2=None, parameter_3=
     from arcpy.geoprocessing._base import gp, gp_fixargs
     from arcpy.arcobjects.arcobjectconversion import convertArcObjectToPythonObject
     try:
-        retval = convertArcObjectToPythonObject(gp.GenerationOfLandusePlanning_BXGIS工具箱(*gp_fixargs((parameter_1, parameter_2, parameter_3, parameter_4, parameter_5, parameter_6, parameter_7, parameter_8, parameter_9), True)))
+        retval = convertArcObjectToPythonObject(gp.LandusePlanningGeneration_BXGIS工具箱(*gp_fixargs((parameter_1, parameter_2, parameter_3, parameter_4, parameter_5, parameter_6, parameter_7, parameter_8, parameter_9, parameter_10, parameter_11, parameter_12, parameter_13), True)))
+        return retval
+    except Exception as e:
+        raise e
+
+@gptooldoc('LanduseUpdate_BXGIS工具箱', None)
+def LanduseUpdate(parameter_1=None, parameter_2=None, parameter_3=None, parameter_4=None, parameter_5=None, parameter_6=None, parameter_7=None, parameter_8=None):
+    """LanduseUpdate(parameter_1, {parameter_2}, {parameter_3}, {parameter_4}, {parameter_5}, {parameter_6}, {parameter_7}, {parameter_8})
+
+     INPUTS:
+      输入要素名称 (要素类):
+          输入要素名称
+      街坊范围线要素名称 {要素类}:
+          街坊范围线要素名称
+      分村范围线要素名称 {要素类}:
+          分村范围线要素名称
+      城镇集建区要素名称 {要素类}:
+          城镇集建区要素名称
+      城镇弹性区要素名称 {要素类}:
+          城镇弹性区要素名称
+      有扣除地类系数的要素名称 {要素类}:
+          有扣除地类系数的要素名称
+      有坐落单位信息的要素名称 {要素类}:
+          有坐落单位信息的要素名称
+
+     OUTPUTS:
+      输出要素名称 {要素类}:
+          输出要素名称"""
+    from arcpy.geoprocessing._base import gp, gp_fixargs
+    from arcpy.arcobjects.arcobjectconversion import convertArcObjectToPythonObject
+    try:
+        retval = convertArcObjectToPythonObject(gp.LanduseUpdate_BXGIS工具箱(*gp_fixargs((parameter_1, parameter_2, parameter_3, parameter_4, parameter_5, parameter_6, parameter_7, parameter_8), True)))
         return retval
     except Exception as e:
         raise e
@@ -158,6 +199,79 @@ def BaseperiodLandtypeConversion(parameter_1=None, parameter_2=None):
     from arcpy.arcobjects.arcobjectconversion import convertArcObjectToPythonObject
     try:
         retval = convertArcObjectToPythonObject(gp.BaseperiodLandtypeConversion_BXGIS工具箱(*gp_fixargs((parameter_1, parameter_2), True)))
+        return retval
+    except Exception as e:
+        raise e
+
+
+# 用地\检查 toolset
+@gptooldoc('LanduseCheckIsFarmlandOccupied_BXGIS工具箱', None)
+def LanduseCheckIsFarmlandOccupied(parameter_1=None, parameter_2=None, parameter_3=None, parameter_4=None):
+    """LanduseCheckIsFarmlandOccupied(parameter_1, {parameter_2}, {parameter_3}, {parameter_4})
+
+     INPUTS:
+      输入要素名称 (要素类):
+          输入要素名称
+      基本农田要素名称 {要素类}:
+          基本农田要素名称
+      是否输出到CAD {布尔}:
+          是否输出到CAD
+
+     OUTPUTS:
+      输出要素名称 {要素类}:
+          输出要素名称"""
+    from arcpy.geoprocessing._base import gp, gp_fixargs
+    from arcpy.arcobjects.arcobjectconversion import convertArcObjectToPythonObject
+    try:
+        retval = convertArcObjectToPythonObject(gp.LanduseCheckIsFarmlandOccupied_BXGIS工具箱(*gp_fixargs((parameter_1, parameter_2, parameter_3, parameter_4), True)))
+        return retval
+    except Exception as e:
+        raise e
+
+
+# 道路 toolset
+@gptooldoc('RiverEdgeGeneration_BXGIS工具箱', None)
+def RiverEdgeGeneration(parameter_1=None, parameter_2=None, parameter_3=None, parameter_4=None):
+    """RiverEdgeGeneration(parameter_1, {parameter_2}, {parameter_3}, {parameter_4})
+
+     INPUTS:
+      河道中线要素名称 (要素类):
+          河道中线要素名称
+      用地要素名称 {要素类}:
+          用地要素名称
+      规划范围线要素名称 {要素类}:
+          规划范围线要素名称
+
+     OUTPUTS:
+      输出要素名称 {要素类}:
+          输出要素名称"""
+    from arcpy.geoprocessing._base import gp, gp_fixargs
+    from arcpy.arcobjects.arcobjectconversion import convertArcObjectToPythonObject
+    try:
+        retval = convertArcObjectToPythonObject(gp.RiverEdgeGeneration_BXGIS工具箱(*gp_fixargs((parameter_1, parameter_2, parameter_3, parameter_4), True)))
+        return retval
+    except Exception as e:
+        raise e
+
+@gptooldoc('RoadEdgeGeneration_BXGIS工具箱', None)
+def RoadEdgeGeneration(parameter_1=None, parameter_2=None, parameter_3=None, parameter_4=None):
+    """RoadEdgeGeneration(parameter_1, {parameter_2}, {parameter_3}, {parameter_4})
+
+     INPUTS:
+      道路中线要素名称 (要素类):
+          道路中线要素名称
+      用地要素名称 {要素类}:
+          用地要素名称
+      规划范围线要素名称 {要素类}:
+          规划范围线要素名称
+
+     OUTPUTS:
+      输出要素名称 {要素类}:
+          输出要素名称"""
+    from arcpy.geoprocessing._base import gp, gp_fixargs
+    from arcpy.arcobjects.arcobjectconversion import convertArcObjectToPythonObject
+    try:
+        retval = convertArcObjectToPythonObject(gp.RoadEdgeGeneration_BXGIS工具箱(*gp_fixargs((parameter_1, parameter_2, parameter_3, parameter_4), True)))
         return retval
     except Exception as e:
         raise e

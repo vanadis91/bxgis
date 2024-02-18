@@ -7,22 +7,14 @@ from .常量 import _要素类型反映射
 
 class 游标类:
     _需操作的字段名称列表映射表 = {
-        "SHAPE@": "SHAPE@",
         "_形状": "SHAPE@",
-        "OID@": "OID@",
         "_ID": "OID@",
         "_面积": "SHAPE@AREA",
-        "SHAPE@AREA": "SHAPE@AREA",
         "_长度": "SHAPE@LENGTH",
-        "SHAPE@LENGTH": "SHAPE@LENGTH",
         "_质心": "SHAPE@CENTROID",
-        "SHAPE@CENTROID": "SHAPE@CENTROID",
         "_外接矩形": "SHAPE@EXTENT",
-        "SHAPE@EXTENT": "SHAPE@EXTENT",
-        "_外接矩形": "SHAPE@EXTENT",
-        "SHAPE@EXTENT": "SHAPE@EXTENT",
         "_坐标": "SHAPE@XY",
-        "SHAPE@XY": "SHAPE@XY",
+        "_WKT格式": "SHAPE@WKT",
     }
 
     # class 行对象类:
@@ -103,7 +95,7 @@ class 游标类:
                 return 游标类.形状类(ret)
             else:
                 return ret
-            
+
         def 并集(self, 合并要素形状: "游标类.形状类"):
             ret = self._内嵌对象.union(合并要素形状._内嵌对象)
             if ret:
@@ -164,7 +156,7 @@ class 游标类:
         #     return self._内嵌对象.getPartCount()
 
     @staticmethod
-    def 游标创建_通过名称(游标类型, 输入要素名称, 需操作的字段名称列表):
+    def 游标创建_通过名称(游标类型, 输入要素名称, 需操作的字段名称列表: list):
         return 游标类(游标类型, 输入要素名称, 需操作的字段名称列表)
 
     def __init__(self, 游标类型, 输入要素名称, 需操作的字段名称列表: list):
@@ -179,13 +171,13 @@ class 游标类:
 
         self.字段名称列表 = 需操作的字段名称列表
         self.游标类型 = 游标类型
-        需更新的字段名称列表temp = []
+        需操作的字段名称列表temp = []
         for x in 需操作的字段名称列表:
             if x in 游标类._需操作的字段名称列表映射表:
-                需更新的字段名称列表temp.append(游标类._需操作的字段名称列表映射表[x])
+                需操作的字段名称列表temp.append(游标类._需操作的字段名称列表映射表[x])
             else:
-                需更新的字段名称列表temp.append(x)
-        需操作的字段名称列表 = 需更新的字段名称列表temp
+                需操作的字段名称列表temp.append(x)
+        需操作的字段名称列表 = 需操作的字段名称列表temp
         # print(需操作的字段名称列表)
         if 游标类型 in ["更新"]:
             self._内嵌对象 = arcpy.da.UpdateCursor(输入要素名称, 需操作的字段名称列表)  # type: ignore

@@ -82,6 +82,8 @@ class Toolbox(object):
             BaseperiodFieldsTranslateAndGenerateSubitems,
             LanduseUpdate,
             LanduseCheckIsFarmlandOccupied,
+            RoadEdgeGeneration,
+            RiverEdgeGeneration,
         ]
 
 
@@ -354,11 +356,19 @@ class LandusePlanningGeneration(object):
         if bxarcpy.参数类.值读取(参数字典["是否处理细小面"]):
             bxarcpy.参数类.可用性设置(参数字典["GIS中已处理的细小面要素名称"], True)
             bxarcpy.参数类.可用性设置(参数字典["细小面面积阈值"], True)
+        else:
+            bxarcpy.参数类.可用性设置(参数字典["GIS中已处理的细小面要素名称"], False)
+            bxarcpy.参数类.可用性设置(参数字典["细小面面积阈值"], False)
         if bxarcpy.参数类.值读取(参数字典["是否将CAD合并入GIS"]):
             bxarcpy.参数类.可用性设置(参数字典["CAD导出色块要素名称"], True)
             bxarcpy.参数类.可用性设置(参数字典["CAD导出色块以外地类调整要素名称"], True)
             bxarcpy.参数类.可用性设置(参数字典["CAD导出色块中空隙的地类"], True)
             bxarcpy.参数类.可用性设置(参数字典["CAD导出色块中有效的地类列表"], True)
+        else:
+            bxarcpy.参数类.可用性设置(参数字典["CAD导出色块要素名称"], False)
+            bxarcpy.参数类.可用性设置(参数字典["CAD导出色块以外地类调整要素名称"], False)
+            bxarcpy.参数类.可用性设置(参数字典["CAD导出色块中空隙的地类"], False)
+            bxarcpy.参数类.可用性设置(参数字典["CAD导出色块中有效的地类列表"], False)
 
     def updateMessages(self, 参数列表):
         return None
@@ -510,12 +520,13 @@ class FacilitiesUpdate(object):
 
     def getParameterInfo(self):
         输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "要素类", 参数必要性="必填", 默认值="SS_配套设施")._内嵌对象
+        是否根据坐标字段移动设施坐标 = bxarcpy.参数类.参数创建("是否根据坐标字段移动设施坐标", "布尔值", 默认值=True)._内嵌对象
         规划范围线要素名称 = bxarcpy.参数类.参数创建("规划范围线要素名称", "要素类", 默认值="JX_规划范围线")._内嵌对象
         工业片区范围线要素名称 = bxarcpy.参数类.参数创建("工业片区范围线要素名称", "要素类", 默认值="JX_工业片区范围线")._内嵌对象
         城镇集建区要素名称 = bxarcpy.参数类.参数创建("城镇集建区要素名称", "要素类", 默认值="KZX_城镇集建区")._内嵌对象
         城镇弹性区要素名称 = bxarcpy.参数类.参数创建("城镇弹性区要素名称", "要素类", 默认值="KZX_城镇弹性区")._内嵌对象
         输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
-        return [输入要素名称, 规划范围线要素名称, 工业片区范围线要素名称, 城镇集建区要素名称, 城镇弹性区要素名称, 输出要素名称]
+        return [输入要素名称, 是否根据坐标字段移动设施坐标, 规划范围线要素名称, 工业片区范围线要素名称, 城镇集建区要素名称, 城镇弹性区要素名称, 输出要素名称]
 
     def isLicensed(self):
         return True
@@ -531,6 +542,7 @@ class FacilitiesUpdate(object):
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.设施.设施更新(
             输入要素名称=参数字典["输入要素名称"],
+            是否根据坐标字段移动设施坐标=参数字典["是否根据坐标字段移动设施坐标"],
             规划范围线要素名称=参数字典["规划范围线要素名称"],
             工业片区范围线要素名称=参数字典["工业片区范围线要素名称"],
             城镇集建区要素名称=参数字典["城镇集建区要素名称"],
@@ -576,6 +588,86 @@ class LanduseCheckIsFarmlandOccupied(object):
             输入要素名称=参数字典["输入要素名称"],
             基本农田要素名称=参数字典["基本农田要素名称"],
             是否输出到CAD=参数字典["是否输出到CAD"],
+            输出要素名称=参数字典["输出要素名称"],
+        )
+        return None
+
+    def postExecute(self, 参数列表):
+        return None
+
+
+class RoadEdgeGeneration(object):
+    # 道路边线生成
+    def __init__(self):
+        self.label = "道路边线生成"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = "道路"
+
+    def getParameterInfo(self):
+        道路中线要素名称 = bxarcpy.参数类.参数创建("道路中线要素名称", "要素类", 参数必要性="必填", 默认值="DL_道路中线")._内嵌对象
+        用地要素名称 = bxarcpy.参数类.参数创建("用地要素名称", "要素类", 默认值="DIST_用地规划图")._内嵌对象
+        规划范围线要素名称 = bxarcpy.参数类.参数创建("规划范围线要素名称", "要素类", 默认值="JX_规划范围线")._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+
+        return [道路中线要素名称, 用地要素名称, 规划范围线要素名称, 输出要素名称]
+
+    def isLicensed(self):
+        return True
+
+    def updateParameters(self, 参数列表):
+        return None
+
+    def updateMessages(self, 参数列表):
+        return None
+
+    def execute(self, 参数列表, 消息):
+        添加搜索路径()
+        参数字典 = 参数组字典生成_转换值(参数列表)
+        bxgis.道路.道路边线生成(
+            道路中线要素名称=参数字典["道路中线要素名称"],
+            用地要素名称=参数字典["用地要素名称"],
+            规划范围线要素名称=参数字典["规划范围线要素名称"],
+            输出要素名称=参数字典["输出要素名称"],
+        )
+        return None
+
+    def postExecute(self, 参数列表):
+        return None
+
+
+class RiverEdgeGeneration(object):
+    # 河道边线生成
+    def __init__(self):
+        self.label = "河道边线生成"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = "道路"
+
+    def getParameterInfo(self):
+        河道中线要素名称 = bxarcpy.参数类.参数创建("河道中线要素名称", "要素类", 参数必要性="必填", 默认值="DL_河道中线")._内嵌对象
+        用地要素名称 = bxarcpy.参数类.参数创建("用地要素名称", "要素类", 默认值="DIST_用地规划图")._内嵌对象
+        规划范围线要素名称 = bxarcpy.参数类.参数创建("规划范围线要素名称", "要素类", 默认值="JX_规划范围线")._内嵌对象
+        输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
+
+        return [河道中线要素名称, 用地要素名称, 规划范围线要素名称, 输出要素名称]
+
+    def isLicensed(self):
+        return True
+
+    def updateParameters(self, 参数列表):
+        return None
+
+    def updateMessages(self, 参数列表):
+        return None
+
+    def execute(self, 参数列表, 消息):
+        添加搜索路径()
+        参数字典 = 参数组字典生成_转换值(参数列表)
+        bxgis.道路.河道边线生成(
+            河道中线要素名称=参数字典["河道中线要素名称"],
+            用地要素名称=参数字典["用地要素名称"],
+            规划范围线要素名称=参数字典["规划范围线要素名称"],
             输出要素名称=参数字典["输出要素名称"],
         )
         return None
