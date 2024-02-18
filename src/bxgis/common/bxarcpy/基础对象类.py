@@ -10,7 +10,7 @@ class 数组:
             self._内嵌对象 = 内嵌对象
 
     @staticmethod
-    def 数组创建(内容=[]):
+    def 数组创建(内容=None):
         return 数组(arcpy.Array(内容))
 
     def 项插入(self, 项):
