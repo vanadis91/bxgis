@@ -133,8 +133,8 @@ def LandusePlanningGeneration(parameter_1=None, parameter_2=None, parameter_3=No
         raise e
 
 @gptooldoc('LanduseUpdate_BXGIS工具箱', None)
-def LanduseUpdate(parameter_1=None, parameter_2=None, parameter_3=None, parameter_4=None, parameter_5=None, parameter_6=None, parameter_7=None, parameter_8=None):
-    """LanduseUpdate(parameter_1, {parameter_2}, {parameter_3}, {parameter_4}, {parameter_5}, {parameter_6}, {parameter_7}, {parameter_8})
+def LanduseUpdate(parameter_1=None, parameter_2=None, parameter_3=None, parameter_4=None, parameter_5=None, parameter_6=None, parameter_7=None, parameter_8=None, parameter_9=None):
+    """LanduseUpdate(parameter_1, {parameter_2}, {parameter_3}, {parameter_4}, {parameter_5}, {parameter_6}, {parameter_7}, {parameter_8}, {parameter_9})
 
      INPUTS:
       输入要素名称 (要素类):
@@ -151,6 +151,8 @@ def LanduseUpdate(parameter_1=None, parameter_2=None, parameter_3=None, paramete
           有扣除地类系数的要素名称
       有坐落单位信息的要素名称 {要素类}:
           有坐落单位信息的要素名称
+      设施要素名称 {要素类}:
+          设施要素名称
 
      OUTPUTS:
       输出要素名称 {要素类}:
@@ -158,7 +160,7 @@ def LanduseUpdate(parameter_1=None, parameter_2=None, parameter_3=None, paramete
     from arcpy.geoprocessing._base import gp, gp_fixargs
     from arcpy.arcobjects.arcobjectconversion import convertArcObjectToPythonObject
     try:
-        retval = convertArcObjectToPythonObject(gp.LanduseUpdate_BXGIS工具箱(*gp_fixargs((parameter_1, parameter_2, parameter_3, parameter_4, parameter_5, parameter_6, parameter_7, parameter_8), True)))
+        retval = convertArcObjectToPythonObject(gp.LanduseUpdate_BXGIS工具箱(*gp_fixargs((parameter_1, parameter_2, parameter_3, parameter_4, parameter_5, parameter_6, parameter_7, parameter_8, parameter_9), True)))
         return retval
     except Exception as e:
         raise e

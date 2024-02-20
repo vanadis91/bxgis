@@ -68,7 +68,10 @@ class 要素类:
             # 日志.输出控制台(self.名称)
             # 日志.输出控制台(self.名称_无路径)
             输出要素名称 = "in_memory\\AA_" + self.名称_无路径 + "_" + 工具集.生成短GUID()
-        arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
+        try:
+            arcpy.management.CopyFeatures(in_features=self.名称, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
+        except:
+            arcpy.management.CopyFeatures(in_features=self.名称_无路径, out_feature_class=输出要素名称, config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0)  # type: ignore
         return 要素类(名称=输出要素名称)
 
     def 要素创建_通过复制并重命名重名要素(self, 输出要素名称="内存临时", 重名要素后缀=""):
@@ -77,7 +80,7 @@ class 要素类:
         from .环境 import 环境
 
         if 输出要素名称 == "内存临时":
-            输出要素名称 = "in_memory\\AA_" + self.名称 + "_" + 工具集.生成短GUID()
+            输出要素名称 = "in_memory\\AA_" + self.名称_无路径 + "_" + 工具集.生成短GUID()
         database = 数据库类.数据库读取_通过路径(配置.当前工作空间)
         要素名称列表 = database.要素名称列表获取()
         if 输出要素名称 in 要素名称列表:
@@ -431,10 +434,12 @@ class 要素类:
         # print(点字段列表)
         with 游标类.游标创建_通过名称("查找", self.名称, 字段列表) as 面要素游标对象:
             with 游标类.游标创建_通过名称("插入", 点要素.名称, 点字段列表) as 点要素游标对象:
+                from .几何对象类 import 几何对象类
+
                 for x in 面要素游标对象:
                     try:
                         # 日志.输出调试(f"x[0]是{x[0]._内嵌对象}")
-                        x["_形状"] = x["_形状"].内点
+                        x["_形状"] = 几何对象类.内点获取(x["_形状"])
                         x["FID_" + self.名称_无路径] = x["_ID"]
                         del x["_ID"]
                         # 日志.输出调试(f"内点是{内点}")
@@ -442,7 +447,7 @@ class 要素类:
                     except Exception as e:
                         print(f"内点获取发生错误：{e}")
                         print(f"ID为 {x['_ID']} 的对象无法获取到内点，取了端点")
-                        x["_形状"] = x["_形状"].点表[0][0]
+                        x["_形状"] = 几何对象类.点表获取(x["_形状"])[0][0]
                         x["FID_" + self.名称_无路径] = x["_ID"]
                         del x["_ID"]
                         # 日志.输出调试(f"端点是{端点}")

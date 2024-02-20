@@ -16,8 +16,8 @@ def 导出到CAD(输入要素名称="DIST_用地规划图", 范围要素名称: 
         裁剪后要素 = 输入要素
 
     if 需融合地类编号列表:
-        for x in 需融合地类编号列表:
-            SQL语句 = f"地类编号 = '{x}'"
+        for 面x in 需融合地类编号列表:
+            SQL语句 = f"地类编号 = '{面x}'"
             日志.输出调试(f"SQL语句是：{SQL语句}")
             选择集 = 裁剪后要素.选择集创建_通过属性(SQL语句=SQL语句)
             融合后要素 = 选择集.要素创建_通过融合(融合字段列表=["地类编号"])
@@ -32,14 +32,14 @@ def 导出到CAD(输入要素名称="DIST_用地规划图", 范围要素名称: 
         # {"折点数量": 1500, "孔洞数量": 3, "面积": 1500000, '地类编号列表': ['1207']}
         融合后要素.字段添加("是否切分")
         with bxarcpy.游标类.游标创建_通过名称("更新", 融合后要素.名称, ["_形状", "是否切分", "_ID", "地类编号"]) as 游标:
-            for x in 游标:
-                图形: "bxarcpy.游标类.形状类" = x["_形状"]
+            for 面x in 游标:
+                图形 = 面x["_形状"]
                 # print(行.数据_列表格式[0])
                 # print(type(行.数据_列表格式[0]))
-                if 图形.孔洞数量 >= 切分阈值["孔洞数量"] and 图形.折点数量 >= 切分阈值["折点数量"] and 图形.面积 >= 切分阈值["面积"] and x["地类编号"] in 切分阈值["地类编号列表"]:
-                    x["是否切分"] = "1"
-                    游标.行更新(x)
-                    日志.输出信息(f"ID：{str(x['_ID'])}，孔洞数量：{str(图形.孔洞数量)}, 折点数量：{str(图形.折点数量)}，面积：{str(图形.面积)}，地类：{x['地类编号']}")
+                if bxarcpy.几何对象类.孔洞数量获取(图形) >= 切分阈值["孔洞数量"] and bxarcpy.几何对象类.折点数量获取(图形) >= 切分阈值["折点数量"] and bxarcpy.几何对象类.面积获取(图形) >= 切分阈值["面积"] and 面x["地类编号"] in 切分阈值["地类编号列表"]:
+                    面x["是否切分"] = "1"
+                    游标.行更新(面x)
+                    日志.输出信息(f"ID：{str(面x['_ID'])}，孔洞数量：{str(bxarcpy.几何对象类.孔洞数量获取(图形))}, 折点数量：{str(bxarcpy.几何对象类.折点数量获取(图形))}，面积：{str(bxarcpy.几何对象类.面积获取(图形))}，地类：{面x['地类编号']}")
         选择集 = 融合后要素.选择集创建_通过属性(SQL语句=f"是否切分 = '1'")
         切分后要素 = 选择集.要素创建_通过切分()
         切分后要素 = 融合后要素.要素创建_通过更新(更新要素名称=切分后要素.名称)
@@ -47,23 +47,19 @@ def 导出到CAD(输入要素名称="DIST_用地规划图", 范围要素名称: 
         切分后要素 = 融合后要素
 
     if 是否去孔:
-        import sys
-
-        sys.path.append(r"C:\Users\beixiao\Project\bxgeo")
-        sys.path.append(r"C:\Users\beixiao\Project\bxgeo\.venv\Lib\site-packages")
         import bxgeo
 
         DIST_用地规划图线 = bxarcpy.要素类.要素创建_通过名称("DIST_用地规划图线", "线", 切分后要素.名称)
-        线要素字段名称列表 = DIST_用地规划图线.字段名称列表获取()
-        线要素字段名称列表.remove("OBJECTID")
-        线要素字段名称列表.remove("Shape")
-        线要素字段名称列表.remove("Shape_Length")
-        线要素字段名称列表.remove("Shape_Area")
+        线要素字段名称列表 = DIST_用地规划图线.字段名称列表获取(含系统字段=False)
+        # 线要素字段名称列表.remove("OBJECTID")
+        # 线要素字段名称列表.remove("Shape")
+        # 线要素字段名称列表.remove("Shape_Length")
+        # 线要素字段名称列表.remove("Shape_Area")
         with bxarcpy.游标类.游标创建_通过名称("插入", DIST_用地规划图线.名称, [*线要素字段名称列表, "_形状"]) as 游标_线:
             with bxarcpy.游标类.游标创建_通过名称("查询", 切分后要素.名称, [*线要素字段名称列表, "_形状"]) as 游标_面:
-                for x in 游标_面:
+                for 面x in 游标_面:
                     partList = []
-                    for part in x["_形状"].点表:
+                    for part in bxarcpy.几何对象类.点表获取(面x["_形状"]):
                         ptList = []
                         shapeList = []
                         for pt in part:
@@ -79,23 +75,20 @@ def 导出到CAD(输入要素名称="DIST_用地规划图", 范围要素名称: 
                     for part in partList:
                         扁平List.extend(part)
 
-                    a = bxgeo.环.环创建_通过点表(扁平List[0])
+                    a = bxgeo.环.环创建_通过点表(扁平List[0])._内嵌对象
                     if len(扁平List) > 1:
                         for shape in 扁平List[1:]:
-                            b = bxgeo.环.环创建_通过点表(shape)
-                            a = bxgeo.环.多部件连接(a, b)  # type: ignore
+                            b = bxgeo.环.环创建_通过点表(shape)._内嵌对象
+                            a = bxgeo.环.多部件连接(a, b)._内嵌对象  # type: ignore
                     点表 = bxgeo.线.坐标获取(a)  # type: ignore
-
                     array = bxarcpy.数组.数组创建()._内嵌对象
                     part_array = bxarcpy.数组.数组创建()._内嵌对象
                     for pt in 点表:
                         点 = bxarcpy.点.点创建(*pt)._内嵌对象
                         bxarcpy.数组.项插入(part_array, 点)  # type: ignore
                     bxarcpy.数组.项插入(array, part_array)  # type: ignore
-                    polyline = bxarcpy.线.线创建(array)._内嵌对象
-                    x["_形状"] = bxarcpy.游标类.形状类(polyline)
-
-                    游标_线.行插入(x)
+                    面x["_形状"] = bxarcpy.线.线创建(array)._内嵌对象
+                    游标_线.行插入(面x)
         去孔后要素 = DIST_用地规划图线
     else:
         去孔后要素 = 切分后要素
@@ -105,7 +98,10 @@ def 导出到CAD(输入要素名称="DIST_用地规划图", 范围要素名称: 
     去孔后要素.字段添加("实体类型").字段计算("实体类型", '"控规地块"')
     去孔后要素.字段删除(["ORIG_FID", "地类编号", "是否切分"])
     # 去孔后要素.要素创建_通过复制并重命名重名要素("DIST_用地规划图2")
-
+    # with bxarcpy.游标类.游标创建_通过名称("查询", 去孔后要素.名称, ["_形状"]) as 游标:
+    #     for x in 游标:
+    #         日志.输出控制台(f"{bxarcpy.几何对象类.折点数量获取(x['_形状'])}")
+    # 去孔后要素.要素创建_通过复制并重命名重名要素("AA_123")
     去孔后要素.导出到CAD(输出CAD路径)
 
 
