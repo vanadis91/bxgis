@@ -11,3 +11,4 @@
 /*.xml
 dist.bat
 setup.py
+**/24.**.**
