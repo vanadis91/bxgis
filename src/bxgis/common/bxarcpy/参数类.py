@@ -33,7 +33,7 @@ class 参数类:
         self._内嵌对象: arcpy.Parameter = 内嵌对象
 
     @staticmethod
-    def 参数创建(名称, 数据类型: Literal["要素图层", "要素类", "布尔值", "双精度", "字段", "长整型", "字符串", "表", "工作空间", "值表", "文件", "文件夹", "数据文件", "CAD数据集"], 描述=None, 参数必要性: Literal["必填", "选填", "隐藏的返回值"] = "选填", 参数类型: Literal["输入参数", "输出参数"] = "输入参数", 是否多个值=False, 是否可用=True, 默认值=None):
+    def 参数创建(名称, 数据类型: Literal["要素图层", "要素类", "布尔值", "双精度", "字段", "长整型", "字符串", "表", "工作空间", "值表", "文件", "文件夹", "数据文件", "CAD数据集"], 描述=None, 参数必要性: Literal["必填", "选填", "隐藏的返回值"] = "选填", 参数类型: Literal["输入参数", "输出参数"] = "输入参数", 是否多个值=False, 是否可用=True, 默认值=None, 所依赖参数名称列表=None):
         数据类型raw = _数据类型映射[数据类型] if 数据类型 in _数据类型映射 else 数据类型
         参数必要性raw = _数据必要性映射[参数必要性] if 参数必要性 in _数据必要性映射 else 参数必要性
         参数类型raw = _参数类型映射[参数类型] if 参数类型 in _参数类型映射 else 参数类型
@@ -51,6 +51,9 @@ class 参数类:
         )
         if 默认值:
             参数类.值设置(ret._内嵌对象, 默认值)
+        if 所依赖参数名称列表:
+            参数类.依赖关系设置(ret._内嵌对象, 所依赖参数名称列表)
+            ret._内嵌对象.schema.clone = True
         return ret
 
     def 值读取(self: Union["参数类", arcpy.Parameter]):
@@ -75,6 +78,10 @@ class 参数类:
     def 可用性设置(self: Union["参数类", arcpy.Parameter], 布尔值):
         self为自定义类, 内嵌对象 = (True, self._内嵌对象) if type(self) is 参数类 else (False, self)
         内嵌对象.enabled = 布尔值  # type: ignore
+
+    def 依赖关系设置(self: Union["参数类", arcpy.Parameter], 参数名称列表):
+        self为自定义类, 内嵌对象 = (True, self._内嵌对象) if type(self) is 参数类 else (False, self)
+        内嵌对象.parameterDependencies = 参数名称列表  # type: ignore
 
     def 过滤器读取(self):
         self为自定义类, 内嵌对象 = (True, self._内嵌对象) if type(self) is 参数类 else (False, self)
