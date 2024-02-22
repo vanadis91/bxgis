@@ -2,11 +2,13 @@
 **/.venv
 **/#历史版本
 **/__pycache__
-**/tests
+**/test
 **/.vscode
 /bxgis.code-workspace
 **/dist.bat
+**/setup.py
 /Pipfile.lock
 /*.xml
 dist.bat
-*_24*
+setup.py
+**/24.**.**
