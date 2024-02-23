@@ -20,7 +20,7 @@ _数据类型映射 = {
 _数据必要性映射 = {
     "必填": "Required",
     "选填": "Optional",
-    "隐藏的返回值": "Derived",
+    "隐藏的输出参数": "Derived",
 }
 _参数类型映射 = {
     "输入参数": "Input",
@@ -33,7 +33,7 @@ class 参数类:
         self._内嵌对象: arcpy.Parameter = 内嵌对象
 
     @staticmethod
-    def 参数创建(名称, 数据类型: Literal["要素图层", "要素类", "布尔值", "双精度", "字段", "长整型", "字符串", "表", "工作空间", "值表", "文件", "文件夹", "数据文件", "CAD数据集"], 描述=None, 参数必要性: Literal["必填", "选填", "隐藏的返回值"] = "选填", 参数类型: Literal["输入参数", "输出参数"] = "输入参数", 是否多个值=False, 是否可用=True, 默认值=None, 所依赖参数名称列表=None):
+    def 参数创建(名称, 数据类型: Literal["要素图层", "要素类", "布尔值", "双精度", "字段", "长整型", "字符串", "表", "工作空间", "值表", "文件", "文件夹", "数据文件", "CAD数据集"], 描述=None, 参数必要性: Literal["必填", "选填", "隐藏的返回值"] = "选填", 参数类型: Literal["输入参数", "输出参数"] = "输入参数", 是否多个值=False, 是否可用=True, 默认值=None, 所依赖参数名称列表=None, 参数预设类型: Literal["值列表", "值区间", None] = None, 参数预设列表: Union[list, None] = None):
         数据类型raw = _数据类型映射[数据类型] if 数据类型 in _数据类型映射 else 数据类型
         参数必要性raw = _数据必要性映射[参数必要性] if 参数必要性 in _数据必要性映射 else 参数必要性
         参数类型raw = _参数类型映射[参数类型] if 参数类型 in _参数类型映射 else 参数类型
@@ -49,11 +49,29 @@ class 参数类:
                 multiValue=是否多个值,
             )
         )
+
         if 默认值:
             参数类.值设置(ret._内嵌对象, 默认值)
+
         if 所依赖参数名称列表:
             参数类.依赖关系设置(ret._内嵌对象, 所依赖参数名称列表)
-            ret._内嵌对象.schema.clone = True
+            # ret._内嵌对象.schema.clone = True
+
+        if 参数预设类型 == "值列表":
+            ret._内嵌对象.filter.type = "ValueList"
+        elif 参数预设类型 == "值区间":
+            ret._内嵌对象.filter.type = "Range"
+        if 参数预设类型 and 参数预设列表:
+            from . import 常量
+
+            listTemp = []
+            for x in 参数预设列表:
+                if x in 常量._要素类型映射:
+                    listTemp.append(常量._要素类型映射[x])
+                else:
+                    listTemp.append(x)
+            值raw = listTemp
+            ret._内嵌对象.filter.list = 值raw
         return ret
 
     def 值读取(self: Union["参数类", arcpy.Parameter]):
@@ -83,7 +101,7 @@ class 参数类:
         self为自定义类, 内嵌对象 = (True, self._内嵌对象) if type(self) is 参数类 else (False, self)
         内嵌对象.parameterDependencies = 参数名称列表  # type: ignore
 
-    def 过滤器读取(self):
+    def 过滤器读取(self: Union["参数类", arcpy.Parameter]):
         self为自定义类, 内嵌对象 = (True, self._内嵌对象) if type(self) is 参数类 else (False, self)
         return 参数类.过滤器类(内嵌对象.filter)  # type: ignore
 
@@ -104,11 +122,10 @@ class 参数类:
 
             listTemp = []
             for x in 值:
-                if x in 常量._要素类型映射.keys():
-                    ret = 常量._要素类型映射[x]
+                if x in 常量._要素类型映射:
+                    listTemp.append(常量._要素类型映射[x])
                 else:
-                    ret = x
-            listTemp.append(ret)
+                    listTemp.append(x)
             值raw = listTemp
             内嵌对象.list = 值raw  # type: ignore
 
