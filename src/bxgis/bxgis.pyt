@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-def 添加搜索路径():
+def 初始化_添加搜索路径():
     import os
     import sys
 
@@ -9,26 +9,37 @@ def 添加搜索路径():
     if 该文件的目录.split("\\")[-1] == "bxgis":
         当前工作路径 = os.getcwd()
         os.chdir(该文件的目录)
-        项目根目录 = os.path.abspath("..\\..\\")
+        项目src目录 = os.path.abspath("..\\")
         os.chdir(当前工作路径)
-        if 项目根目录 + "\\src" not in sys.path:
-            sys.path.append(项目根目录 + "\\.venv\\Lib\\site-packages")
-            sys.path.append(项目根目录 + "\\src\\bxgis\\common")
-            sys.path.append(项目根目录 + "\\src")
+        if 项目src目录 not in sys.path:
+            sys.path.append(项目src目录)
     elif 该文件的目录.split("\\")[-1] == "toolboxes":
         当前工作路径 = os.getcwd()
         os.chdir(该文件的目录)
-        项目根目录 = os.path.abspath("..\\..\\..\\..\\")
+        项目src目录 = os.path.abspath("..\\..\\..\\")
         os.chdir(当前工作路径)
-        if 项目根目录 + "\\src" not in sys.path:
-            sys.path.append(项目根目录 + "\\.venv\\Lib\\site-packages")
-            sys.path.append(项目根目录 + "\\src\\bxgis\\common")
-            sys.path.append(项目根目录 + "\\src")
+        if 项目src目录 not in sys.path:
+            sys.path.append(项目src目录)
     else:
         raise ValueError("添加搜索路径失败。")
+    from bxgis import 配置
+
+    if 配置.计算机信息.环境 == "开发环境" and 项目src目录 + "\\bxgis\\common" not in sys.path:
+        sys.path.append(项目src目录 + "\\bxgis\\common")
+
+
+def 初始化_重置模块(模块=None):
+    from bxgis import 配置
+
+    if 模块 and 配置.计算机信息.环境 == "开发环境":
+        import importlib
+
+        importlib.reload(模块)
 
 
 def 参数组字典生成_转换值(参数列表):
+    import bxarcpy
+
     参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
     参数字典 = {k: v for k, v in zip(参数名称列表, 参数列表)}
     参数字典temp = {}
@@ -48,15 +59,11 @@ def 参数组字典生成_转换值(参数列表):
 
 
 def 参数组字典生成(参数列表):
+    import bxarcpy
+
     参数名称列表 = [bxarcpy.参数类.名称读取(x) for x in 参数列表]
     参数字典 = {k: v for k, v in zip(参数名称列表, 参数列表)}
     return 参数字典
-
-
-添加搜索路径()
-
-import bxgis
-from bxgis import bxarcpy
 
 
 class Toolbox(object):
@@ -101,7 +108,9 @@ class ExportToCAD(object):
         self.category = "常用"
 
     def getParameterInfo(self):
+        初始化_添加搜索路径()
         from bxgis import 配置
+        import bxarcpy
 
         输入要素 = bxarcpy.参数类.参数创建("输入要素", "要素类", 参数必要性="必填")._内嵌对象
 
@@ -130,6 +139,9 @@ class ExportToCAD(object):
         return [输入要素, 是否将要素按范围裁剪, 规划范围线要素名称, 是否对要素进行融合, 需融合地类编号列表, 是否对要素进行切分, 切分时折点数量阈值, 切分时孔洞数量阈值, 切分时面积阈值, 切分时地类编号限制列表, 是否去孔, 输出CAD路径]
 
     def updateParameters(self, 参数列表):
+        初始化_添加搜索路径()
+        import bxarcpy
+
         参数字典 = 参数组字典生成(参数列表)
         if bxarcpy.参数类.值读取(参数字典["是否将要素按范围裁剪"]):
             bxarcpy.参数类.可用性设置(参数字典["规划范围线要素名称"], True)
@@ -157,15 +169,14 @@ class ExportToCAD(object):
         return None
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         # 日志.输出控制台(参数字典)
         规划范围线要素名称 = 参数字典["规划范围线要素名称"] if 参数字典["是否将要素按范围裁剪"] else None
         需融合地类编号列表 = 参数字典["需融合地类编号列表"] if 参数字典["是否对要素进行融合"] else None
         切分阈值 = {"折点数量": 参数字典["切分时折点数量阈值"], "孔洞数量": 参数字典["切分时孔洞数量阈值"], "面积": 参数字典["切分时面积阈值"], "地类编号列表": 参数字典["切分时地类编号限制列表"]} if 参数字典["是否对要素进行切分"] else None
-        import importlib
+        import bxgis
 
-        importlib.reload(bxgis.常用.导出到CAD)
         bxgis.常用.导出到CAD.导出到CAD(
             输入要素名称=参数字典["输入要素"],
             规划范围线要素名称=规划范围线要素名称,
@@ -186,6 +197,8 @@ class ImportFromCAD(object):
         self.category = "常用"
 
     def getParameterInfo(self):
+        import bxarcpy
+
         输入CAD数据集中的要素类 = bxarcpy.参数类.参数创建("输入CAD数据集中的要素类", "要素类", 参数必要性="必填")._内嵌对象
 
         是否拓扑检查 = bxarcpy.参数类.参数创建("是否拓扑检查", "布尔值", 默认值=False)._内嵌对象
@@ -199,9 +212,10 @@ class ImportFromCAD(object):
         return [输入CAD数据集中的要素类, 是否拓扑检查, 是否范围检查, 是否转曲, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         import importlib
+        import bxgis
 
         importlib.reload(bxgis.常用.导入从CAD)
         bxgis.常用.导入从CAD.导入从CAD(
@@ -223,14 +237,17 @@ class ConvertCurveToPolyline(object):
         self.category = "常用"
 
     def getParameterInfo(self):
+        import bxarcpy
+
         输入要素名称列表 = bxarcpy.参数类.参数创建("输入要素名称列表", "要素类", 参数必要性="必填", 是否多个值=True)._内嵌对象
 
         return [输入要素名称列表]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         import importlib
+        import bxgis
 
         importlib.reload(bxgis.常用.曲转折)
         bxgis.常用.曲转折.曲转折(输入要素名称列表=参数字典["输入要素名称列表"])
@@ -246,12 +263,16 @@ class BaseperiodLandtypeConversion(object):
         self.category = "用地\\基期"
 
     def getParameterInfo(self):
+        import bxarcpy
+
         输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "要素类", 参数必要性="必填", 默认值="CZ_三调_原始")._内嵌对象
         输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
         return [输入要素名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.用地.基期.初步基数转换.初步基数转换(输入要素名称=参数字典["输入要素名称"], 输出要素名称=参数字典["输出要素名称"])
         return None
@@ -266,12 +287,16 @@ class BaseperiodFieldsTranslateAndGenerateSubitems(object):
         self.category = "用地\\基期"
 
     def getParameterInfo(self):
+        import bxarcpy
+
         输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "要素类", 参数必要性="必填", 默认值="YD_三调")._内嵌对象
         输出要素名称 = bxarcpy.参数类.参数创建("输出要素名称", "要素类", 参数类型="输出参数")._内嵌对象
         return [输入要素名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.用地.基期.字段处理并生成分项.字段处理并生成分项(输入要素名称=参数字典["输入要素名称"], 输出要素名称=参数字典["输出要素名称"])
         return None
@@ -287,6 +312,7 @@ class LanduseOfPlannedGeneration(object):
 
     def getParameterInfo(self):
         from bxgis import 配置
+        import bxarcpy
 
         输入要素名称列表 = bxarcpy.参数类.参数创建(名称="输入要素名称列表", 数据类型="要素类", 参数必要性="必填", 是否多个值=True)._内嵌对象
 
@@ -310,7 +336,9 @@ class LanduseOfPlannedGeneration(object):
         return [输入要素名称列表, 规划范围线要素名称, 是否将CAD合并入GIS, CAD导出色块要素名称, CAD导出色块以外地类调整要素名称, CAD导出色块中空隙的地类, CAD导出色块中有效的地类列表, 是否处理细小面, GIS中已处理的细小面要素名称, 细小面面积阈值, 是否拓扑检查, 是否范围检查, 输出要素名称]
 
     def updateParameters(self, 参数列表):
-        添加搜索路径()
+        import bxarcpy
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成(参数列表)
         if bxarcpy.参数类.值读取(参数字典["是否处理细小面"]):
             bxarcpy.参数类.可用性设置(参数字典["GIS中已处理的细小面要素名称"], True)
@@ -330,7 +358,9 @@ class LanduseOfPlannedGeneration(object):
             bxarcpy.参数类.可用性设置(参数字典["CAD导出色块中有效的地类列表"], False)
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
 
         bxgis.用地.用地规划图生成.用地规划图生成(
@@ -360,6 +390,7 @@ class LanduseOfCurrentGeneration(object):
         self.category = "用地"
 
     def getParameterInfo(self):
+        import bxarcpy
         from bxgis import 配置
 
         输入要素名称列表 = bxarcpy.参数类.参数创建(名称="输入要素名称列表", 数据类型="要素类", 参数必要性="必填", 是否多个值=True)._内嵌对象
@@ -374,7 +405,9 @@ class LanduseOfCurrentGeneration(object):
         return [输入要素名称列表, 规划范围线要素名称, 是否拓扑检查, 是否范围检查, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
 
         bxgis.用地.用地现状图生成.用地现状图生成(
@@ -396,6 +429,8 @@ class LanduseUpdate(object):
         self.category = "用地"
 
     def getParameterInfo(self):
+        import bxarcpy
+
         输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "要素类", 参数必要性="必填", 默认值="DIST_用地规划图")._内嵌对象
         街坊范围线要素名称 = bxarcpy.参数类.参数创建("街坊范围线要素名称", "要素类", 默认值="JX_街坊范围线")._内嵌对象
         分村范围线要素名称 = bxarcpy.参数类.参数创建("分村范围线要素名称", "要素类", 默认值="JX_分村范围线")._内嵌对象
@@ -409,7 +444,9 @@ class LanduseUpdate(object):
         return [输入要素名称, 街坊范围线要素名称, 分村范围线要素名称, 城镇集建区要素名称, 城镇弹性区要素名称, 有扣除地类系数的要素名称, 有坐落单位信息的要素名称, 设施要素名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.用地.用地更新.用地更新(
             输入要素名称=参数字典["输入要素名称"],
@@ -434,6 +471,8 @@ class LanduseCheckIsFarmlandOccupied(object):
         self.category = "用地\\检查"
 
     def getParameterInfo(self):
+        import bxarcpy
+
         输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "要素类", 参数必要性="必填", 默认值="DIST_用地规划图")._内嵌对象
         基本农田要素名称 = bxarcpy.参数类.参数创建("基本农田要素名称", "要素类", 默认值="KZX_永久基本农田")._内嵌对象
         是否输出到CAD = bxarcpy.参数类.参数创建("是否输出到CAD", "布尔值", 默认值=True)._内嵌对象
@@ -442,7 +481,9 @@ class LanduseCheckIsFarmlandOccupied(object):
         return [输入要素名称, 基本农田要素名称, 是否输出到CAD, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
 
         bxgis.用地.检查.基本农田是否被占.基本农田是否被占(
@@ -463,6 +504,8 @@ class FacilitiesUpdate(object):
         self.category = "设施"
 
     def getParameterInfo(self):
+        import bxarcpy
+
         输入要素名称 = bxarcpy.参数类.参数创建("输入要素名称", "要素类", 参数必要性="必填", 默认值="SS_配套设施")._内嵌对象
         是否根据坐标字段移动设施坐标 = bxarcpy.参数类.参数创建("是否根据坐标字段移动设施坐标", "布尔值", 默认值=True)._内嵌对象
         规划范围线要素名称 = bxarcpy.参数类.参数创建("规划范围线要素名称", "要素类", 默认值="JX_规划范围线")._内嵌对象
@@ -473,7 +516,9 @@ class FacilitiesUpdate(object):
         return [输入要素名称, 是否根据坐标字段移动设施坐标, 规划范围线要素名称, 工业片区范围线要素名称, 城镇集建区要素名称, 城镇弹性区要素名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.设施.设施更新.设施更新(
             输入要素名称=参数字典["输入要素名称"],
@@ -496,6 +541,8 @@ class RoadEdgeGeneration(object):
         self.category = "道路"
 
     def getParameterInfo(self):
+        import bxarcpy
+
         道路中线要素名称 = bxarcpy.参数类.参数创建("道路中线要素名称", "要素类", 参数必要性="必填", 默认值="DL_道路中线")._内嵌对象
         用地要素名称 = bxarcpy.参数类.参数创建("用地要素名称", "要素类", 默认值="DIST_用地规划图")._内嵌对象
         规划范围线要素名称 = bxarcpy.参数类.参数创建("规划范围线要素名称", "要素类", 默认值="JX_规划范围线")._内嵌对象
@@ -504,7 +551,9 @@ class RoadEdgeGeneration(object):
         return [道路中线要素名称, 用地要素名称, 规划范围线要素名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.道路.道路边线生成.道路边线生成(
             道路中线要素名称=参数字典["道路中线要素名称"],
@@ -524,6 +573,8 @@ class RiverEdgeGeneration(object):
         self.category = "道路"
 
     def getParameterInfo(self):
+        import bxarcpy
+
         河道中线要素名称 = bxarcpy.参数类.参数创建("河道中线要素名称", "要素类", 参数必要性="必填", 默认值="DL_河道中线")._内嵌对象
         用地要素名称 = bxarcpy.参数类.参数创建("用地要素名称", "要素类", 默认值="DIST_用地规划图")._内嵌对象
         规划范围线要素名称 = bxarcpy.参数类.参数创建("规划范围线要素名称", "要素类", 默认值="JX_规划范围线")._内嵌对象
@@ -532,7 +583,9 @@ class RiverEdgeGeneration(object):
         return [河道中线要素名称, 用地要素名称, 规划范围线要素名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.道路.河道边线生成.河道边线生成(
             河道中线要素名称=参数字典["河道中线要素名称"],
@@ -552,6 +605,7 @@ class RegionUpdate(object):
         self.category = "区域"
 
     def getParameterInfo(self):
+        import bxarcpy
         from bxgis import 配置
 
         区域要素名称 = bxarcpy.参数类.参数创建("区域要素名称", "要素类", 参数必要性="必填", 默认值=配置.项目信息.JX_街坊范围线要素名称)._内嵌对象
@@ -568,7 +622,9 @@ class RegionUpdate(object):
         return [区域要素名称, 用地要素名称, 用地要素中所属区域字段名称, 区域要素中编号字段名称, 永久基本农田要素名称, 生态保护红线要素名称, 村庄建设边界要素名称, 设施要素名称, 设施要素中所属区域字段名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.区域.区域更新.区域更新(
             区域要素名称=参数字典["区域要素名称"],
@@ -594,6 +650,7 @@ class ZoneuseOfPlannedGeneration(object):
         self.category = "分区"
 
     def getParameterInfo(self):
+        import bxarcpy
         from bxgis import 配置
 
         规划用地要素名称 = bxarcpy.参数类.参数创建(名称="规划用地要素名称", 数据类型="要素类", 参数必要性="必填", 默认值=配置.项目信息.YD_用地_规划要素名称)._内嵌对象
@@ -610,7 +667,9 @@ class ZoneuseOfPlannedGeneration(object):
         return [规划用地要素名称, 现状用地要素名称, 农田整备要素名称列表, 城镇集建区要素名称, 城镇弹性区要素名称, 永久基本农田要素名称, 城镇开发边界外集建区修改要素名称, 其他需要叠合的要素名称列表, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
 
         bxgis.分区.用途分区规划图生成.用途分区规划图生成(
@@ -636,7 +695,8 @@ class DbCreateRegionOfUnit(object):
         self.category = "入库"
 
     def getParameterInfo(self):
-        添加搜索路径()
+        初始化_添加搜索路径()
+        import bxarcpy
         from bxgis import 配置
 
         规划范围线要素名称 = bxarcpy.参数类.参数创建("规划范围线要素名称", "要素类", 参数必要性="必填", 默认值=配置.项目信息.JX_规划范围线要素名称)._内嵌对象
@@ -654,7 +714,9 @@ class DbCreateRegionOfUnit(object):
         return [规划范围线要素名称, 单元编号, 单元名称, 单元类型, 批复时间, 批复文号, 编制单位, 单元功能, 人口规模, 跨单元平衡情况, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.入库.入库_单元.入库_单元(
             规划范围线要素名称=参数字典["规划范围线要素名称"],
@@ -680,7 +742,9 @@ class DbCreateControllineOfVillage(object):
         self.category = "入库"
 
     def getParameterInfo(self):
-        添加搜索路径()
+        import bxarcpy
+
+        初始化_添加搜索路径()
         from bxgis import 配置
 
         村庄建设边界要素名称 = bxarcpy.参数类.参数创建("村庄建设边界要素名称", "要素类", 参数必要性="必填", 默认值=配置.项目信息.KZX_村庄建设边界要素名称)._内嵌对象
@@ -693,7 +757,9 @@ class DbCreateControllineOfVillage(object):
         return [村庄建设边界要素名称, 单元名称, 批复时间, 批复文号, 单元编号, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.入库.入库_村庄建设边界.入库_村庄建设边界(
             村庄建设边界要素名称=参数字典["村庄建设边界要素名称"],
@@ -714,7 +780,9 @@ class DbCreateRegionOfIndustrial(object):
         self.category = "入库"
 
     def getParameterInfo(self):
-        添加搜索路径()
+        import bxarcpy
+
+        初始化_添加搜索路径()
         from bxgis import 配置
 
         工业片区要素名称 = bxarcpy.参数类.参数创建("工业片区要素名称", "要素类", 参数必要性="必填", 默认值=配置.项目信息.JX_工业片区范围线要素名称)._内嵌对象
@@ -733,7 +801,9 @@ class DbCreateRegionOfIndustrial(object):
         return [工业片区要素名称, 单元名称, 区域编号, 区域名称, 总工业用地面积, 总工业建筑面积, 区域主导属性, 配套设施汇总, 交通设施汇总, 市政设施汇总, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.入库.入库_工业片区.入库_工业片区(
             工业片区要素名称=参数字典["工业片区要素名称"],
@@ -759,7 +829,9 @@ class DbCreateLanduseOfPlanned(object):
         self.category = "入库"
 
     def getParameterInfo(self):
-        添加搜索路径()
+        import bxarcpy
+
+        初始化_添加搜索路径()
         from bxgis import 配置
 
         地块要素名称 = bxarcpy.参数类.参数创建("地块要素名称", "要素类", 参数必要性="必填", 默认值=配置.项目信息.YD_用地_规划要素名称)._内嵌对象
@@ -777,7 +849,9 @@ class DbCreateLanduseOfPlanned(object):
         return [地块要素名称, 单元名称, 批复时间, 批复文号, 地块编号字段名称, 地类编号字段名称, 性质名称字段名称, 地块性质别称字段名称, 兼容比例字段名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.入库.入库_规划地块.入库_规划地块(
             地块要素名称=参数字典["地块要素名称"],
@@ -802,7 +876,9 @@ class DbCreateRegion(object):
         self.category = "入库"
 
     def getParameterInfo(self):
-        添加搜索路径()
+        import bxarcpy
+
+        初始化_添加搜索路径()
         from bxgis import 配置
 
         #  输出要素名称="XG_JQJF"
@@ -831,7 +907,9 @@ class DbCreateRegion(object):
         return [区域要素名称, 单元名称, 层级, 区域编号字段名称, 区域主导属性字段名称, 总城镇居住人数字段名称, 总建筑面积字段名称, 总住宅建筑面积字段名称, 总工业建筑面积字段名称, 总商服建筑面积字段名称, 总村庄户籍人数字段名称, 总村庄居住人数字段名称, 总耕地用地面积字段名称, 总永久基本农田用地面积字段名称, 总生态保护红线用地面积字段名称, 总村庄建设边界用地面积字段名称, 总城乡建设用地面积字段名称, 总村庄建设用地面积字段名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.入库.入库_街区街坊分村.入库_街区街坊分村(
             区域要素名称=参数字典["区域要素名称"],
@@ -865,7 +943,9 @@ class DbCreateControlline(object):
         self.category = "入库"
 
     def getParameterInfo(self):
-        添加搜索路径()
+        import bxarcpy
+
+        初始化_添加搜索路径()
         from bxgis import 配置
 
         # 其他要素名称=None
@@ -903,7 +983,9 @@ class DbCreateControlline(object):
         return [单元名称, 批复时间, 批复文号, 道路中线要素名称, 道路边线要素名称, 高架桥要素名称, 隧道要素名称, 河道边线要素名称, 河道中线要素名称, 地块要素名称, 铁路线要素名称, 输油管要素名称, 原水输水要素名称, 高压线要素名称, 天然气要素名称, 综合管廊要素名称, 市政管线要素名称, 微波通道要素名称, 高度分区要素名称, 共用通道要素名称, 远景道路要素名称, 虚位控制河道要素名称, 虚位控制道路要素名称, 绿化控制线要素名称, 景观廊道要素名称, 其他要素名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.入库.入库_控制线.入库_控制线(
             单元名称=参数字典["单元名称"],
@@ -945,7 +1027,9 @@ class DbCreateFacilities(object):
         self.category = "入库"
 
     def getParameterInfo(self):
-        添加搜索路径()
+        import bxarcpy
+
+        初始化_添加搜索路径()
         from bxgis import 配置
 
         设施要素名称 = bxarcpy.参数类.参数创建("设施要素名称", "要素类", 默认值=配置.项目信息.SS_配套设施_规划要素名称)._内嵌对象
@@ -968,7 +1052,9 @@ class DbCreateFacilities(object):
         return [单元名称, 批复时间, 批复文号, 类型代码字段名称, 设施代码字段名称, 设施名称字段名称, 设施级别字段名称, 设施所在地块编号字段名称, 位置精确度字段名称, 远期预留字段名称, 备注说明字段名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.入库.入库_设施.入库_设施(
             单元名称=参数字典["单元名称"],
@@ -995,7 +1081,9 @@ class DbCreateZoneuse(object):
         self.category = "入库"
 
     def getParameterInfo(self):
-        添加搜索路径()
+        import bxarcpy
+
+        初始化_添加搜索路径()
         from bxgis import 配置
 
         分区要素名称 = bxarcpy.参数类.参数创建("分区要素名称", "要素类", 默认值=配置.项目信息.FQ_用途分区_规划要素名称)._内嵌对象
@@ -1013,7 +1101,9 @@ class DbCreateZoneuse(object):
         return [分区要素名称, 单元名称, 批复时间, 批复文号, 单元编号, 分区名称字段名称, 分区编号字段名称, 输出要素名称]
 
     def execute(self, 参数列表, 消息):
-        添加搜索路径()
+        import bxgis
+
+        初始化_添加搜索路径()
         参数字典 = 参数组字典生成_转换值(参数列表)
         bxgis.入库.入库_用途分区.入库_用途分区(
             分区要素名称=参数字典["分区要素名称"],

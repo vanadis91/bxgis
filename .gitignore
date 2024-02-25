@@ -6,9 +6,7 @@
 **/.vscode
 /bxgis.code-workspace
 **/dist.bat
-**/setup.py
 /Pipfile.lock
 /*.xml
 dist.bat
-setup.py
 *_24*
