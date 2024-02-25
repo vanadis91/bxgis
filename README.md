@@ -8,16 +8,17 @@
 
 当前项目处于**极其**初级的阶段，**不建议用于生产环境，切记，切记，切记**，之所以发布，主要是个人时间有限，希望有经验丰富的人能够来继续进行完善。
 
-### 1. 环境构建
+### 1. 安装
 
 - 克隆默认Python运行环境（arcgispro-py3）。代码运行基于ArcGISPro。在ArcGISPro的**工程/包管理器**菜单中，通过**环境管理器**按钮来克隆默认Python运行环境（arcgispro-py3）。不建议修改ArcGISPro默认Python环境（arcgispro-py3），直接修改可能会导致意想不到的后果，建议仅修改克隆环境。
-- 将**src**目录下的**bxgis**包复制到克隆的环境的site-packages文件夹。
 - 在ArcGISPro的**工程/包管理器**菜单中，通过**环境管理器**将当前ArcGISPro的活动环境切换为克隆的环境。
+- 通过**克隆环境/Scripts/pip3.exe**来安装**dist**目录下的**wheel文件**。
 - 重启ArcGISPro后，bxgis工具箱将会出现在**地理处理**窗格中。
 
 ### 2. 修改配置文件
 
 - 修改**bxgis/config/配置.py**文件中的内容。主要包括对项目基本信息的录入，一些要素的字段名称映射的录入。
+- 将**bxgis/config/配置.py**文件中的**计算机信息.环境**修改为**生产环境**。
 
 ### 3. 完成要素的输入
 
@@ -40,11 +41,16 @@
 
 ## 开发说明
 
-### 项目结构
+### 1. 项目结构
 
-当前的目录结构采用的是ESRI网站上**创建地理处理模块**页面中的结构。
-<https://pro.arcgis.com/zh-cn/pro-app/latest/arcpy/geoprocessing_and_python/extending-geoprocessing-through-python-modules.htm>
+- 当前的目录结构采用的是ESRI网站上**创建地理处理模块**页面中的结构。详见：<https://pro.arcgis.com/zh-cn/pro-app/latest/arcpy/geoprocessing_and_python/extending-geoprocessing-through-python-modules.htm>
+- **src/bxgis**为主要的包，**src/bxgis/bxgis.pyt**是Python工具箱的入口文件，**src/bxgis/common**目录下为几个需要调用的次要的包，其中对Arcpy相关函数进行汉化的包为**bxarcpy**，**src/bxgis/config**目录为配置文件，**src/bxgis/esri**文件夹和**src/bxgis**目录下的xml文件是通过**arcpy.gp.createtoolboxsupportfiles**函数自动生成的内容。
 
-### 环境构建
+### 2. 环境构建
 
-123
+- 依赖环境通过pip来管理，第三方库安装文件为**项目根目录/requirements.txt**。
+
+### 3. 打包分发
+
+- 主要包括运行**arcpy.gp.createtoolboxsupportfiles**函数和用**setuptools**打包两个步骤。相关步骤已集成在**项目根目录/dist.bat**中。
+- 运行**dist.bat**文件后，将在项目根目录中生成**dist**文件夹，其中的**wheel文件**即为打包后用于分发的文件。详见：<https://pro.arcgis.com/zh-cn/pro-app/latest/arcpy/geoprocessing_and_python/distributing-python-modules.htm>

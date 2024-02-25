@@ -3,6 +3,7 @@ from typing import Union, Literal
 
 class 计算机信息:
     CAD输出目录 = r"C:\Users\beixiao\Desktop"
+    环境: Literal["生产环境", "开发环境"] = "开发环境"
 
 
 class 项目信息:
