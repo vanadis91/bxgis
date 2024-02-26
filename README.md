@@ -50,7 +50,9 @@
 
 - 依赖环境通过pip来管理，第三方库安装文件为**项目根目录/requirements.txt**。
 
-### 3. 打包分发
+### 3. 调试
+
+### 4. 打包分发
 
 - 主要包括运行**arcpy.gp.createtoolboxsupportfiles**函数和用**setuptools**打包两个步骤。相关步骤已集成在**项目根目录/dist.bat**中。
 - 运行**dist.bat**文件后，将在项目根目录中生成**dist**文件夹，其中的**wheel文件**即为打包后用于分发的文件。详见：<https://pro.arcgis.com/zh-cn/pro-app/latest/arcpy/geoprocessing_and_python/distributing-python-modules.htm>
