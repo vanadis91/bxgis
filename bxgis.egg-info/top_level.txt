@@ -1,6 +1,0 @@
-bxarcpy
-bxgeo
-bxgis
-bxpandas
-bxpy
-pyarmor_runtime_005556
