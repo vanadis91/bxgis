@@ -2,7 +2,7 @@
 **/.venv
 **/#历史版本
 **/__pycache__
-**/test
+**/tests
 **/.vscode
 /bxgis.code-workspace
 **/dist.bat
