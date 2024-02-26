@@ -66,6 +66,7 @@ setup(
             "pyarmor_runtime.pyd",
         ],
     },
+    # script_args=["sdist", "bdist_wheel"],
 )
 # if __name__ == "__main__":
 #     print(find_packages(where="src"))

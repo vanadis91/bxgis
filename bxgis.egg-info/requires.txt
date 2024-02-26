@@ -1,0 +1,14 @@
+shapely
+numpy
+pandas
+pypiwin32
+psutil
+setuptools
+pytest
+tinydb
+shortuuid
+tqdm
+colorama
+flask
+flask_login
+pymongo
