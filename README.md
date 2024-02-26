@@ -6,7 +6,7 @@
 
 ## 使用说明
 
-当前项目处于**极其**初级的阶段，**不建议用于生产环境，切记，切记，切记**，之所以发布，主要是个人时间有限，希望有经验丰富的人能够来继续进行完善。
+当前项目处于**非常**初级的阶段，**不建议用于生产环境，切记，切记，切记**，之所以发布，主要是个人时间有限，希望有经验丰富的人能够来继续进行完善。
 
 ### 1. 安装
 
@@ -52,7 +52,11 @@
 
 ### 3. 调试
 
+- 可以在ArcgisPro的**目录**窗格中，通过**工具箱/添加工具箱（右键）**，选择**项目根目录/src/bxgis.pyt**文件来直接加载工具箱。
+- 修改pyt文件内代码后，通过**工具箱/刷新（右键）**来使修改生效。
+- 修改pyt文件中引入的模块后，通过**bxgis.pyt**内的**初始化_重置模块**函数来使修改生效。
+
 ### 4. 打包分发
 
-- 主要包括运行**arcpy.gp.createtoolboxsupportfiles**函数和用**setuptools**打包两个步骤。相关步骤已集成在**项目根目录/dist.bat**中。
-- 运行**dist.bat**文件后，将在项目根目录中生成**dist**文件夹，其中的**wheel文件**即为打包后用于分发的文件。详见：<https://pro.arcgis.com/zh-cn/pro-app/latest/arcpy/geoprocessing_and_python/distributing-python-modules.htm>
+- 主要包括运行**arcpy.gp.createtoolboxsupportfiles**函数和用**setuptools**打包两个步骤。相关步骤已集成在**项目根目录/dist.py**中。
+- 运行**dist.py**文件后，将在项目根目录中生成**dist**文件夹，其中的**wheel文件**即为打包后用于分发的文件。详见：<https://pro.arcgis.com/zh-cn/pro-app/latest/arcpy/geoprocessing_and_python/distributing-python-modules.htm>
