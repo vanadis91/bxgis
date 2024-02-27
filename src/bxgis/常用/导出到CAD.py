@@ -116,4 +116,4 @@ if __name__ == "__main__":
     工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
     # 工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with bxarcpy.环境.环境管理器(工作空间):
-        导出到CAD(输入要素名称="XG_GHDK2", 规划范围线要素名称=None, 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="dldm", 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg")
+        导出到CAD(输入要素名称="XG_GHDK", 规划范围线要素名称=None, 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="dldm", 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg")
