@@ -53,15 +53,15 @@ class 要素类:
             要素名称 = 要素名称 + "_" + 工具集.生成短GUID()
         if 数据库路径 is None:
             数据库路径 = 配置.当前工作空间
-        elif 数据库路径.upper() in ["临时", "IN_MEMORY", "MEMORY"]:
+        elif 数据库路径.upper() in ["内存临时", "临时", "IN_MEMORY", "MEMORY"]:
             数据库路径 = "in_memory"
         要素类型 = 常量._要素类型映射[要素类型]
-        arcpy.management.CreateFeatureclass(out_path=数据库路径, out_name=要素名称, geometry_type=要素类型, template=模板, has_m="DISABLED", has_z="DISABLED", spatial_reference='PROJCS["CGCS2000_3_Degree_GK_CM_120E",GEOGCS["GCS_China_Geodetic_Coordinate_System_2000",DATUM["D_China_2000",SPHEROID["CGCS2000",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Gauss_Kruger"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",120.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]];526761.4357525 3337536.7866275 209129662504.711;-100000 10000;-100000 10000;0.001;0.001;0.001;IsHighPrecision', config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0, out_alias="")  # type: ignore
+        arcpy.management.CreateFeatureclass(out_path=数据库路径, out_name=要素名称, geometry_type=要素类型, template=模板, has_m="DISABLED", has_z="DISABLED", spatial_reference='PROJCS["CGCS2000_3_Degree_GK_CM_120E",GEOGCS["GCS_China_Geodetic_Coordinate_System_2000",DATUM["D_China_2000",SPHEROID["CGCS2000",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Gauss_Kruger"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",120.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]];-495395959010.755 -495395959010.755 9090.90909090909;-100000 10000;-100000 10000;0.001;0.001;0.001;IsHighPrecision', config_keyword="", spatial_grid_1=0, spatial_grid_2=0, spatial_grid_3=0, out_alias="")  # type: ignore
         ret = 要素类.要素读取_通过名称(名称=数据库路径 + "\\" + 要素名称)
         # if 数据库路径.upper() in ["临时", "IN_MEMORY", "MEMORY"]:
         #     ret = ret.要素创建_通过复制并重命名重名要素(f"in_memory\\{要素名称}")
         return ret
-
+    
     def 要素创建_通过复制(self, 输出要素名称="内存临时"):
         if 输出要素名称 == "内存临时":
             # 日志.输出控制台(self)
@@ -481,14 +481,31 @@ class 要素类:
         arcpy.analysis.Buffer(in_features=self.名称, out_feature_class=输出要素名称, buffer_distance_or_field=距离或字段名称, line_side="FULL", line_end_type=末端类型, dissolve_option=融合类型, dissolve_field=融合字段名称列表, method="PLANAR")  # type: ignore
         return 要素类.要素读取_通过名称(输出要素名称)
 
-    def 要素创建_通过增密(self, 增密方法: Literal["固定距离", "偏转距离", "偏转角度"] = "偏转距离", 固定距离="10 Meters", 偏转距离="0.0001 Meters", 偏转角度=1, 最大折点计数=None, 输出要素名称="in_memory\\AA_增密"):
-        if 输出要素名称 == "in_memory\\AA_增密":
-            输出要素名称 = 输出要素名称 + "_" + 工具集.生成短GUID()
-        _增密方法映射 = {"固定距离": "DISTANCE", "DISTANCE": "DISTANCE", "偏转距离": "OFFSET", "OFFSET": "OFFSET", "偏转角度": "ANGLE", "ANGLE": "ANGLE"}
+    def 要素创建_通过增密(self, 增密方法: Literal["固定距离", "偏转距离", "偏转角度"] = "偏转距离", 固定距离="10 Meters", 偏转距离="0.0001 Meters", 偏转角度=1, 最大折点计数=None, 输出要素名称="内存临时"):
+        if 输出要素名称 == "内存临时":
+            输出要素名称 = "in_memory\\AA_增密" + "_" + 工具集.生成短GUID()
+        _增密方法映射 = {"固定距离": "DISTANCE", "偏转距离": "OFFSET", "偏转角度": "ANGLE"}
         复制后要素 = self.要素创建_通过复制(输出要素名称)
-        增密方法raw = _增密方法映射[增密方法]
+        增密方法raw = _增密方法映射[增密方法] if 增密方法 in _增密方法映射 else 增密方法
         arcpy.edit.Densify(in_features=复制后要素.名称, densification_method=增密方法raw, distance=固定距离, max_deviation=偏转距离, max_angle=偏转角度, max_vertex_per_segment=最大折点计数)  # type: ignore
         return 复制后要素
+
+    def 要素创建_通过投影定义(self, 坐标系='PROJCS["CGCS2000_3_Degree_GK_CM_120E",GEOGCS["GCS_China_Geodetic_Coordinate_System_2000",DATUM["D_China_2000",SPHEROID["CGCS2000",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Gauss_Kruger"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",120.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]', 输出要素名称="内存临时"):
+        # 坐标系有效值可以是 SpatialReference 对象、扩展名为 .prj 的文件或坐标系的字符串表达形式。
+        if 输出要素名称 == "内存临时":
+            输出要素名称 = "in_memory\\AA_投影定义" + "_" + 工具集.生成短GUID()
+        要素 = 要素类.要素读取_通过名称(self.名称).要素创建_通过复制()
+        arcpy.management.DefineProjection(in_dataset=要素.名称, coor_system=坐标系)  # type: ignore
+        输出要素 = 要素.要素创建_通过复制并重命名重名要素(输出要素名称=输出要素名称)
+        return 输出要素
+
+    def 要素创建_通过投影转换(self, 输出坐标系='PROJCS["CGCS2000_3_Degree_GK_CM_120E",GEOGCS["GCS_China_Geodetic_Coordinate_System_2000",DATUM["D_China_2000",SPHEROID["CGCS2000",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Gauss_Kruger"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",120.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]', 输出要素名称="内存临时"):
+        # 坐标系有效值可以是 SpatialReference 对象、扩展名为 .prj 的文件或坐标系的字符串表达形式。
+        if 输出要素名称 == "内存临时":
+            输出要素名称 = "in_memory\\AA_投影转换" + "_" + 工具集.生成短GUID()
+        要素 = 要素类.要素读取_通过名称(self.名称).要素创建_通过复制()
+        arcpy.management.Project(in_dataset=要素.名称, out_dataset=输出要素名称, out_coor_system=输出坐标系, transform_method=None, in_coor_system=None, preserve_shape="NO_PRESERVE_SHAPE", max_deviation=None, vertical="NO_VERTICAL")  # type: ignore
+        return 要素类(名称=输出要素名称)
 
     def 要素删除(self):
         return arcpy.management.Delete(in_data=[self.名称], data_type="")[0]  # type: ignore
@@ -705,3 +722,11 @@ class 要素类:
 
 #     # 日志.开启()
 #     符号系统设置(图层名称)
+if __name__ == "__main__":
+    import bxarcpy
+
+    工作空间 = r"C:\Users\beixiao\Project\F富阳受降控规"
+    # 道路中线要素名称 = bxarcpy.环境.输入参数获取_以字符串形式(0, "DL_道路中线", True)
+    with bxarcpy.环境.环境管理器(工作空间):
+        要素 = 要素类.要素读取_通过名称("XG_KZX1").要素创建_通过复制()
+        要素.要素创建_通过增密()

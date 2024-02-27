@@ -3,7 +3,7 @@ from bxpy import 日志
 from typing import Union, Literal
 
 
-def 导出到CAD(输入要素名称="DIST_用地规划图", 规划范围线要素名称: Union[str, None] = "JX_规划范围线", 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg"):
+def 导出到CAD(输入要素名称="DIST_用地规划图", 规划范围线要素名称: Union[str, None] = "JX_规划范围线", 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称=None, 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg"):
     # {"折点数量": 10, "孔洞数量": 2, "面积": 1000, "地类编号列表": ["1207"]}
     输入要素 = bxarcpy.要素类.要素读取_通过名称(输入要素名称).要素创建_通过复制()
     # 日志.输出控制台(输入要素)
@@ -57,7 +57,9 @@ def 导出到CAD(输入要素名称="DIST_用地规划图", 规划范围线要�
         # 线要素字段名称列表.remove("Shape_Area")
         with bxarcpy.游标类.游标创建_通过名称("插入", DIST_用地规划图线.名称, [*线要素字段名称列表, "_形状"]) as 游标_线:
             with bxarcpy.游标类.游标创建_通过名称("查询", 切分后要素.名称, [*线要素字段名称列表, "_形状"]) as 游标_面:
-                for 面x in 游标_面:
+                import bxpy
+
+                for 面x in bxpy.进度条(游标_面, 总进度=切分后要素.几何数量):
                     partList = []
                     for part in bxarcpy.几何对象类.点表获取(面x["_形状"]):
                         ptList = []
@@ -81,6 +83,9 @@ def 导出到CAD(输入要素名称="DIST_用地规划图", 规划范围线要�
                             b = bxgeo.环.环创建_通过点表(shape)._内嵌对象
                             a = bxgeo.环.多部件连接(a, b)._内嵌对象  # type: ignore
                     点表 = bxgeo.线.坐标获取(a)  # type: ignore
+                    # import bxpy
+
+                    # bxpy.日志.输出控制台(点表)
                     array = bxarcpy.数组.数组创建()._内嵌对象
                     part_array = bxarcpy.数组.数组创建()._内嵌对象
                     for pt in 点表:
@@ -92,11 +97,11 @@ def 导出到CAD(输入要素名称="DIST_用地规划图", 规划范围线要�
         去孔后要素 = DIST_用地规划图线
     else:
         去孔后要素 = 切分后要素
-
-    去孔后要素.字段添加("Layer").字段计算("Layer", "\"YDGIS-\" + !地类编号!.replace('/','／')")
-    去孔后要素.字段添加("地块性质").字段计算("地块性质", "!地类编号!.replace('／','/')")
-    去孔后要素.字段添加("实体类型").字段计算("实体类型", '"控规地块"')
-    去孔后要素.字段删除(["ORIG_FID", "地类编号", "是否切分"])
+    if CAD中图层采用的字段的名称:
+        去孔后要素.字段添加("Layer").字段计算("Layer", f"'YDGIS-' + !{CAD中图层采用的字段的名称}!.replace('/','／')")
+        去孔后要素.字段添加("地块性质").字段计算("地块性质", f"!{CAD中图层采用的字段的名称}!.replace('／','/')")
+        去孔后要素.字段添加("实体类型").字段计算("实体类型", '"控规地块"')
+        去孔后要素.字段删除(["ORIG_FID", CAD中图层采用的字段的名称, "是否切分"])
     # 去孔后要素.要素创建_通过复制并重命名重名要素("DIST_用地规划图2")
     # with bxarcpy.游标类.游标创建_通过名称("查询", 去孔后要素.名称, ["_形状"]) as 游标:
     #     for x in 游标:
@@ -106,7 +111,9 @@ def 导出到CAD(输入要素名称="DIST_用地规划图", 规划范围线要�
 
 
 if __name__ == "__main__":
-    # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
-    工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
+    import bxarcpy
+
+    工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
+    # 工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with bxarcpy.环境.环境管理器(工作空间):
-        导出到CAD("DIST_用地规划图", 规划范围线要素名称="JX_规划范围线", 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg")
+        导出到CAD(输入要素名称="XG_GHDK2", 规划范围线要素名称=None, 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="dldm", 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg")
