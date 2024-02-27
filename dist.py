@@ -46,7 +46,7 @@ def main():
     build目录路径 = 系统.路径.连接(项目根目录, "build")
     子程序 = 系统.终端.子进程(f'rmdir /s /q "{build目录路径}"')
     print(子程序.输出获取_阻塞())
- 
+
 
 def 生成次要的包():
     import os
@@ -54,8 +54,14 @@ def 生成次要的包():
 
     # 添加支持路径
     项目根目录 = os.path.dirname(__file__)
-    sys.path.append("C:\\Users\\beixiao\\Project\\bxpy")
+    sys.path.insert(0, "C:\\Users\\beixiao\\Project\\bxpy")
     from bxpy import 系统
+
+    # 删除pyarmor
+    pyarmor目录路径 = 系统.路径.连接(项目根目录, "src\\bxgis\\common\\pyarmor_runtime_005556")
+    子程序 = 系统.终端.子进程(f'rmdir /s /q "{pyarmor目录路径}"')
+    print(子程序.输出获取_阻塞())
+    # 系统.路径.删除(bxgeo目录路径)
 
     # 删除bxgeo
     bxgeo目录路径 = 系统.路径.连接(项目根目录, "src\\bxgis\\common\\bxgeo")
@@ -87,5 +93,5 @@ def 生成次要的包():
 
 
 if __name__ == "__main__":
-    # 生成次要的包()
+    生成次要的包()
     main()
