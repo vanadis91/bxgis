@@ -1,4 +1,7 @@
-import arcpy
+try:
+    import arcpy
+except Exception as e:
+    pass
 from typing import Union, Literal
 
 _数据类型映射 = {

@@ -1,5 +1,9 @@
 from bxpy import 日志, 时间
-import arcpy
+
+try:
+    import arcpy
+except Exception as e:
+    pass
 import time
 from . import 常量, 工具集
 from typing import Union, Literal
@@ -61,7 +65,7 @@ class 要素类:
         # if 数据库路径.upper() in ["临时", "IN_MEMORY", "MEMORY"]:
         #     ret = ret.要素创建_通过复制并重命名重名要素(f"in_memory\\{要素名称}")
         return ret
-    
+
     def 要素创建_通过复制(self, 输出要素名称="内存临时"):
         if 输出要素名称 == "内存临时":
             # 日志.输出控制台(self)

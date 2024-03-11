@@ -1,7 +1,10 @@
 from ast import If
 from sre_constants import IN
 from bxpy import 日志
-import arcpy
+try:
+    import arcpy
+except Exception as e:
+    pass
 from .常量 import _要素类型反映射
 
 

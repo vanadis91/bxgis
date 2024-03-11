@@ -1,5 +1,8 @@
 from bxpy import 日志
-import arcpy
+try:
+    import arcpy
+except Exception as e:
+    pass
 from .图层类 import 图层类
 
 

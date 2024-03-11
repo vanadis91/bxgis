@@ -1,10 +1,14 @@
 from bxpy import 日志
-import arcpy
+
+try:
+    import arcpy
+except Exception as e:
+    pass
 from .图层类 import 图层类
 
 
 class 图层文件类:
-    def __init__(self, 内嵌对象: arcpy.mp.LayerFile = None):
+    def __init__(self, 内嵌对象=None):
         self._内嵌对象 = 内嵌对象
 
     @staticmethod

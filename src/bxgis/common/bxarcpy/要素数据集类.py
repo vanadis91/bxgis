@@ -1,5 +1,8 @@
 from bxpy import 日志
-import arcpy
+try:
+    import arcpy
+except Exception as e:
+    pass
 from .配置类 import 配置
 
 

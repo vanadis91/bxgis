@@ -1,6 +1,9 @@
 from ast import Is
 from bxpy import 日志
-import arcpy
+try:
+    import arcpy
+except Exception as e:
+    pass
 from .要素类 import 要素类
 
 

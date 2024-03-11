@@ -1,5 +1,9 @@
 from .常量 import _要素类型反映射
-import arcpy
+
+try:
+    import arcpy
+except Exception as e:
+    pass
 
 
 class 几何对象类:
