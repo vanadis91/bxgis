@@ -1,6 +1,5 @@
-from ast import If
-from sre_constants import IN
-from bxpy import 日志
+from bxpy.日志包 import 日志类
+
 try:
     import arcpy
 except Exception as e:
@@ -232,7 +231,7 @@ class 游标类:
     def 行插入(self, 行数据):
         # print(f"行数据为：{行数据}")
         行数据 = [行数据[y] for y in self.字段名称列表]
-        # 日志.输出控制台(行数据)
+        # 日志类.输出控制台(行数据)
         return self._内嵌对象.insertRow(行数据)
 
 

@@ -1,4 +1,4 @@
-from bxpy import 日志
+from bxpy.日志包 import 日志类
 import arcpy
 from .配置类 import 配置
 from .要素类 import 要素类
@@ -22,6 +22,7 @@ class 拓扑类:
         elif 名称:
             self.名称 = 名称
 
+    @staticmethod
     def 拓扑创建(要素数据集名称=None, 拓扑名称=None):
         return 拓扑类(名称=arcpy.management.CreateTopology(in_dataset=要素数据集名称, out_name=拓扑名称, in_cluster_tolerance=None)[0])
 

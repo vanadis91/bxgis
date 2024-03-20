@@ -2,7 +2,7 @@
 
 from typing import Union
 import bxarcpy
-from bxpy import 时间
+from bxpy.时间包 import 时间类
 
 
 def 区域检查(区域要素名称, 范围检查要素名称: Union[str, None] = "JX_规划范围线", 拓扑检查=True):

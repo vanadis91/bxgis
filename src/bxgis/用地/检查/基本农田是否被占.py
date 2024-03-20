@@ -1,5 +1,5 @@
 import bxarcpy
-from bxpy import 日志
+from bxpy.日志包 import 日志类
 from bxgis import 配置
 
 

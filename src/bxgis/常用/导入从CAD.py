@@ -1,5 +1,5 @@
 import bxarcpy
-from bxpy import 日志
+from bxpy.日志包 import 日志类
 from bxgis import 配置
 
 
@@ -7,9 +7,9 @@ def 导入从CAD(输入CAD数据集中的要素类=r"C:\Users\beixiao\Desktop\01
     # if 输入CAD图层名称 in ["点", "线", "面"]:
     #     输入CAD图层名称 = bxarcpy.常量._要素类型映射[输入CAD图层名称]
 
-    # 日志.输出调试(f"当前工作空间{bxarcpy.配置.当前工作空间}")
+    # 日志类.输出调试(f"当前工作空间{bxarcpy.配置.当前工作空间}")
     # 输出要素集 = bxarcpy.要素数据集类.导入从CAD(输入CAD路径列表, r"AA_CAD导入GEO1")
-    # 日志.输出调试("输出的要素集是：" + 输出要素集.名称 + rf"\{输入CAD图层名称}")
+    # 日志类.输出调试("输出的要素集是：" + 输出要素集.名称 + rf"\{输入CAD图层名称}")
 
     # 输入要素 = bxarcpy.要素类.要素读取_通过名称(输出要素集.名称 + rf"\{输入CAD图层名称}")
 

@@ -14,8 +14,8 @@ class 转换:
         return 要素对象.导出到CAD(输出路径)
 
     @staticmethod
-    def 要素导出到要素(要素对象: 要素类, 输出目录=None, 输出文件名=None):
-        return 要素对象.导出到要素(输出目录, 输出文件名)
+    def 要素导出到要素(要素对象: 要素类, 输出路径=None):
+        return 要素对象.导出到要素(输出路径)
 
     @staticmethod
     def 要素数据集导入从CAD(CAD路径列表, 输出要素数据集名称):

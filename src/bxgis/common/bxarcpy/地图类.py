@@ -1,4 +1,5 @@
-from bxpy import 日志
+from bxpy.日志包 import 日志类
+
 try:
     import arcpy
 except Exception as e:

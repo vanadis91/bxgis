@@ -11,6 +11,6 @@ def 生成当前时间_微秒():
 
 
 def 生成短GUID():
-    from bxpy import 字
+    from bxpy.基本对象包 import 字类
 
-    return 字.字符串生成_短GUID()
+    return 字类.字符串生成_短GUID()
