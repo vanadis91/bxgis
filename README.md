@@ -17,8 +17,8 @@
 
 ### 2. 修改配置文件
 
-- 修改**bxgis/config/配置.py**文件中的内容。主要包括对项目基本信息的录入，一些要素的字段名称映射的录入。
-- 将**bxgis/config/配置.py**文件中的**计算机信息.环境**修改为**生产环境**。
+- 修改**bxgis/配置/基本信息.py**文件中的内容。主要包括对项目基本信息的录入，一些要素的字段名称映射的录入。
+- 将**bxgis/配置/基本信息.py**文件中的**计算机信息.环境**修改为**生产环境**。
 
 ### 3. 完成要素的输入
 
@@ -44,12 +44,12 @@
 ### 1. 项目结构
 
 - 当前的目录结构采用的是ESRI网站上**创建地理处理模块**页面中的结构。详见：<https://pro.arcgis.com/zh-cn/pro-app/latest/arcpy/geoprocessing_and_python/extending-geoprocessing-through-python-modules.htm>
-- **src/bxgis**为主要的包，**src/bxgis/bxgis.pyt**是Python工具箱的入口文件，**src/bxgis/common**目录下为几个需要调用的次要的包，其中对Arcpy相关函数进行汉化的包为**bxarcpy**，**src/bxgis/config**目录为配置文件，**src/bxgis/esri**文件夹和**src/bxgis**目录下的xml文件是通过**arcpy.gp.createtoolboxsupportfiles**函数自动生成的内容。
+- **src/bxgis**为主要的包，**src/bxgis/bxgis.pyt**是Python工具箱的入口文件，**src/bxarcpy、src/bxpandas、src/bxpy、src/bxshapely**为几个需要调用的次要的包，其中**bxarcpy**为Arcpy相关函数进行汉化的包，**src/bxgis/配置**目录为配置文件，**src/bxgis/esri**文件夹和**src/bxgis**目录下的xml文件是通过**arcpy.gp.createtoolboxsupportfiles**函数自动生成的内容。
 
 ### 2. 环境构建
 
 - 依赖库安装文件为**项目根目录/requirements.txt**。
-- 在解释器的**site-packages**文件夹中，新增<strong>.pth</strong>文件，将**项目根目录/src**和**项目根目录/src/bxgis/common**路径添加到文件中。
+- 在解释器的**site-packages**文件夹中，新增<strong>.pth</strong>文件，将**项目根目录/src**路径添加到文件中。
 
 ### 3. 代码调试
 
@@ -59,5 +59,5 @@
 
 ### 4. 打包分发
 
-- 主要包括运行**arcpy.gp.createtoolboxsupportfiles**函数和用**setuptools**打包两个步骤。相关步骤已集成在**项目根目录/dist.py**中。
+- 主要包括运行**arcpy.gp.createtoolboxsupportfiles**函数和用**setuptools**打包两个步骤。相关步骤已集成在**项目根目录/dist.py**文件中。
 - 运行**dist.py**文件后，将在项目根目录中生成**dist**文件夹，其中的**wheel文件**即为打包后用于分发的文件。详见：<https://pro.arcgis.com/zh-cn/pro-app/latest/arcpy/geoprocessing_and_python/distributing-python-modules.htm>
