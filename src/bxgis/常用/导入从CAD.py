@@ -34,7 +34,7 @@ def 导入从CAD(输入CAD数据集中的要素类路径=r"C:\Users\beixiao\Desk
         要素类.字段添加(输入要素路径, 基本信息.地块要素字段映射.地类编号字段名称)
         要素类.字段计算(输入要素路径, 基本信息.地块要素字段映射.地类编号字段名称, "!Layer!.split('#')[0].split('-')[1].replace('／','/')")
 
-    要素类.字段删除(输入要素路径, ["Entity", "Handle", "Layer", "Color", "Linetype", "Elevation", "LineWt", "RefName", "LyrColor", "LyrLnType", "LyrLineWt", "Angle", "LyrFrzn", "LyrLock", "LyrOn", "LyrVPFrzn", "LyrHandle", "EntColor", "BlkColor", "EntLinetype", "BlkLinetype", "Thickness", "EntLineWt", "BlkLineWt", "LTScale", "ExtX", "ExtY", "ExtZ", "DocName", "DocPath", "DocType", "DocVer", "DocUpdate", "DocId"])
+    要素类.字段删除(输入要素路径, ["Entity", "Handle", "Layer", "Color", "Linetype", "Elevation", "LineWt", "RefName", "LyrColor", "LyrLnType", "LyrLineWt", "Angle", "LyrFrzn", "LyrLock", "LyrOn", "LyrVPFrzn", "LyrHandle", "EntColor", "BlkColor", "EntLinetype", "BlkLinetype", "Thickness", "EntLineWt", "BlkLineWt", "LTScale", "ExtX", "ExtY", "ExtZ", "DocName", "DocPath", "DocType", "DocVer", "DocUpdate", "DocId", "ScaleX", "ScaleY", "ScaleZ"])
 
     if 是否拓扑检查 and 输入要素类型 in ["面", "线"]:
         要素类.拓扑检查重叠(输入要素路径)
@@ -49,8 +49,8 @@ def 导入从CAD(输入CAD数据集中的要素类路径=r"C:\Users\beixiao\Desk
             from bxarcpy.环境包 import 输入输出类
 
             输入输出类.输出消息(f"当前工作空间中尚不存在范围要素：{基本信息.项目信息.JX_规划范围线要素名称}")
-
-    ret = 要素类.要素创建_通过复制并重命名重名要素(输入要素路径, 输出要素路径)
+    要素投影后 = 要素类.要素创建_通过投影定义(输入要素路径)
+    ret = 要素类.要素创建_通过复制并重命名重名要素(要素投影后, 输出要素路径)
     return ret
 
 
@@ -60,5 +60,7 @@ if __name__ == "__main__":
     日志类.开启()
     工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
-        导入从CAD(输入CAD数据集中的要素类路径=r"C:\Users\beixiao\Desktop\01.dwg\控规地块", 是否拓扑检查=True, 是否范围检查=True, 是否转曲=True, 输出要素路径=r"CZ_CAD导入_用地规划")
+        # Polyline Polygon
+        导入从CAD(输入CAD数据集中的要素类路径=r"AA_test", 是否拓扑检查=True, 是否范围检查=False, 是否转曲=True, 输出要素路径=r"AA_村庄界线")
         # 导入从CAD(输入CAD数据集中的要素类路径=r"C:\Users\beixiao\Desktop\02.dwg\公共配套设施", 是否拓扑检查=True, 是否范围检查=True, 是否转曲=True, 输出要素路径=r"CZ_CAD导入_配套设施规划")
+        # 导入从CAD(输入CAD数据集中的要素类路径=r"C:\Users\beixiao\Desktop\02.dwg\Point", 是否拓扑检查=True, 是否范围检查=True, 是否转曲=True, 输出要素路径=r"AA_地块指标1")

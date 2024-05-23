@@ -103,7 +103,7 @@ def 导出到CAD(输入要素路径="DIST_用地规划图", 规划范围线要�
                         数组类.项插入(part_array, 点)  # type: ignore
                     数组类.项插入(array, part_array)  # type: ignore
                     需融合字段中需融合的值x["_形状"] = arc线类.线创建(array)
-                    游标类.行插入_字典形式(游标_线, 需融合字段中需融合的值x)
+                    游标类.行插入_字典形式(游标_线, 需融合字段中需融合的值x, 操作字段名称列表)
         去孔后要素 = DIST_用地规划图线
     else:
         去孔后要素 = 切分后要素
@@ -132,5 +132,6 @@ if __name__ == "__main__":
     with 环境管理器类.环境管理器类创建(工作空间):
         # 导出到CAD(输入要素名称="XG_GHDK", 规划范围线要素名称=None, 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="dldm", 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg")
         # 导出到CAD(输入要素名称="AA_开发边界内", 规划范围线要素名称=None, 需融合字段中需融合的值的列表=["1207", "1207v"], 切分阈值=None, 是否去孔=False, CAD中图层采用的字段的名称="dldm", 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg")
-        导出到CAD(输入要素路径="AA_开发边界内", 规划范围线要素名称=None, 需融合字段中需融合的值的列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="地类编号", 输出CAD路径=r"C:\Users\beixiao\Desktop\AA_开发边界内.dwg")
-        导出到CAD(输入要素路径="AA_开发边界外", 规划范围线要素名称=None, 需融合字段中需融合的值的列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="地类编号", 输出CAD路径=r"C:\Users\beixiao\Desktop\AA_开发边界外.dwg")
+        # 导出到CAD(输入要素路径="AA_开发边界内", 规划范围线要素名称=None, 需融合字段中需融合的值的列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="地类编号", 输出CAD路径=r"C:\Users\beixiao\Desktop\AA_开发边界内.dwg")
+        # 导出到CAD(输入要素路径="AA_开发边界外", 规划范围线要素名称=None, 需融合字段中需融合的值的列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="地类编号", 输出CAD路径=r"C:\Users\beixiao\Desktop\AA_开发边界外.dwg")
+        导出到CAD(输入要素路径="AA_用地规划图_E4", 规划范围线要素名称=None, 需融合字段中需融合的值的列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="地类编号", 输出CAD路径=r"C:\Users\beixiao\Desktop\AA_用地规划图.dwg")
