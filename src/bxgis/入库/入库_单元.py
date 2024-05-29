@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import bxarcpy
 from typing import Literal
 import bxarcpy.工具包 as 工具包
 from bxarcpy.要素包 import 要素类

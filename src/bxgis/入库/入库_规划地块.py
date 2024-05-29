@@ -31,6 +31,8 @@ def 入库_规划地块(
 
     with 游标类.游标创建("更新", 地块要素, [配套设施规模字段名称]) as 游标:
         for 游标x in 游标类.属性获取_数据_字典形式(游标, [配套设施规模字段名称]):
+            if 游标x[配套设施规模字段名称] in [None, ""]:
+                continue
             地块设施列表: list = 游标x[配套设施规模字段名称].split("/")
             修改后设施列表 = []
             for 设施x in 地块设施列表:
@@ -145,6 +147,17 @@ def 入库_规划地块(
     return 输出要素
 
 
+# def FindLabel ( [DKBH], [DLBM], [RJL], [JZMD], [JZGD], [LDL], [MJ], [FJSS1], [FJSS2] ):
+#     dkbh = "" if [DKBH] is None else [DKBH]
+#     dlbm = "" if [DLBM] is None else [DLBM]
+#     rjl = "" if [RJL] is None else [RJL]
+#     jzmd = "" if [JZMD] is None else [JZMD]
+#     jzgd = "" if [JZGD] is None else [JZGD]
+#     ldl = "" if [LDL] is None else [LDL]
+#     mj = "" if [MJ] is None else [MJ]
+#     fjss1 = "" if [FJSS1] is None else [FJSS1]
+#     fjss2 = "" if [FJSS2] is None else [FJSS2]
+#     return u"地块编号：" + dkbh + '\n' +  u"地块性质：" + dlbm + '\n'+  u"容积率：" + rjl + '\n' + u"建筑密度：" + jzmd + '\n'+ u"建筑高度：" + jzgd + '\n' + u"绿地率：" + ldl + '\n'+  u"用地面积：" + mj + '\n'+ u"配套设施：" + fjss1 + fjss2
 if __name__ == "__main__":
     日志类.开启()
     # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"

@@ -1,5 +1,6 @@
 from bxpy.日志包 import 日志类
 from bxpy.进度条包 import 进度条类
+from bxpy.路径包 import 路径类
 from bxarcpy.要素包 import 要素类
 from bxarcpy.游标包 import 游标类
 from bxarcpy.基本对象包 import 数组类
@@ -8,6 +9,7 @@ from bxarcpy.几何包 import 点类 as arc点类
 from bxarcpy.几何包 import 线类 as arc线类
 from bxarcpy.环境包 import 环境管理器类
 from bxshapely.线包 import 环类, 线类
+from bxgis.配置 import 基本信息
 from typing import Union, Literal
 
 
@@ -55,7 +57,7 @@ def 导出到CAD(输入要素路径="DIST_用地规划图", 规划范围线要�
 
         选择集 = 要素类.选择集创建_通过属性(融合后要素, SQL语句=f"是否切分 = '1'")
         切分后要素 = 要素类.要素创建_通过切分(选择集)
-        切分后要素 = 要素类.要素创建_通过更新(融合后要素, 更新要素名称=切分后要素)
+        切分后要素 = 要素类.要素创建_通过更新(融合后要素, 更新要素路径=切分后要素)
     else:
         切分后要素 = 融合后要素
 
@@ -71,7 +73,7 @@ def 导出到CAD(输入要素路径="DIST_用地规划图", 规划范围线要�
             with 游标类.游标创建("查询", 切分后要素, 操作字段名称列表) as 游标_面:
                 for 需融合字段中需融合的值x in 进度条类.进度条创建(游标类.属性获取_数据_字典形式(游标_面, 操作字段名称列表), 总进度=要素类.属性获取_几何数量(切分后要素)):
                     partList = []
-                    for part in 几何类.属性获取_点表(需融合字段中需融合的值x["_形状"]):
+                    for part in 几何类.属性获取_折点列表(需融合字段中需融合的值x["_形状"]):
                         ptList = []
                         shapeList = []
                         for pt in part:
@@ -124,6 +126,10 @@ def 导出到CAD(输入要素路径="DIST_用地规划图", 规划范围线要�
     #         日志类.输出控制台(f"{bxarcpy.几何对象类.折点数量获取(x['_形状'])}")
     # 去孔后要素.要素创建_通过复制并重命名重名要素("AA_123")
     要素类.转换_到CAD(去孔后要素, 输出CAD路径)
+    目录 = 路径类.属性获取_目录(输出CAD路径)
+    文件名 = 路径类.属性获取_文件名(输出CAD路径)
+    xml文件路径 = 路径类.连接(目录, 文件名, ".xml")
+    路径类.删除(xml文件路径)
 
 
 if __name__ == "__main__":
@@ -134,4 +140,13 @@ if __name__ == "__main__":
         # 导出到CAD(输入要素名称="AA_开发边界内", 规划范围线要素名称=None, 需融合字段中需融合的值的列表=["1207", "1207v"], 切分阈值=None, 是否去孔=False, CAD中图层采用的字段的名称="dldm", 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg")
         # 导出到CAD(输入要素路径="AA_开发边界内", 规划范围线要素名称=None, 需融合字段中需融合的值的列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="地类编号", 输出CAD路径=r"C:\Users\beixiao\Desktop\AA_开发边界内.dwg")
         # 导出到CAD(输入要素路径="AA_开发边界外", 规划范围线要素名称=None, 需融合字段中需融合的值的列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="地类编号", 输出CAD路径=r"C:\Users\beixiao\Desktop\AA_开发边界外.dwg")
-        导出到CAD(输入要素路径="AA_用地规划图_E4", 规划范围线要素名称=None, 需融合字段中需融合的值的列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="地类编号", 输出CAD路径=r"C:\Users\beixiao\Desktop\AA_用地规划图.dwg")
+        导出到CAD(
+            输入要素路径="DIST_用地规划图",
+            规划范围线要素名称=基本信息.项目信息.JX_规划范围线要素名称,
+            需融合字段名称=None,
+            需融合字段中需融合的值的列表=None,
+            切分阈值=None,
+            是否去孔=True,
+            CAD中图层采用的字段的名称="地类编号",
+            输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg",
+        )
