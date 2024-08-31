@@ -6,7 +6,7 @@ from bxarcpy.环境包 import 输入输出类
 from typing import Union, Literal, Any
 
 
-def 数据检查(输入要素路径=r"C:\Users\beixiao\Desktop\01.dwg\控规地块", 是否拓扑检查=True, 是否范围检查=True, 是否曲线检查=True, 是否几何修复=True, 输出要素路径: Union[str, None] = "内存临时"):
+def 数据检查(输入要素路径=r"C:\Users\beixiao\Desktop\01.dwg\控规地块", 是否拓扑检查=True, 是否范围检查=True, 是否曲线检查=True, 是否几何修复=True, 输出要素路径="内存临时") -> str:
     from bxarcpy.游标包 import 游标类
     from bxarcpy.几何包 import 几何类
 
@@ -56,10 +56,12 @@ def 数据检查(输入要素路径=r"C:\Users\beixiao\Desktop\01.dwg\控规地�
 
 if __name__ == "__main__":
     工作空间 = r"C:\Users\beixiao\Project\J江东区临江控规\临江控规_数据库.gdb"
+    # 工作空间 = r"C:\Users\beixiao\Project\F富阳受降控规\0.资料\7.流程_24.06.13_质检\富阳区受降北单元入库数据.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
         # 数据检查(输入要素路径=r"DIST_用地现状图", 是否拓扑检查=True, 是否范围检查=True, 是否曲线检查=True, 输出要素路径=None)
         # 数据检查(输入要素路径=r"CZ_CAD导入_用地规划", 是否拓扑检查=True, 是否范围检查=True, 是否曲线检查=True, 是否几何修复=True, 输出要素路径=None)
         # 数据检查(输入要素路径=r"DIST_用地调整图", 是否拓扑检查=True, 是否范围检查=True, 是否曲线检查=True, 是否几何修复=False, 输出要素路径=None)
-        数据检查(输入要素路径=r"DIST_用途分区规划图", 是否拓扑检查=True, 是否范围检查=True, 是否曲线检查=True, 是否几何修复=False, 输出要素路径=None)
+        # 数据检查(输入要素路径=r"DIST_用途分区规划图", 是否拓扑检查=True, 是否范围检查=True, 是否曲线检查=True, 是否几何修复=False, 输出要素路径=None)
         # 数据检查(输入要素路径=r"DIST_用地规划图", 是否拓扑检查=True, 是否范围检查=True, 是否曲线检查=True, 是否几何修复=True, 输出要素路径=None)
         # 要素类.要素创建_通过填充空隙("DIST_用地调整图", "JX_规划范围线", "'00'", "AA_test")
+        数据检查(输入要素路径=r"GZW_高压线", 是否拓扑检查=True, 是否范围检查=False, 是否曲线检查=True, 是否几何修复=False, 输出要素路径=r"GZW_高压线")
