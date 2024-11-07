@@ -34,20 +34,19 @@ def 生成esri路径下文件():
 
 
 def 生成次要的包(次要包是否源码=True):
-    import os
     import sys
 
     # 添加支持路径
-    项目根目录 = os.path.dirname(__file__)
     sys.path.insert(0, "C:\\Users\\beixiao\\Project\\bxpy\\src")
     sys.path.insert(0, "C:\\Users\\beixiao\\Project\\bxpy\\.venv\\Lib\\site-packages")
     from bxpy.路径包 import 路径类
     from bxpy.构建发布包 import 加密类pyarmor
 
-    所有项目根目录 = 路径类.转绝对("..", 项目根目录)
+    项目根目录 = 路径类.属性获取_目录(__file__)
+    所有项目根目录 = 路径类.属性获取_目录(__file__, 2)
+
     # 删除bxshapely
     bxshapely目录路径 = 路径类.连接(项目根目录, "src", "bxshapely")
-
     路径类.删除(bxshapely目录路径)
     if 次要包是否源码:
         路径类.链接_新增(
@@ -102,20 +101,22 @@ def 包构建():
     from bxpy.路径包 import 路径类
 
     包名称列表 = 工具集.查找所有包("src")
+    包路径字典 = 工具集.查找所有包路径("src")
     print(f"包名称列表: {包名称列表}")
-    包路径字典 = {}
-    for 包名称x in 包名称列表:
-        if len(包名称x) >= 5 and 包名称x[0:5] == "bxgis":
-            包路径字典[包名称x] = f'src/{包名称x.replace(".","/")}'
-        elif len(包名称x) >= 7 and 包名称x[0:7] == "bxarcpy":
-            包路径字典[包名称x] = f'src/{包名称x.replace(".","/")}'
-        elif len(包名称x) >= 9 and 包名称x[0:9] == "bxshapely":
-            包路径字典[包名称x] = f'src/{包名称x.replace(".","/")}'
-        elif len(包名称x) >= 8 and 包名称x[0:8] == "bxpandas":
-            包路径字典[包名称x] = f'src/{包名称x.replace(".","/")}'
-        elif len(包名称x) >= 4 and 包名称x[0:4] == "bxpy":
-            包路径字典[包名称x] = f'src/{包名称x.replace(".","/")}'
     print(f"包路径字典: {包路径字典}")
+    # 包路径字典 = {}
+    # for 包名称x in 包名称列表:
+    #     if len(包名称x) >= 5 and 包名称x[0:5] == "bxgis":
+    #         包路径字典[包名称x] = f'src/{包名称x.replace(".","/")}'
+    #     elif len(包名称x) >= 7 and 包名称x[0:7] == "bxarcpy":
+    #         包路径字典[包名称x] = f'src/{包名称x.replace(".","/")}'
+    #     elif len(包名称x) >= 9 and 包名称x[0:9] == "bxshapely":
+    #         包路径字典[包名称x] = f'src/{包名称x.replace(".","/")}'
+    #     elif len(包名称x) >= 8 and 包名称x[0:8] == "bxpandas":
+    #         包路径字典[包名称x] = f'src/{包名称x.replace(".","/")}'
+    #     elif len(包名称x) >= 4 and 包名称x[0:4] == "bxpy":
+    #         包路径字典[包名称x] = f'src/{包名称x.replace(".","/")}'
+    # print(f"包路径字典: {包路径字典}")
     构建类setuptools.构建(
         包名称="bxgis",
         包版本="0.0.1",
@@ -127,7 +128,9 @@ def 包构建():
         Python版本="~=3.9",
         第三方包列表=[
             "shapely",
+            "numpy",
             "pandas",
+            "pypiwin32",
             "psutil",
             "setuptools",
             "tinydb",
@@ -137,7 +140,7 @@ def 包构建():
         ],
         包名称列表=包名称列表,
         包路径字典=包路径字典,
-        包额外数据字典={
+        手动指定包额外数据={
             "bxgis": [
                 "esri/arcpy/*",
                 "esri/help/gp/*",
