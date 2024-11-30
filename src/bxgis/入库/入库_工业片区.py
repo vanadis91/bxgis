@@ -61,10 +61,31 @@ def 入库_工业片区(工业片区要素名称="JX_工业片区范围线", 单
 
     要素类.字段删除(工业片区要素, 保留字段名称列表=["DYMC", "PQBM", "PQMC", "PQMJ", "YDZL", "JZZL", "ZDGN", "PTSS", "PTSS2", "PTSS3", "JTSS", "JTSS2", "JTSS3", "SZSS", "SZSS2", "SZSS3", "BZ"])
 
+    from bxarcpy.游标包 import 游标类
+
+    删除字段名称列表 = ["PTSS2", "PTSS3", "JTSS2", "JTSS3", "SZSS2", "SZSS3"]
+
+    操作字段 = ["PTSS2", "PTSS3", "JTSS2", "JTSS3", "SZSS2", "SZSS3"]
+    with 游标类.游标创建("查询", 工业片区要素, 操作字段) as 游标:
+        for 数据字典x in 游标类.属性获取_数据_字典形式(游标, 操作字段):
+            if 数据字典x["PTSS2"] not in ["", None] and "PTSS2" in 删除字段名称列表:
+                删除字段名称列表.remove("PTSS2")
+            if 数据字典x["PTSS3"] not in ["", None] and "PTSS3" in 删除字段名称列表:
+                删除字段名称列表.remove("PTSS3")
+            if 数据字典x["JTSS2"] not in ["", None] and "JTSS2" in 删除字段名称列表:
+                删除字段名称列表.remove("JTSS2")
+            if 数据字典x["JTSS3"] not in ["", None] and "JTSS3" in 删除字段名称列表:
+                删除字段名称列表.remove("JTSS3")
+            if 数据字典x["SZSS2"] not in ["", None] and "SZSS2" in 删除字段名称列表:
+                删除字段名称列表.remove("SZSS2")
+            if 数据字典x["SZSS3"] not in ["", None] and "SZSS3" in 删除字段名称列表:
+                删除字段名称列表.remove("SZSS3")
+    要素类.字段删除(工业片区要素, 删除字段名称列表)
+
     数据库 = 基本信息.项目信息.工作空间
-    if "入库材料" not in 数据库类.属性获取_要素数据集名称列表(数据库):
-        要素数据集 = 要素数据集类.要素数据集创建("入库材料")
-    输出要素 = 要素类.要素创建_通过复制并重命名重名要素(工业片区要素, "入库材料" + "/" + 输出要素名称)
+    if "XG" not in 数据库类.属性获取_要素数据集名称列表(数据库):
+        要素数据集 = 要素数据集类.要素数据集创建("XG")
+    输出要素 = 要素类.要素创建_通过复制并重命名重名要素(工业片区要素, "XG" + "/" + 输出要素名称)
     return 输出要素
 
 
