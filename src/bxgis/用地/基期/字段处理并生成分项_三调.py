@@ -1,5 +1,5 @@
 import bxarcpy
-from bxpy.日志包 import 日志类
+from bxpy.日志包 import 日志生成器
 import bxarcpy.工具包 as 工具包
 from bxarcpy.要素包 import 要素类
 from bxarcpy.游标包 import 游标类

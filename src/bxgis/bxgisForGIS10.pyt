@@ -98,7 +98,18 @@ if __name__ == "__main__":
     print('111111111111111111111111111111111')
     import subprocess
     # str = "powershell -NoExit -Command \"Start-Process $env:windir\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -ArgumentList '-Command C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折'\""
-    str = "powershell -NoExit -Command \"\"Start-Process $env:windir\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -ArgumentList \'-NoExit -Command C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\'\"\""
+    # str = "cmd /c \"\"c:\\windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -ArgumentList \'-NoExit -Command C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\'\"\""
+    # str = "cmd /c \"start %windir%\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\""
+    str = "cmd /c \"C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\""
+
+    import sys
+
+    print(sys.path)
+    sys.path.remove("C:\\Program Files\\ArcGIS\\Pro\\Resources\\ArcPy")
+    sys.path.remove("c:\\program files (x86)\\arcgis\\desktop10.8\\bin")
+    sys.path.remove("c:\\program files (x86)\\arcgis\\desktop10.8\\ArcPy")
+    sys.path.remove("c:\\program files (x86)\\arcgis\\desktop10.8\\ArcToolbox\\Scripts")
+
     process = subprocess.Popen(str,close_fds=True,creationflags=subprocess.CREATE_NEW_CONSOLE | subprocess.CREATE_NEW_PROCESS_GROUP)
     print('222222222222222222222222222222222')
     # process.wait()

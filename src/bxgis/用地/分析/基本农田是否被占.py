@@ -1,5 +1,5 @@
 import bxarcpy
-from bxpy.日志包 import 日志类
+from bxpy.日志包 import 日志生成器
 from bxgis import 配置
 import bxarcpy.工具包 as 工具包
 from bxarcpy.要素包 import 要素类
@@ -36,7 +36,7 @@ def 基本农田是否被占(输入要素名称="DIST_用地规划图", 基本�
 
 
 if __name__ == "__main__":
-    日志类.开启()
+    日志生成器.开启()
     # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
     工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):

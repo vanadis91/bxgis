@@ -4,7 +4,7 @@ from typing import Literal
 import bxarcpy.工具包 as 工具包
 from bxarcpy.要素包 import 要素类
 from bxarcpy.游标包 import 游标类
-from bxpy.日志包 import 日志类
+from bxpy.日志包 import 日志生成器
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类
 from bxarcpy.环境包 import 环境管理器类, 输入输出类
@@ -236,7 +236,7 @@ def 入库_控制线(
         },
     ],
 ):
-    日志类.临时开启日志()
+    日志生成器.临时开启日志()
     控制线要素 = 要素类.要素创建_通过名称(要素类型="线")
 
     要素类.字段添加(控制线要素, "DYMC", "字符串", 50, "规划编制单元名称")
@@ -402,7 +402,7 @@ def 入库_控制线(
 
         # 控制管线录入
         for 控制线x in 控制线列表:
-            日志类.输出调试(f"开始添加以下控制线类型：{控制线x}")
+            日志生成器.输出调试(f"开始添加以下控制线类型：{控制线x}")
             要素名称 = 要素类.要素创建_通过复制(控制线x["要素路径"])
             控制线操作字段列表 = [x[0] for x in 控制线x["字段映射"]]
             控制线操作字段列表.append("_形状")

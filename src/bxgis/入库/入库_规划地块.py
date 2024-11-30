@@ -4,7 +4,7 @@ import bxarcpy
 from typing import Literal
 import bxarcpy.工具包 as 工具包
 from bxarcpy.要素包 import 要素类
-from bxpy.日志包 import 日志类
+from bxpy.日志包 import 日志生成器
 from bxarcpy.游标包 import 游标类
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类
@@ -159,9 +159,9 @@ def 入库_规划地块(
 #     fjss2 = "" if [FJSS2] is None else [FJSS2]
 #     return u"地块编号：" + dkbh + '\n' +  u"地块性质：" + dlbm + '\n'+  u"容积率：" + rjl + '\n' + u"建筑密度：" + jzmd + '\n'+ u"建筑高度：" + jzgd + '\n' + u"绿地率：" + ldl + '\n'+  u"用地面积：" + mj + '\n'+ u"配套设施：" + fjss1 + fjss2
 if __name__ == "__main__":
-    日志类.开启()
-    工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
-    # 工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
+    日志生成器.开启()
+    # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
+    工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
         入库_规划地块(
             地块要素名称=基本信息.项目信息.YD_用地_规划要素名称,

@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:e45c094b4e5c6cd3c03a8502f14f799937d1e68b06aa7460e3afa888d5feabaa"
+content_hash = "sha256:39cb1230e3de4c702c3e8c62a853a7b8906160b1b7d32068389d014ab1ea8ee5"
 
 [[metadata.targets]]
 requires_python = "==3.9.*"
@@ -22,6 +22,19 @@ dependencies = [
 files = [
     {file = "annotated_types-0.7.0-py3-none-any.whl", hash = "sha256:1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53"},
     {file = "annotated_types-0.7.0.tar.gz", hash = "sha256:aff07c09a53a08bc8cfccb9c85b05f1aa9a2a6f23728d790723543408344ce89"},
+]
+
+[[package]]
+name = "bson"
+version = "0.5.10"
+summary = "BSON codec for Python"
+groups = ["default"]
+dependencies = [
+    "python-dateutil>=2.4.0",
+    "six>=1.9.0",
+]
+files = [
+    {file = "bson-0.5.10.tar.gz", hash = "sha256:d6511b2ab051139a9123c184de1a04227262173ad593429d21e443d6462d6590"},
 ]
 
 [[package]]

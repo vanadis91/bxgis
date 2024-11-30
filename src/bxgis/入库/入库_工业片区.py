@@ -96,7 +96,7 @@ def 入库_工业片区(工业片区要素名称="JX_工业片区范围线", 单
 
 
 if __name__ == "__main__":
-    工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
-    # 工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
+    # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
+    工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
         入库_工业片区(工业片区要素名称="JX_工业片区范围线", 单元名称=基本信息.项目信息.单元名称)

@@ -3,7 +3,7 @@
 from typing import Literal
 import bxarcpy.工具包 as 工具包
 from bxarcpy.要素包 import 要素类
-from bxpy.日志包 import 日志类
+from bxpy.日志包 import 日志生成器
 from bxarcpy.游标包 import 游标类
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类
@@ -16,7 +16,7 @@ def 用地_工具集_将旧版新地类转为新版新地类(
     地类编号字段名称=基本信息.地块要素字段映射.地类编号字段名称,
     输出要素路径="内存临时",
 ):
-    日志类.临时关闭日志()
+    日志生成器.临时关闭日志()
     # 需要提前完成编号、耕地面积计算
     输出要素路径 = 工具包.输出路径生成_当采用内存临时时(["旧版新地类转为新版新地类"]) if 输出要素路径 == "内存临时" else 输出要素路径
 
@@ -65,7 +65,7 @@ def 用地_工具集_将旧版新地类转为新版新地类(
 
 
 if __name__ == "__main__":
-    日志类.开启()
+    日志生成器.开启()
     工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
     # 工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):

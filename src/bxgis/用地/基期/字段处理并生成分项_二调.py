@@ -1,5 +1,5 @@
 import bxarcpy
-from bxpy.日志包 import 日志类
+from bxpy.日志包 import 日志生成器
 import bxarcpy.工具包 as 工具包
 from bxarcpy.工具包 import 输出路径生成_当采用内存临时时
 from bxarcpy.要素包 import 要素类

@@ -13,6 +13,7 @@ dependencies = [
     "shortuuid>=1.0.13",
     "tqdm>=4.66.6",
     "colorama>=0.4.6",
+    "bson>=0.5.10",
 ]
 requires-python = "==3.9.*"
 readme = "README.md"

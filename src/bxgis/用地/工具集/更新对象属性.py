@@ -4,7 +4,7 @@ from typing import Literal
 import bxarcpy.工具包 as 工具包
 from bxarcpy.要素包 import 要素类
 from bxarcpy.几何包 import 几何类
-from bxpy.日志包 import 日志类
+from bxpy.日志包 import 日志生成器
 from bxarcpy.游标包 import 游标类
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类

@@ -2,7 +2,7 @@
 
 from bxarcpy.要素包 import 要素类, 字段类
 from bxarcpy.游标包 import 游标类
-from bxpy.日志包 import 日志类
+from bxpy.日志包 import 日志生成器
 from bxpy.基本对象包 import 整类
 from bxarcpy.环境包 import 环境管理器类, 输入输出类
 from bxarcpy.几何包 import 几何类
@@ -30,7 +30,7 @@ def 根据街坊生成街区(
 
 
 if __name__ == "__main__":
-    日志类.开启(级别列表过滤=["调试", "信息", "警告", "错误", "危险"])
+    日志生成器.开启(级别列表过滤=["调试", "信息", "警告", "错误", "危险"])
     工作空间 = r"C:\Users\beixiao\Project\F富阳受降控规\0.资料\7.流程_24.06.13_质检\富阳区受降北单元入库数据.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
         根据街坊生成街区(
