@@ -33,7 +33,7 @@ def 生成esri路径下文件():
             路径类.修改(子路径下文件完整路径_移动前, 子路径下文件完整路径_移动后)
 
 
-def 生成次要的包(次要包是否源码=True):
+def 生成次要的包():
     import sys
 
     # 添加支持路径
@@ -46,53 +46,35 @@ def 生成次要的包(次要包是否源码=True):
     所有项目根目录 = 路径类.属性获取_目录(__file__, 2)
 
     # 删除bxshapely
-    bxshapely目录路径 = 路径类.连接(项目根目录, "src", "bxshapely")
+    bxshapely目录路径 = 路径类.连接(项目根目录, "src", "utils", "bxshapely")
     路径类.删除(bxshapely目录路径)
-    if 次要包是否源码:
-        路径类.链接_新增(
-            路径类.连接(所有项目根目录, "bxshapely", "src", "bxshapely"),
-            路径类.属性获取_目录(bxshapely目录路径),
-        )
-    else:
-        加密类pyarmor.加密包(
-            准备加密的包或文件的路径=路径类.连接(所有项目根目录, "bxshapely", "src", "bxshapely"),
-            加密后存放的目录=路径类.属性获取_目录(bxshapely目录路径),
-        )
+    加密类pyarmor.加密包(
+        准备加密的包或文件的路径=路径类.连接(所有项目根目录, "bxshapely", "src", "bxshapely"),
+        加密后存放的目录=路径类.属性获取_目录(bxshapely目录路径),
+    )
 
     # 删除bxpandas
-    bxpandas目录路径 = 路径类.连接(项目根目录, "src", "bxpandas")
+    bxpandas目录路径 = 路径类.连接(项目根目录, "src", "utils", "bxpandas")
     路径类.删除(bxpandas目录路径)
-    if 次要包是否源码:
-        路径类.链接_新增(
-            路径类.连接(所有项目根目录, "bxpandas", "src", "bxpandas"),
-            路径类.属性获取_目录(bxpandas目录路径),
-        )
-    else:
-        加密类pyarmor.加密包(
-            准备加密的包或文件的路径=路径类.连接(所有项目根目录, "bxpandas", "src", "bxpandas"),
-            加密后存放的目录=路径类.属性获取_目录(bxpandas目录路径),
-        )
+    加密类pyarmor.加密包(
+        准备加密的包或文件的路径=路径类.连接(所有项目根目录, "bxpandas", "src", "bxpandas"),
+        加密后存放的目录=路径类.属性获取_目录(bxpandas目录路径),
+    )
 
     # 删除bxpy
-    bxpy目录路径 = 路径类.连接(项目根目录, "src", "bxpy")
+    bxpy目录路径 = 路径类.连接(项目根目录, "src", "utils", "bxpy")
     路径类.删除(bxpy目录路径)
-    if 次要包是否源码:
-        路径类.链接_新增(
-            路径类.连接(所有项目根目录, "bxpy", "src", "bxpy"),
-            路径类.属性获取_目录(bxpy目录路径),
-        )
-    else:
-        加密类pyarmor.加密包(
-            准备加密的包或文件的路径=路径类.连接(所有项目根目录, "bxpy", "src", "bxpy"),
-            加密后存放的目录=路径类.属性获取_目录(bxpy目录路径),
-        )
+    加密类pyarmor.加密包(
+        准备加密的包或文件的路径=路径类.连接(所有项目根目录, "bxpy", "src", "bxpy"),
+        加密后存放的目录=路径类.属性获取_目录(bxpy目录路径),
+    )
 
     # 删除bxarcpy
-    bxarcpy目录路径 = 路径类.连接(项目根目录, "src", "bxarcpy")
-    路径类.删除(bxarcpy目录路径)
-    路径类.链接_新增(
+    bxarcpy目录路径 = 路径类.连接(项目根目录, "src", "utils", "bxarcpy")
+    路径类.删除(源路径=bxarcpy目录路径)
+    路径类.复制(
         路径类.连接(所有项目根目录, "bxarcpy", "src", "bxarcpy"),
-        路径类.属性获取_目录(bxarcpy目录路径),
+        路径类.属性获取_目录(路径类.连接(项目根目录, "src", "utils")),
     )
 
 
@@ -170,12 +152,12 @@ def 包构建():
 
 def main(功能: Literal["作者开发环境初始化", "作者打包", "打包"] = "作者开发环境初始化"):
     if 功能 == "作者开发环境初始化":
-        生成次要的包(次要包是否源码=True)  # type: ignore
+        生成次要的包()  # type: ignore
     elif 功能 == "作者打包":
-        生成次要的包(次要包是否源码=False)
+        生成次要的包()
         生成esri路径下文件()
         包构建()
-        生成次要的包(次要包是否源码=True)
+        生成次要的包()
     elif 功能 == "打包":
         生成esri路径下文件()
         包构建()
