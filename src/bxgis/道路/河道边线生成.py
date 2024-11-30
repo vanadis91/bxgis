@@ -3,7 +3,7 @@
 # import arcpy
 # from sys import argv
 import bxarcpy.工具包 as 工具包
-from bxpy.日志包 import 日志类
+from bxpy.日志包 import 日志生成器
 from bxpy.进度条包 import 进度条类
 from bxarcpy.环境包 import 环境管理器类
 from bxarcpy.要素包 import 要素类
