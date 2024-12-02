@@ -111,17 +111,24 @@ class CurveToPolyline(object):
         import subprocess
 
         # process = subprocess.Popen(r'C:\Users\beixiao\Project\bxarcpy\.condavenv\arcgispro-py3-clone\python.exe -m bxgis.常用.曲转折 {}'.format(parameterDict['输入要素路径列表']), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        str = "cmd /c \"C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.qzz\""
-        # str = "cmd /c \"start %windir%\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.qzz\""
-        arcpy.AddMessage(str)
+        # str = u"cmd /c \"C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\"".encode('gbk')
+        # str1 =u'bxgis.常用.曲转折'.encode('gbk')
+        # str = "cmd /c \"start %windir%\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m {}\"".format(str1)
+        # str = u"cmd /c \"start %windir%\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\"".encode('gbk')
+        # str = u"C:\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折".encode('gbk')
+        str = u"C:\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折".encode('gbk')
+        arcpy.AddMessage(u'运行命令:'.encode('gbk') + str)
             # print(str, file=f)
 
         process = subprocess.Popen(str,close_fds=True,creationflags=subprocess.CREATE_NEW_CONSOLE | subprocess.CREATE_NEW_PROCESS_GROUP)
         stdout, stderr = process.communicate()
         return_code = process.returncode
-        arcpy.AddMessage(stdout)
-        arcpy.AddMessage(stderr)
-        arcpy.AddMessage(return_code)
+        if stdout:
+            arcpy.AddMessage(u'输出内容:'.encode('gbk') + stdout)
+        if stderr:
+            arcpy.AddMessage(u'输出错误:'.encode('gbk') +stderr)
+        if return_code:
+            arcpy.AddMessage(u'返回码:'.encode('gbk') + return_code)
         return None
 
     # def updateMessages(self, parameters):
