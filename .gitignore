@@ -10,3 +10,4 @@
 /*.xml
 dist.bat
 *_24*
+pdm.lock
