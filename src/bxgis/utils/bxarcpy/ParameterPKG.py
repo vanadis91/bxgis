@@ -20,7 +20,7 @@ class ParameterCls:
         requiredRaw = required
         directionRaw = parameterDirection
         discription = name if discription is None else discription
-        ret = arcpy.Parameter(
+        ret = arcpy.Parameter(  # type: ignore
             name=name,
             displayName=discription,
             direction=directionRaw,
@@ -102,6 +102,23 @@ class ParameterCls:
         for k, v in parameterDict.items():
             patameterDictTemp[k] = getRawValue(v)
         return patameterDictTemp
+
+    @staticmethod
+    def parameterListToListRawValue(parameterList):
+        patameterListTemp = []
+
+        def getRawValue(parameterObject):
+            if type(ParameterCls.attrGet_value(parameterObject)) in [int, float, str, bool]:
+                ret = ParameterCls.attrGet_value(parameterObject)
+            elif type(ParameterCls.attrGet_value(parameterObject)) is list:
+                ret = [getRawValue(x) for x in parameterObject]
+            else:
+                ret = ParameterCls.attrGet_valueAsText(parameterObject)
+            return ret
+
+        for parameterX in parameterList:
+            patameterListTemp.append(getRawValue(parameterX))
+        return patameterListTemp
 
     @staticmethod
     def parameterListToDict(parameterList):

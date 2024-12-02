@@ -87,8 +87,12 @@ class CurveToPolyline(object):
         # init_addSearchPath()
         # from bxgis.配置 import 基本信息
         from bxarcpy.ParameterPKG import ParameterCls
-
-        inputElList = ParameterCls.parameterCreate("输入要素路径列表", "DEFeatureClass", None,"Optional","Input",True)
+        inputElList = ParameterCls.parameterCreate("输入要素路径列表", 
+                                                   "DEFeatureClass", 
+                                                   None,
+                                                   "Required",
+                                                   "Input",
+                                                   True)
 
         return [inputElList]
 
@@ -104,10 +108,14 @@ class CurveToPolyline(object):
 
     def execute(self, parameterList, message):
         # init_addSearchPath()
+
         from bxarcpy.ParameterPKG import ParameterCls
 
-        # parameterDict = ParameterCls.parameterListToDictRawValue(parameterList)
+        parameterDict = ParameterCls.parameterListToListRawValue(parameterList)
         # 日志类.输出控制台(参数字典)
+        inputElList = parameterDict[0]
+        import json
+        inputElList = json.dumps(inputElList)
         import subprocess
 
         # process = subprocess.Popen(r'C:\Users\beixiao\Project\bxarcpy\.condavenv\arcgispro-py3-clone\python.exe -m bxgis.常用.曲转折 {}'.format(parameterDict['输入要素路径列表']), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -116,19 +124,22 @@ class CurveToPolyline(object):
         # str = "cmd /c \"start %windir%\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m {}\"".format(str1)
         # str = u"cmd /c \"start %windir%\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\"".encode('gbk')
         # str = u"C:\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折".encode('gbk')
-        str = u"C:\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折".encode('gbk')
+        inputElList = inputElList.encode('gbk').decode('unicode_escape')
+        
+        str = u"C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折 " + inputElList
+        str = str.encode('gbk') 
         arcpy.AddMessage(u'运行命令:'.encode('gbk') + str)
             # print(str, file=f)
 
         process = subprocess.Popen(str,close_fds=True,creationflags=subprocess.CREATE_NEW_CONSOLE | subprocess.CREATE_NEW_PROCESS_GROUP)
-        stdout, stderr = process.communicate()
-        return_code = process.returncode
-        if stdout:
-            arcpy.AddMessage(u'输出内容:'.encode('gbk') + stdout)
-        if stderr:
-            arcpy.AddMessage(u'输出错误:'.encode('gbk') +stderr)
-        if return_code:
-            arcpy.AddMessage(u'返回码:'.encode('gbk') + return_code)
+        # stdout, stderr = process.communicate()
+        # return_code = process.returncode
+        # if stdout:
+        #     arcpy.AddMessage(u'输出内容:'.encode('gbk') + stdout)
+        # if stderr:
+        #     arcpy.AddMessage(u'输出错误:'.encode('gbk') +stderr)
+        # if return_code:
+        #     arcpy.AddMessage(u'返回码:'.encode('gbk') + return_code) # type: ignore
         return None
 
     # def updateMessages(self, parameters):
