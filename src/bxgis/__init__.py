@@ -36,9 +36,11 @@ def 初始化_添加搜索路径():
             sys.path.insert(0, 第三方包目录)
 
     # 移除10.8的搜索路径
-    sys.path.remove("c:\\program files (x86)\\arcgis\\desktop10.8\\bin")
-    sys.path.remove("c:\\program files (x86)\\arcgis\\desktop10.8\\ArcPy")
-    sys.path.remove("c:\\program files (x86)\\arcgis\\desktop10.8\\ArcToolbox\\Scripts")
+    from bxpy.基本对象包 import 表类
+
+    表类.项删除(sys.path, "c:\\program files (x86)\\arcgis\\desktop10.8\\bin", 索引或值不存在时是否提示=False)
+    表类.项删除(sys.path, "c:\\program files (x86)\\arcgis\\desktop10.8\\ArcPy", 索引或值不存在时是否提示=False)
+    表类.项删除(sys.path, "c:\\program files (x86)\\arcgis\\desktop10.8\\ArcToolbox\\Scripts", 索引或值不存在时是否提示=False)
 
 
 初始化_添加搜索路径()

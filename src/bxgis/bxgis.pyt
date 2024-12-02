@@ -128,30 +128,30 @@ class ImportFromCAD(object):
         return 导入从CAD.界面类.函数运行(参数列表, 消息)
 
 
-# class ConvertCurveToPolyline(object):
-#     # "曲转折"
-#     def __init__(self):
-#         self.label = "曲转折"
-#         self.description = ""
-#         self.canRunInBackground = False
-#         self.category = "常用"
+class ConvertCurveToPolyline(object):
+    # "曲转折"
+    def __init__(self):
+        self.label = "曲转折"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = "常用"
 
-#     def getParameterInfo(self):
-#         初始化_添加搜索路径()
-#         from bxarcpy.参数包 import 参数类
+    def getParameterInfo(self):
+        初始化_添加搜索路径()
+        from bxarcpy.参数包 import 参数类
 
-#         输入要素名称列表 = 参数类.参数创建("输入要素名称列表", "要素类", 参数必要性="必填", 是否多个值=True)
+        输入要素名称列表 = 参数类.参数创建("输入要素名称列表", "要素类", 参数必要性="必填", 是否多个值=True)
 
-#         return [输入要素名称列表]
+        return [输入要素名称列表]
 
-#     def execute(self, 参数列表, 消息):
-#         初始化_添加搜索路径()
-#         参数字典 = 参数组字典生成_转换值(参数列表)
-#         import bxgis.常用.曲转折
+    def execute(self, 参数列表, 消息):
+        初始化_添加搜索路径()
+        参数字典 = 参数组字典生成_转换值(参数列表)
+        import bxgis.常用.曲转折
 
-#         初始化_重置模块(bxgis.常用.曲转折)
-#         bxgis.常用.曲转折.曲转折(输入要素路径列表=参数字典["输入要素名称列表"])
-#         return None
+        初始化_重置模块(bxgis.常用.曲转折)
+        bxgis.常用.曲转折.曲转折(输入要素路径列表=参数字典["输入要素名称列表"])
+        return None
 
 
 # class BaseperiodLandtypeConversion(object):

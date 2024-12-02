@@ -7,7 +7,7 @@ from bxarcpy.工具包 import 输出路径生成_当采用内存临时时, 输�
 from bxarcpy.基本对象包 import 枚举类
 import arcpy
 from bxarcpy.枚举包 import 特殊字段_枚举
-from typing import Union, Literal
+from typing import Union, Literal, Any
 
 
 # def 输出路径生成_当采用内存临时时(输入要素路径列表):
@@ -530,12 +530,26 @@ class 要素类:
         return 输出要素路径
 
     @staticmethod
-    def 要素创建_通过多部件至单部件(输入要素路径, 清除ORIG_FID=True, 输出要素路径="内存临时"):
+    def 要素创建_通过多部件至单部件(输入要素路径, 清除ORIG_FID=True, 输出提示=True, 输出要素路径="内存临时"):
         from bxpy.基本对象包 import 字类
+        from bxarcpy.游标包 import 游标类
+        from bxarcpy.环境包 import 输入输出类
 
         输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         arcpy.management.MultipartToSinglepart(in_features=输入要素路径, out_feature_class=输出要素路径)  # type: ignore
+        if 输出提示:
+            with 游标类.游标创建("查询", 输出要素路径, ["_ID", "ORIG_FID"]) as 游标:
+                ID字典 = {}
+                for x in 游标类.属性获取_数据_字典形式(游标, ["_ID", "ORIG_FID"]):
+                    if x["ORIG_FID"] not in ID字典:
+                        ID字典[x["ORIG_FID"]] = [x["_ID"]]
+                    else:
+                        ID字典[x["ORIG_FID"]].append(x["_ID"])
+                for k, v in ID字典.items():
+                    if len(v) > 1:
+                        输入输出类.输出消息(f"{输入要素路径}中原ID为{k}的记录变成单部件了，新ID为{v}")
+
         if 清除ORIG_FID:
             要素类.字段删除(输出要素路径, ["ORIG_FID"])
         return 输出要素路径
@@ -740,7 +754,7 @@ class 要素类:
     def 要素创建_通过投影转换(输入要素路径, 输出坐标系='PROJCS["CGCS2000_3_Degree_GK_CM_120E",GEOGCS["GCS_China_Geodetic_Coordinate_System_2000",DATUM["D_China_2000",SPHEROID["CGCS2000",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Gauss_Kruger"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",120.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]', 输出要素路径="内存临时"):
         # 坐标系有效值可以是 SpatialReference 对象、扩展名为 .prj 的文件或坐标系的字符串表达形式。
         输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
-        
+
         输入要素唯一路径 = 输出路径生成_当采用临时工作空间临时时([输入要素路径])
         复制后要素路径 = 要素类.要素创建_通过复制(输入要素路径, 输入要素唯一路径)
 
@@ -794,18 +808,25 @@ class 要素类:
         if 删除字段名称列表 != None:
             # 日志类.输出控制台(f"即将被删除的字段为：" + str(删除字段名称列表))
             if 忽略系统字段:
-                一般不删除的字段名称列表 = ["OID", "OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length", "SHAPE"]
-                for x in 一般不删除的字段名称列表:
-                    if x in 删除字段名称列表:
-                        删除字段名称列表.remove(x)
+                一般不删除的字段名称列表 = ["OID", "OBJECTID", "OBJECTID_1", "SHAPE", "SHAPE_AREA", "SHAPE_LENGTH"]
+                删除字段名称列表temp = []
+                for x in 删除字段名称列表:
+                    if x.upper() not in 一般不删除的字段名称列表:
+                        删除字段名称列表temp.append(x)
+                删除字段名称列表 = 删除字段名称列表temp
             删除字段名称列表 = [x for x in 删除字段名称列表 if x in 字段名称列表]
             if 删除字段名称列表:
                 arcpy.management.DeleteField(in_table=输入要素路径, drop_field=删除字段名称列表, method="DELETE_FIELDS")[0]  # type: ignore
         if 保留字段名称列表 != None:
             字段名称列表 = 要素类.字段名称列表获取(输入要素路径)
             # 日志类.输出调试(f"要素拥有的所有字段为：" + str(字段名称列表))
+
             if 忽略系统字段:
-                保留字段名称列表.extend(["OID", "OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length", "SHAPE"])
+                一般不删除的字段名称列表 = ["OID", "OBJECTID", "OBJECTID_1", "SHAPE", "SHAPE_AREA", "SHAPE_LENGTH"]
+                for x in 字段名称列表:
+                    if x.upper() in 一般不删除的字段名称列表:
+                        保留字段名称列表.append(x)
+
             for x in 保留字段名称列表:
                 if x in 字段名称列表:
                     字段名称列表.remove(x)
@@ -823,11 +844,16 @@ class 要素类:
         字段类型raw = 枚举类.字段类型.值获取(字段类型)
         # 日志类.输出调试(f"字段类型raw：{字段类型raw}")
         if 删除既有字段:
-            arcpy.management.DeleteField(in_table=输入要素路径, drop_field=[字段名称], method="DELETE_FIELDS")  # type: ignore
+            要素类.字段删除(输入要素路径, [字段名称])
 
         字段名称列表 = 要素类.字段名称列表获取(输入要素路径)
         if 字段名称 not in 字段名称列表:
-            arcpy.management.AddField(in_table=输入要素路径, field_name=字段名称, field_type=字段类型raw, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")  # type: ignore
+            try:
+                arcpy.management.AddField(in_table=输入要素路径, field_name=字段名称, field_type=字段类型raw, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")  # type: ignore
+            except Exception as e:
+                from bxarcpy.环境包 import 输入输出类
+
+                输入输出类.输出消息(f"{输入要素路径}中创建{字段名称}字段失败")
         else:
             from bxarcpy.环境包 import 输入输出类
 
@@ -865,7 +891,7 @@ class 要素类:
         return 输入要素路径
 
     @staticmethod
-    def 字段计算(输入要素路径, 字段名称, 表达式, 字段类型="字符串", 语言类型="PYTHON3", 代码块=""):
+    def 字段计算(输入要素路径, 字段名称, 表达式: Union[Literal["round(!Shape_Area!/10000, 4)", "'abc'"], Any] = "round(!Shape_Area!/10000, 4)", 字段类型="字符串", 语言类型="PYTHON3", 代码块=""):
         字段类型 = 枚举类.字段类型.值获取(字段类型)
         arcpy.management.CalculateField(in_table=输入要素路径, field=字段名称, expression=表达式, expression_type=语言类型, code_block=代码块, field_type=字段类型, enforce_domains="NO_ENFORCE_DOMAINS")[0]  # type: ignore
         return 输入要素路径
@@ -874,6 +900,9 @@ class 要素类:
     def 字段修改(输入要素路径, 字段名称=None, 修改后字段名称=None, 修改后字段别称=None, 字段类型=None, 字段长度=None, 字段是否可为空: Literal["NULLABLE", None] = None, 清除字段别称=True):
         if 字段类型:
             字段类型 = 枚举类.字段类型.值获取(字段类型)
+            字段类型 = "TEXT" if 字段类型 == "STRING" else 字段类型
+            字段类型 = "GUID" if 字段类型 == "OID" else 字段类型
+            字段类型 = "LONG" if 字段类型 == "INTEGER" else 字段类型
         arcpy.management.AlterField(in_table=输入要素路径, field=字段名称, new_field_name=修改后字段名称, new_field_alias=修改后字段别称, field_type=字段类型, field_length=字段长度, field_is_nullable=字段是否可为空, clear_field_alias=清除字段别称)[0]  # type: ignore
         return 输入要素路径
 
@@ -1181,6 +1210,7 @@ if __name__ == "__main__":
     from bxarcpy.环境包 import 环境管理器类
     from bxpy.基本对象包 import 字类
 
+    工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
     工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
     # 工作空间 = r"C:\Users\beixiao\Project\J江东区临江控规\临江控规_数据库.gdb"
     # 道路中线要素名称 = bxarcpy.环境.输入参数获取_以字符串形式(0, "DL_道路中线", True)

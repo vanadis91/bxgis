@@ -3,26 +3,35 @@ def 初始化_添加搜索路径():
     import os
     import sys
 
+    # 添加src目录
     该文件的目录 = os.path.dirname(__file__)
     if 该文件的目录.split(os.sep)[-1] == "bxgis":
-        当前工作路径 = os.getcwd()
-        os.chdir(该文件的目录)
-        项目src目录 = os.path.abspath("..")
-        os.chdir(当前工作路径)
+        项目src目录 = os.path.dirname(该文件的目录)
     elif 该文件的目录.split(os.sep)[-1] == "toolboxes":
-        当前工作路径 = os.getcwd()
-        os.chdir(该文件的目录)
-        项目src目录 = os.path.abspath(f"..{os.sep}..{os.sep}..{os.sep}")
-        os.chdir(当前工作路径)
+        该文件的目录 = os.path.dirname(该文件的目录)
+        该文件的目录 = os.path.dirname(该文件的目录)
+        项目src目录 = os.path.dirname(该文件的目录)
     else:
         raise ValueError("添加搜索路径失败。")
-
     if 项目src目录 not in sys.path:
         sys.path.insert(0, 项目src目录)
-    项目根目录 = os.path.dirname(项目src目录)
-    第三方包目录 = os.path.join(项目根目录, ".venv", "Lib", "site-packages")
-    if 第三方包目录 not in sys.path:
-        sys.path.insert(0, 第三方包目录)
+
+    # 添加utils目录
+    通用工具目录 = os.path.join(项目src目录, "bxgis", "utils")
+    if 通用工具目录 not in sys.path:
+        sys.path.insert(0, 通用工具目录)
+
+    # 添加bxgis的第三方包搜索路径
+    if 项目src目录.split(os.sep)[-1] == "src":
+        项目根目录 = os.path.dirname(项目src目录)
+        第三方包目录 = os.path.join(项目根目录, ".venv", "Lib", "site-packages")
+        if 第三方包目录 not in sys.path:
+            sys.path.insert(0, 第三方包目录)
+
+    # 移除10.8的搜索路径
+    sys.path.remove("c:\\program files (x86)\\arcgis\\desktop10.8\\bin")
+    sys.path.remove("c:\\program files (x86)\\arcgis\\desktop10.8\\ArcPy")
+    sys.path.remove("c:\\program files (x86)\\arcgis\\desktop10.8\\ArcToolbox\\Scripts")
 
 
 def 初始化_重置模块(模块=None):
@@ -119,30 +128,30 @@ class ImportFromCAD(object):
         return 导入从CAD.界面类.函数运行(参数列表, 消息)
 
 
-# class ConvertCurveToPolyline(object):
-#     # "曲转折"
-#     def __init__(self):
-#         self.label = "曲转折"
-#         self.description = ""
-#         self.canRunInBackground = False
-#         self.category = "常用"
+class ConvertCurveToPolyline(object):
+    # "曲转折"
+    def __init__(self):
+        self.label = "曲转折"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = "常用"
 
-#     def getParameterInfo(self):
-#         初始化_添加搜索路径()
-#         from bxarcpy.参数包 import 参数类
+    def getParameterInfo(self):
+        初始化_添加搜索路径()
+        from bxarcpy.参数包 import 参数类
 
-#         输入要素名称列表 = 参数类.参数创建("输入要素名称列表", "要素类", 参数必要性="必填", 是否多个值=True)
+        输入要素名称列表 = 参数类.参数创建("输入要素名称列表", "要素类", 参数必要性="必填", 是否多个值=True)
 
-#         return [输入要素名称列表]
+        return [输入要素名称列表]
 
-#     def execute(self, 参数列表, 消息):
-#         初始化_添加搜索路径()
-#         参数字典 = 参数组字典生成_转换值(参数列表)
-#         import bxgis.常用.曲转折
+    def execute(self, 参数列表, 消息):
+        初始化_添加搜索路径()
+        参数字典 = 参数组字典生成_转换值(参数列表)
+        import bxgis.常用.曲转折
 
-#         初始化_重置模块(bxgis.常用.曲转折)
-#         bxgis.常用.曲转折.曲转折(输入要素路径列表=参数字典["输入要素名称列表"])
-#         return None
+        初始化_重置模块(bxgis.常用.曲转折)
+        bxgis.常用.曲转折.曲转折(输入要素路径列表=参数字典["输入要素名称列表"])
+        return None
 
 
 # class BaseperiodLandtypeConversion(object):
