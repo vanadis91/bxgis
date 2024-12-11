@@ -45,6 +45,7 @@ class 枚举类:
 
         字符串 = "TEXT"
         双精度 = "DOUBLE"
+        整型 = "INTEGER"
         长整型 = "LONG"
         短整型 = "SHORT"
         日期 = "DATE"

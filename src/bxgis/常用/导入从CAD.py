@@ -91,9 +91,10 @@ if __name__ == "__main__":
 
     日志生成器.开启()
     工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
+    工作空间 = r"C:\Users\common\Project\D德清洛舍杨树湾单元控规\03过程文件\24.11.27报批稿\D德清洛舍杨树湾单元控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
         # Polyline Polygon
         # 导入从CAD(输入CAD数据集中的要素类路径=r"AA_test", 是否拓扑检查=True, 是否范围检查=False, 是否转曲=True, 输出要素路径=r"AA_村庄界线")
-        导入从CAD(输入CAD数据集中的要素类路径=r"C:\Users\beixiao\Desktop\01.dwg\控规地块", 是否拓扑检查=True, 是否范围检查=False, 是否转曲=True, 输出要素路径=r"AA_现状用地拓扑检查")
-        # 导入从CAD(输入CAD数据集中的要素类路径=r"C:\Users\beixiao\Desktop\01.dwg\道路中心线", 是否拓扑检查=True, 是否范围检查=False, 是否转曲=True, 输出要素路径=r"CZ_CAD导入_道路中心线")
+        # 导入从CAD(输入CAD数据集中的要素类路径=r"C:\Users\beixiao\Desktop\01.dwg\控规地块", 是否拓扑检查=True, 是否范围检查=False, 是否转曲=True, 输出要素路径=r"DIST_用地规划图")
+        导入从CAD(输入CAD数据集中的要素类路径=r"C:\Users\beixiao\Desktop\01.dwg\道路中心线", 是否拓扑检查=True, 是否范围检查=False, 是否转曲=True, 输出要素路径=r"CZ_CAD导入_道路中心线")
         # 导入从CAD(输入CAD数据集中的要素类路径=r"C:\Users\beixiao\Desktop\02.dwg\Point", 是否拓扑检查=True, 是否范围检查=True, 是否转曲=True, 输出要素路径=r"AA_地块指标1")
