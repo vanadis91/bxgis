@@ -2,6 +2,157 @@
 import arcpy
 # -*- coding: gbk -*-
 
+# _数据类型映射 = {
+#     "要素图层": "GPFeatureLayer",
+#     "要素类": "DEFeatureClass",
+#     "布尔值": "GPBoolean",
+#     "双精度": "GPDouble",
+#     "字段": "Field",
+#     "长整型": "GPLong",
+#     "字符串": "GPString",
+#     "表": "DETable",
+#     "工作空间": "DEWorkspace",
+#     "值表": "GPValueTable",
+#     "文件": "DEFile",
+#     "文件夹": "DEFolder",
+#     "数据文件": "GPDataFile",
+#     "CAD数据集": "DECadDrawingDataset",
+# }
+# _数据必要性映射 = {
+#     "必填": "Required",
+#     "选填": "Optional",
+#     "隐藏的输出参数": "Derived",
+# }
+# _参数类型映射 = {
+#     "输入参数": "Input",
+#     "输出参数": "Output",
+# }
+
+class ParameterCls:
+    @staticmethod
+    def parameterCreate(
+        name,
+        dataType,
+        discription=None,
+        required="Optional",
+        parameterDirection="Input",
+        multiValue=False,
+        enabled=True,
+        default=None,
+        dependenciesParameterNameList=None,
+        parameterOptionType=None,
+        parameterOptionList=None,
+    ):
+        dataTypeRaw = dataType
+        requiredRaw = required
+        directionRaw = parameterDirection
+        discription = name if discription is None else discription
+        ret = arcpy.Parameter(
+            name=name,
+            displayName=discription,
+            direction=directionRaw,
+            datatype=dataTypeRaw,
+            parameterType=requiredRaw,
+            enabled=enabled,
+            multiValue=multiValue,
+        )
+
+        if default:
+            ParameterCls.attrSet_value(ret, default)
+
+        if dependenciesParameterNameList:
+            ParameterCls.attrGet_dependencies(ret, dependenciesParameterNameList)
+
+        if parameterOptionType == "ValueList":
+            ret.filter.type = "ValueList"
+        elif parameterOptionType == "Range":
+            ret.filter.type = "Range"
+        if parameterOptionType and parameterOptionList:
+            valueRaw = [x for x in parameterOptionList]
+            ret.filter.list = valueRaw
+        return ret
+
+    @staticmethod
+    def attrGet_value(parameterObject):
+        return parameterObject.value
+
+    @staticmethod
+    def attrSet_value(parameterObject, value):
+        parameterObject.value = value  # type: ignore
+
+    @staticmethod
+    def attrGet_valueAsText(parameterObject):
+        return parameterObject.valueAsText
+
+    @staticmethod
+    def attrGet_name(parameterObject):
+        return parameterObject.name
+
+    @staticmethod
+    def attrGet_enabled(parameterObject, boolen):
+        parameterObject.enabled = boolen  # type: ignore
+
+    @staticmethod
+    def attrGet_dependencies(parameterObject, parameterNameList):
+        parameterObject.parameterDependencies = parameterNameList  # type: ignore
+
+    @staticmethod
+    def attrGet_filter(parameterObject):
+        return parameterObject.filter  # type: ignore
+
+    class FilterCls:
+        @staticmethod
+        def attrSet_type(filterObject, type):
+            typeRaw = type
+            filterObject.type = typeRaw  # type: ignore
+
+        @staticmethod
+        def attrSet_value(filterObject, value):
+            valueRaw = [x for x in value]
+            filterObject.list = valueRaw
+
+    @staticmethod
+    def convert_to_listRawValue(parameterList):
+        def getRawValue(parameterObject):
+            if type(ParameterCls.attrGet_value(parameterObject)) in [int, float, str, bool]:
+                ret = ParameterCls.attrGet_value(parameterObject)
+            elif type(ParameterCls.attrGet_value(parameterObject)) is list:
+                ret = [getRawValue(x) for x in parameterObject]
+            else:
+                ret = ParameterCls.attrGet_valueAsText(parameterObject)
+            return ret
+        
+        patameterListTemp = []
+        for x in parameterList:
+            patameterListTemp.append(getRawValue(x))
+        return patameterListTemp
+    
+    @staticmethod
+    def convert_to_dictRawValue(parameterList):
+        parameterNameList = [ParameterCls.attrGet_name(x) for x in parameterList]
+        parameterDict = {k: v for k, v in zip(parameterNameList, parameterList)}
+        patameterDictTemp = {}
+
+        def getRawValue(parameterObject):
+            if type(ParameterCls.attrGet_value(parameterObject)) in [int, float, str, bool]:
+                ret = ParameterCls.attrGet_value(parameterObject)
+            elif type(ParameterCls.attrGet_value(parameterObject)) is list:
+                ret = [getRawValue(x) for x in parameterObject]
+            else:
+                ret = ParameterCls.attrGet_valueAsText(parameterObject)
+            return ret
+
+        for k, v in parameterDict.items():
+            patameterDictTemp[k] = getRawValue(v)
+        return patameterDictTemp
+
+    @staticmethod
+    def convert_to_dict(parameterList):
+        parameterNameList = [ParameterCls.attrGet_name(x) for x in parameterList]
+        parameterDict = {k: v for k, v in zip(parameterNameList, parameterList)}
+        return parameterDict
+
+
 
 def init_add_search_path():
     import os
@@ -86,14 +237,12 @@ class CurveToPolyline(object):
     def getParameterInfo(self):
         # init_addSearchPath()
         # from bxgis.配置 import 基本信息
-        from bxarcpy.ParameterPKG import ParameterCls
         inputElList = ParameterCls.parameterCreate("输入要素路径列表", 
                                                    "DEFeatureClass", 
                                                    None,
                                                    "Required",
                                                    "Input",
                                                    True)
-
         return [inputElList]
 
     # def isLicensed(self):
@@ -108,29 +257,22 @@ class CurveToPolyline(object):
 
     def execute(self, parameterList, message):
         # init_addSearchPath()
-
-        from bxarcpy.ParameterPKG import ParameterCls
-
-        parameterDict = ParameterCls.parameterListToListRawValue(parameterList)
+        import json
+        import subprocess
+        parameterDict = ParameterCls.convert_to_listRawValue(parameterList)
         # 日志类.输出控制台(参数字典)
         inputElList = parameterDict[0]
-        import json
-        inputElList = json.dumps(inputElList)
-        import subprocess
-
+        inputElList = json.dumps(inputElList).encode('gbk').decode('unicode_escape')
         # process = subprocess.Popen(r'C:\Users\beixiao\Project\bxarcpy\.condavenv\arcgispro-py3-clone\python.exe -m bxgis.常用.曲转折 {}'.format(parameterDict['输入要素路径列表']), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         # str = u"cmd /c \"C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\"".encode('gbk')
         # str1 =u'bxgis.常用.曲转折'.encode('gbk')
         # str = "cmd /c \"start %windir%\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m {}\"".format(str1)
         # str = u"cmd /c \"start %windir%\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\"".encode('gbk')
         # str = u"C:\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折".encode('gbk')
-        inputElList = inputElList.encode('gbk').decode('unicode_escape')
         
-        str = u"C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折 " + inputElList
-        str = str.encode('gbk') 
+        
+        str = u"C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折 {}".format(inputElList).encode('gbk') 
         arcpy.AddMessage(u'运行命令:'.encode('gbk') + str)
-            # print(str, file=f)
-
         process = subprocess.Popen(str,close_fds=True,creationflags=subprocess.CREATE_NEW_CONSOLE | subprocess.CREATE_NEW_PROCESS_GROUP)
         # stdout, stderr = process.communicate()
         # return_code = process.returncode

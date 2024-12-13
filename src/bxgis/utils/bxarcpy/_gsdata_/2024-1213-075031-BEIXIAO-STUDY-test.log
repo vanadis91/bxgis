@@ -1,0 +1,17 @@
+2024-12-13 07:50:31: Expanded 'file:///%GSDISK%/Users/beixiao/Project/appBXGis/src/bxgis/utils/bxarcpy' to 'file:///C:/Users/beixiao/Project/appBXGis/src/bxgis/utils/bxarcpy'
+2024-12-13 07:50:31: Expanded 'file:///%GSDISK%/Users/beixiao/Project/bxarcpy/src/bxarcpy' to 'file:///C:/Users/beixiao/Project/bxarcpy/src/bxarcpy'
+2024-12-13 07:50:31: -- 分析开始 User Command
+2024-12-13 07:50:31: 左侧: State file does not exist: C:/Users/beixiao/Project/appBXGis/src/bxgis/utils/bxarcpy/_gsdata_/_file_state_v4._gs
+2024-12-13 07:50:31: 右侧: State file does not exist: C:/Users/beixiao/Project/bxarcpy/src/bxarcpy/_gsdata_/_file_state_v4._gs
+2024-12-13 07:50:31: /__pycache__/基本对象包.cpython-39.pyc: 冲突: 新文件有变化
+2024-12-13 07:50:31: /__pycache__/游标包.cpython-39.pyc: 冲突: 新文件有变化
+2024-12-13 07:50:31: /__pycache__/要素包.cpython-39.pyc: 冲突: 新文件有变化
+2024-12-13 07:50:31: /ParameterPKG.py: 冲突: 新文件有变化
+2024-12-13 07:50:31: /ParameterPKG.pyc: 冲突: 新文件有变化
+2024-12-13 07:50:31: /基本对象包.py: 冲突: 新文件有变化
+2024-12-13 07:50:31: /游标包.py: 冲突: 新文件有变化
+2024-12-13 07:50:31: /要素包.py: 冲突: 新文件有变化
+2024-12-13 07:50:31: 分析完毕并发现冲突情况。请选择正确的同步方向解决冲突，然后单击同步
+2024-12-13 07:50:31: 变更：22， 冲突：8， 复制时间：0， 复制状态：41， 错误： 0, All: 64
+2024-12-13 07:50:31: Right to Left: Copy File: 14 
+2024-12-13 07:50:31: -- 分析已结束。历时 00:00:00, 速度： Many 文件/秒

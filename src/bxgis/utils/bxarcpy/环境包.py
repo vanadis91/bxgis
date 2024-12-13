@@ -1,5 +1,8 @@
 from bxpy.日志包 import 日志生成器
 import arcpy
+from typing import Union, Literal, Any, List, Dict, Optional, TypedDict
+
+# from pydantic import BaseModel
 
 
 class 环境类:
@@ -84,11 +87,12 @@ class 输入输出类:
         return x
 
     @staticmethod
-    def 输出消息(x, 级别="调试"):
+    def 输出消息(x, 级别: Literal["调试", "信息", "警告", "错误", "危险"] = "信息"):
         if 日志生成器.属性获取_当前函数内日志开启状态():
             日志生成器.输出(级别=级别, 内容=x)
         else:
-            arcpy.AddMessage(x)
+            内容 = 日志生成器.输出("信息", x, 是否开启=True, 输出是否着色=False, 输出流对象=None)
+            arcpy.AddMessage(内容)
         # print(x)
 
 
