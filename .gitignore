@@ -10,5 +10,6 @@
 /*.xml
 dist.bat
 *_24*
+/dist
 pdm.lock
 appBXGis.code-workspace

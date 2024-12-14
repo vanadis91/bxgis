@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 def 获取OA系统中控规信息():
     from bxpy.网络会话包 import 会话类, 会话配置类
 

@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 import arcpy
 from typing import Union, Literal
 

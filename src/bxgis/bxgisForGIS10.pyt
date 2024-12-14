@@ -2,40 +2,102 @@
 import arcpy
 # -*- coding: gbk -*-
 
-# _数据类型映射 = {
-#     "要素图层": "GPFeatureLayer",
-#     "要素类": "DEFeatureClass",
-#     "布尔值": "GPBoolean",
-#     "双精度": "GPDouble",
-#     "字段": "Field",
-#     "长整型": "GPLong",
-#     "字符串": "GPString",
-#     "表": "DETable",
-#     "工作空间": "DEWorkspace",
-#     "值表": "GPValueTable",
-#     "文件": "DEFile",
-#     "文件夹": "DEFolder",
-#     "数据文件": "GPDataFile",
-#     "CAD数据集": "DECadDrawingDataset",
-# }
-# _数据必要性映射 = {
-#     "必填": "Required",
-#     "选填": "Optional",
-#     "隐藏的输出参数": "Derived",
-# }
-# _参数类型映射 = {
-#     "输入参数": "Input",
-#     "输出参数": "Output",
-# }
+data_type_map = {
+    u"要素图层".encode('gbk'): "GPFeatureLayer",
+    u"要素类".encode('gbk'): "DEFeatureClass",
+    u"布尔值".encode('gbk'): "GPBoolean",
+    u"双精度".encode('gbk'): "GPDouble",
+    u"字段".encode('gbk'): "Field",
+    u"长整型".encode('gbk'): "GPLong",
+    u"字符串".encode('gbk'): "GPString",
+    u"表".encode('gbk'): "DETable",
+    u"工作空间".encode('gbk'): "DEWorkspace",
+    u"值表".encode('gbk'): "GPValueTable",
+    u"文件".encode('gbk'): "DEFile",
+    u"文件夹".encode('gbk'): "DEFolder",
+    u"数据文件".encode('gbk'): "GPDataFile",
+    u"CAD数据集".encode('gbk'): "DECadDrawingDataset",
+}
+required_map = {
+    u"必填".encode('gbk'): "Required",
+    u"选填".encode('gbk'): "Optional",
+    u"隐藏的输出参数".encode('gbk'): "Derived",
+}
+args_type_map = {
+    u"输入参数".encode('gbk'): "Input",
+    u"输出参数".encode('gbk'): "Output",
+}
+
+def get_prj_info():
+    # 获取解释器路径
+    import os
+    import toml
+    toml_file_path = os.path.join(os.path.dirname(__file__),u'配置',u'项目信息.toml')
+    with open(toml_file_path,mode='r')as f:
+        return toml.load(f)
+
+def add_search_path():
+    # 为py3的包搜索路径中添加本项目
+    import os
+    import shutil
+    prj_info_dict = get_prj_info()
+    pkg_search_path = prj_info_dict[u'计算机信息'][u'包搜索路径_python3']
+    com_pth_path_from = os.path.join(os.path.dirname(__file__),u'com.pth')
+    com_pth_path_to = os.path.join(pkg_search_path,u'com.pth')
+    if not os.path.isfile(com_pth_path_to):
+        shutil.copy2(com_pth_path_from, com_pth_path_to)
+    else:
+        try:
+            os.remove(com_pth_path_to)
+            shutil.copy2(com_pth_path_from, com_pth_path_to)
+        except Exception as e:
+            print(e)
+
+add_search_path()
+
+def output_args(args_dict):
+    # 将运行命令字典输出到文件
+    import os
+    args_path = os.path.join(os.path.dirname(__file__),u'命令行参数.json')
+    with open(args_path,mode='w')as f:
+        import json
+        json.dump(args_dict, f, ensure_ascii=False, indent=4)
+
+def fun_run(module_name, function_name, args_list):
+    import subprocess
+    import json
+    args_dict = ParameterCls.convert_to_dictRawValue(args_list)
+    args_dict_str = json.dumps(args_dict,ensure_ascii=False)
+    run_cli_dict={
+        u'模块名称'.encode('gbk'): module_name.encode('gbk'),
+        u'函数名称'.encode('gbk'): function_name.encode('gbk'),
+        u'参数字典'.encode('gbk'): args_dict_str,
+    }
+    output_args(run_cli_dict)
+
+    prj_info_json = get_prj_info()
+    interpreter_path = prj_info_json[u'计算机信息'][u'解释器路径_python3']
+    str = u"\"{}\" -m bxgis.命令行".format(interpreter_path)
+    process = subprocess.Popen(str.encode('gbk'))
+
+    return None
 
 class ParameterCls:
     @staticmethod
+    def parameterCreate_muti(args_dict_list):
+        ret_list = []
+        for args_dict in args_dict_list:
+            a = ParameterCls.parameterCreate(**args_dict)
+            ret_list.append(a)
+        return ret_list
+
+    @staticmethod
     def parameterCreate(
-        name,
-        dataType,
+        name=u'未指定',
+        dataType=u'要素图层',
         discription=None,
-        required="Optional",
-        parameterDirection="Input",
+        required=u"选填",
+        argsDirction=u"输入参数",
         multiValue=False,
         enabled=True,
         default=None,
@@ -43,9 +105,10 @@ class ParameterCls:
         parameterOptionType=None,
         parameterOptionList=None,
     ):
-        dataTypeRaw = dataType
-        requiredRaw = required
-        directionRaw = parameterDirection
+        name = name.encode('gbk')
+        dataTypeRaw = data_type_map.get(dataType.encode('gbk'),dataType)
+        requiredRaw = required_map.get(required.encode('gbk'),required) 
+        directionRaw = args_type_map.get(argsDirction.encode('gbk'),argsDirction) 
         discription = name if discription is None else discription
         ret = arcpy.Parameter(
             name=name,
@@ -129,17 +192,19 @@ class ParameterCls:
     
     @staticmethod
     def convert_to_dictRawValue(parameterList):
-        parameterNameList = [ParameterCls.attrGet_name(x) for x in parameterList]
+        parameterNameList = [ParameterCls.attrGet_name(x).encode('gbk') for x in parameterList]
         parameterDict = {k: v for k, v in zip(parameterNameList, parameterList)}
         patameterDictTemp = {}
 
         def getRawValue(parameterObject):
-            if type(ParameterCls.attrGet_value(parameterObject)) in [int, float, str, bool]:
+            if type(ParameterCls.attrGet_value(parameterObject)) in [int, float, bool]:
                 ret = ParameterCls.attrGet_value(parameterObject)
+            elif type(ParameterCls.attrGet_value(parameterObject)) is str:
+                ret = ParameterCls.attrGet_value(parameterObject).encode('gbk')
             elif type(ParameterCls.attrGet_value(parameterObject)) is list:
                 ret = [getRawValue(x) for x in parameterObject]
             else:
-                ret = ParameterCls.attrGet_valueAsText(parameterObject)
+                ret = ParameterCls.attrGet_valueAsText(parameterObject).encode('gbk')
             return ret
 
         for k, v in parameterDict.items():
@@ -153,68 +218,6 @@ class ParameterCls:
         return parameterDict
 
 
-
-def init_add_search_path():
-    import os
-    import sys
-
-    # 添加src目录
-    directoryOfThisFile = os.path.dirname(__file__)
-    # print(directoryOfThisFile.split('/')[-1])
-    # print(directoryOfThisFile.split('/'))
-    if directoryOfThisFile.split('/')[-1] == "bxgis":
-        directoryOfSrc = os.path.dirname(directoryOfThisFile)
-    elif directoryOfThisFile.split('/')[-1] == "toolboxes":
-        directoryOfThisFile = os.path.dirname(directoryOfThisFile)
-        directoryOfThisFile = os.path.dirname(directoryOfThisFile)
-        directoryOfSrc = os.path.dirname(directoryOfThisFile)
-    else:
-        raise ValueError("failed to add search path.")
-    if directoryOfSrc not in sys.path:
-        sys.path.insert(0, directoryOfSrc)
-
-    # 添加utils目录
-    directoryOfUtils = os.path.join(directoryOfSrc, "bxgis", "utils")
-    if directoryOfUtils not in sys.path:
-        sys.path.insert(0, directoryOfUtils)
-
-    # 添加bxgis的第三方包搜索路径
-    if directoryOfSrc.split('/')[-1] == "src":
-        directoryOfProj = os.path.dirname(directoryOfSrc)
-        directoryOfthirdPKG = os.path.join(directoryOfProj, ".venv", "Lib", "site-packages")
-        if directoryOfthirdPKG not in sys.path:
-            sys.path.insert(0, directoryOfthirdPKG)
-    
-    # 移除10.8的搜索路径
-    # for path_x in sys.path:
-    #     if 'Program Files (x86)'.upper() in path_x.upper():
-    #         print(path_x)
-    #         sys.path.remove(path_x)
-    # sys.path.remove('C:\\Program Files (x86)\\ArcGIS\\Desktop10.8\\ArcPy')
-    
-    # if "C:\\Program Files (x86)\\ArcGIS\\Desktop10.8\\bin" in sys.path:
-    #     sys.path.remove("C:\\Program Files (x86)\\ArcGIS\\Desktop10.8\\bin")
-    # if "c:/program files (x86)/arcgis/desktop10.8/bin" in sys.path:
-    #     sys.path.remove("c:/program files (x86)/arcgis/desktop10.8/bin")
-
-    # if "c:\\program files (x86)\\arcgis\\desktop10.8\\arcpy" in sys.path:
-    #     sys.path.remove("c:\\program files (x86)\\arcgis\\desktop10.8\\arcpy")
-    # if "c:/program files (x86)/arcgis/desktop10.8/arcPy" in sys.path:
-    #     sys.path.remove("c:/program files (x86)/arcgis/desktop10.8/arcPy")
-
-    # if "c:\\program files (x86)\\arcgis\\desktop10.8\\ArcToolbox\\Scripts" in sys.path:
-    #     sys.path.remove("c:\\program files (x86)\\arcgis\\desktop10.8\\ArcToolbox\\Scripts")
-    # if "c:/program files (x86)/arcgis/desktop10.8/ArcToolbox/Scripts" in sys.path:
-    #     sys.path.remove("c:/program files (x86)/arcgis/desktop10.8/ArcToolbox/Scripts")
-    # print(sys.path)
-        
-
-def init_mod_reset(module):
-    import importlib
-
-    importlib.reload(module)
-
-
 class Toolbox(object):
     def __init__(self):
         """Define the toolbox (the name of the toolbox is the name of the
@@ -223,27 +226,43 @@ class Toolbox(object):
         self.alias = "BXGIS工具箱"  # 定义别名
 
         # List of tool classes associated with this toolbox
-        self.tools = [CurveToPolyline]
+        self.tools = [common_curveToPolyline,common_importFromCAD,config_appInit]
 
-
-class CurveToPolyline(object): 
-    # "曲转折"
+class common_importFromCAD(object): 
     def __init__(self):
-        self.label = "曲转折"
+        self.label = u"导入从CAD"
         self.description = ""
         self.canRunInBackground = False
-        self.category = "常用"
+        self.category = u"常用"
+
+    def getParameterInfo(self):
+        args_dict_list = [
+            {"name": u"输入CAD数据集中的要素类路径", "dataType": u"要素类", "required": u'必填', "argsDirction": u"输入参数",'multiValue': False},
+            {"name": u"是否拓扑检查", "dataType": u"布尔值", "required": u'必填', "argsDirction": u"输入参数",'multiValue': False,'default':False},
+            {"name": u"是否范围检查", "dataType": u"布尔值", "required": u'必填', "argsDirction": u"输入参数",'multiValue': False,'default':False},
+            {"name": u"是否转曲", "dataType": u"布尔值", "required": u'必填', "argsDirction": u"输入参数",'multiValue': False,'default':False},
+            {"name": u"输出要素路径", "dataType": u"要素类", "required": u'必填', "argsDirction": u"输出参数",'multiValue': False,'default':u'YD_CAD色块'},
+        ]
+        return ParameterCls.parameterCreate_muti(args_dict_list)
+
+    def execute(self, parameterList, message):
+        fun_run(u'bxgis.常用.导入从CAD',u'导入从CAD',parameterList)
+
+class common_curveToPolyline(object): 
+    # "曲转折"
+    def __init__(self):
+        self.label = u"曲转折"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = u"常用"
 
     def getParameterInfo(self):
         # init_addSearchPath()
         # from bxgis.配置 import 基本信息
-        inputElList = ParameterCls.parameterCreate("输入要素路径列表", 
-                                                   "DEFeatureClass", 
-                                                   None,
-                                                   "Required",
-                                                   "Input",
-                                                   True)
-        return [inputElList]
+        args_dict_list = [
+            {"name": u"输入要素路径列表", "dataType": u"要素类", "required": u'必填', "argsDirction": u"输入参数",'multiValue': True},
+        ]
+        return ParameterCls.parameterCreate_muti(args_dict_list)
 
     # def isLicensed(self):
     #     """Set whether tool is licensed to execute."""
@@ -256,58 +275,27 @@ class CurveToPolyline(object):
     #     return 导出到CAD.界面类.函数参数更新(参数列表)
 
     def execute(self, parameterList, message):
-        # init_addSearchPath()
-        import json
-        import subprocess
-        parameterDict = ParameterCls.convert_to_listRawValue(parameterList)
-        # 日志类.输出控制台(参数字典)
-        inputElList = parameterDict[0]
-        inputElList = json.dumps(inputElList).encode('gbk').decode('unicode_escape')
-        # process = subprocess.Popen(r'C:\Users\beixiao\Project\bxarcpy\.condavenv\arcgispro-py3-clone\python.exe -m bxgis.常用.曲转折 {}'.format(parameterDict['输入要素路径列表']), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # str = u"cmd /c \"C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\"".encode('gbk')
-        # str1 =u'bxgis.常用.曲转折'.encode('gbk')
-        # str = "cmd /c \"start %windir%\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m {}\"".format(str1)
-        # str = u"cmd /c \"start %windir%\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\"".encode('gbk')
-        # str = u"C:\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折".encode('gbk')
-        
-        
-        str = u"C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\appBXGis\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折 {}".format(inputElList).encode('gbk') 
-        arcpy.AddMessage(u'运行命令:'.encode('gbk') + str)
-        process = subprocess.Popen(str,close_fds=True,creationflags=subprocess.CREATE_NEW_CONSOLE | subprocess.CREATE_NEW_PROCESS_GROUP)
-        # stdout, stderr = process.communicate()
-        # return_code = process.returncode
-        # if stdout:
-        #     arcpy.AddMessage(u'输出内容:'.encode('gbk') + stdout)
-        # if stderr:
-        #     arcpy.AddMessage(u'输出错误:'.encode('gbk') +stderr)
-        # if return_code:
-        #     arcpy.AddMessage(u'返回码:'.encode('gbk') + return_code) # type: ignore
-        return None
+        fun_run(u'bxgis.常用.曲转折',u'曲转折',parameterList)
 
     # def updateMessages(self, parameters):
     #     """Modify the messages created by internal validation for each tool
     #     parameter.  This method is called after internal validation."""
     #     return
+
+class config_appInit(object): 
+    def __init__(self):
+        self.label = u"应用初始化"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = u"配置"
+
+    def getParameterInfo(self):
+        args_dict_list = [
+            {"name": u"项目文件夹路径", "dataType": u"文件夹", "required": u'必填', "argsDirction": u"输入参数",'multiValue': False},
+        ]
+        return ParameterCls.parameterCreate_muti(args_dict_list)
+
+    def execute(self, parameterList, message):
+        fun_run(u'bxgis.配置.应用初始化',u'应用初始化',parameterList)
 if __name__ == "__main__":
-    # print('111111111111111111111111111111111')
-    # import subprocess
-    # str = "powershell -NoExit -Command \"Start-Process $env:windir\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -ArgumentList '-Command C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折'\""
-    
-    # str = "cmd /c \"\"c:\\windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -ArgumentList \'-NoExit -Command C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\'\"\""
-    # str = "cmd /c \"start %windir%\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoExit -Command C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\""
-    # init_add_search_path()
-    # str = "cmd /c \"C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\""
-    # import sys
-
-    # print(sys.path)
-    # sys.path.remove("C:\\Program Files\\ArcGIS\\Pro\\Resources\\ArcPy")
-    # str = "cmd /c \"C:\\Users\\beixiao\\Project\\bxarcpy\\.condavenv\\arcgispro-py3-clone\\python.exe -m bxgis.常用.曲转折\""
-    # process = subprocess.Popen(str,close_fds=True,creationflags=subprocess.CREATE_NEW_CONSOLE | subprocess.CREATE_NEW_PROCESS_GROUP)
-    # print('222222222222222222222222222222222')
-    # process.wait()
-    # return_code = process.returncode
-
-    # print(stdout.decode('gbk'))
-    # print(stderr.decode('gbk'))
-    # print(return_code)
     pass

@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 from bxpy.日志包 import 日志生成器
 from bxgis import 配置
 import bxarcpy.工具包 as 工具包

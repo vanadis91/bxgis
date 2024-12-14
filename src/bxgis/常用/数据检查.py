@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 # TODO:检查是否为投影坐标系
 import bxarcpy.工具包 as 工具包
 from bxarcpy.要素包 import 要素类

@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 from bxarcpy.要素包 import 要素类
 from bxpy.日志包 import 日志生成器
 from bxpy.元数据包 import 追踪元数据类

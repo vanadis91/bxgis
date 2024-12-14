@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 from bxpy.日志包 import 日志生成器
 import arcpy
 from typing import Union, Literal, Any
@@ -217,7 +218,7 @@ class 游标类:
         项列表 = []
         with 游标类.游标创建(游标类型="查询", 输入要素路径=输入要素路径, 需操作的字段名称列表=需操作的字段名称列表, 自动创建缺失的字段=自动创建缺失的字段) as 游标实例:
             for 游标x in 游标类.属性获取_数据_字典形式(游标实例, 需操作的字段名称列表):
-                项列表.append(项列表)
+                项列表.append(游标x)
         return 项列表
 
     @staticmethod

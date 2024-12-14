@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 # from . import 入库_单元
 # from . import 入库_村庄建设边界
 # from . import 入库_工业片区

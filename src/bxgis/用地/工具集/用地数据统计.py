@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 import bxarcpy.工具包 as 工具包
 from bxarcpy.要素包 import 要素类
 from bxpy.路径包 import 路径类

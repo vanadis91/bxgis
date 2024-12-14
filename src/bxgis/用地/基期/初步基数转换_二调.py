@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 import bxarcpy
 import bxarcpy.工具包 as 工具包
 from bxarcpy.工具包 import 输出路径生成_当采用内存临时时

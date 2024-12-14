@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 import bxarcpy
 from bxpy.时间包 import 时间类
 from bxpy.日志包 import 日志生成器

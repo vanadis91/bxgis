@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 from typing import Union, Literal
 from bxarcpy import 工具包
 from bxarcpy.要素包 import 要素类

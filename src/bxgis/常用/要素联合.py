@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 from bxarcpy.要素包 import 要素类, 输出路径生成_当采用内存临时时
 from bxarcpy.游标包 import 游标类
 from bxarcpy.几何包 import 几何类

@@ -1,3 +1,4 @@
+# *-* coding:utf8 *-*
 from bxpy.日志包 import 日志生成器
 from bxpy.进度条包 import 进度条类
 from bxpy.路径包 import 路径类
