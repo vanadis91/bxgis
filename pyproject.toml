@@ -1,23 +1,14 @@
 [project]
-name = "appBXGis"
+name = "bxgis"
 version = "0.1.0"
 description = "Default template for PDM package"
 authors = [
     {name = "vanadis91", email = "vanadis91@163.com"},
 ]
-dependencies = [
-    "pydantic>=2.9.2",
-    "shapely>=2.0.6",
-    "pandas>=2.2.3",
-    "psutil>=6.1.0",
-    "shortuuid>=1.0.13",
-    "tqdm>=4.66.6",
-    "colorama>=0.4.6",
-    "bson>=0.5.10",
-]
+dependencies = []
 requires-python = "==3.9.*"
 readme = "README.md"
-license = {text = "GPL-3.0"}
+license = {text = "GPLv3"}
 
 
 [tool.pdm]

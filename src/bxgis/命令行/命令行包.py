@@ -1,5 +1,5 @@
 # *-* coding:utf8 *-*
-from bxpy.系统包 import 系统类
+# from bxpy.系统包 import 系统类
 
 # from bxarcpy.环境包 import 环境管理器类
 from bxgis.配置.配置包 import 配置类

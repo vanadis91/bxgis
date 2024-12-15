@@ -58,7 +58,7 @@ add_search_path()
 def output_args(args_dict):
     # 将运行命令字典输出到文件
     import os
-    args_path = os.path.join(os.path.dirname(__file__),u'命令行参数.json')
+    args_path = os.path.join(os.path.dirname(__file__),u'命令行',u'命令行参数.json')
     with open(args_path,mode='w')as f:
         import json
         json.dump(args_dict, f, ensure_ascii=False, indent=4)
@@ -77,7 +77,7 @@ def fun_run(module_name, function_name, args_list):
 
     prj_info_json = get_prj_info()
     interpreter_path = prj_info_json[u'计算机信息'][u'解释器路径_python3']
-    str = u"\"{}\" -m bxgis.命令行".format(interpreter_path)
+    str = u"\"{}\" -m bxgis.命令行.命令行包".format(interpreter_path)
     process = subprocess.Popen(str.encode('gbk'))
 
     return None
@@ -226,7 +226,7 @@ class Toolbox(object):
         self.alias = "BXGIS工具箱"  # 定义别名
 
         # List of tool classes associated with this toolbox
-        self.tools = [common_curveToPolyline,common_importFromCAD,config_appInit]
+        self.tools = [common_curveToPolyline,common_importFromCAD,config_projectInit]
 
 class common_importFromCAD(object): 
     def __init__(self):
@@ -282,9 +282,9 @@ class common_curveToPolyline(object):
     #     parameter.  This method is called after internal validation."""
     #     return
 
-class config_appInit(object): 
+class config_projectInit(object): 
     def __init__(self):
-        self.label = u"应用初始化"
+        self.label = u"项目初始化"
         self.description = ""
         self.canRunInBackground = False
         self.category = u"配置"
@@ -296,6 +296,6 @@ class config_appInit(object):
         return ParameterCls.parameterCreate_muti(args_dict_list)
 
     def execute(self, parameterList, message):
-        fun_run(u'bxgis.配置.应用初始化',u'应用初始化',parameterList)
+        fun_run(u'bxgis.配置.项目初始化',u'项目初始化',parameterList)
 if __name__ == "__main__":
     pass
