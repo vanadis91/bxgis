@@ -5,7 +5,11 @@ description = "Default template for PDM package"
 authors = [
     {name = "vanadis91", email = "vanadis91@163.com"},
 ]
-dependencies = []
+dependencies = [
+    "tqdm>=4.67.1",
+    "bson>=0.5.10",
+    "shapely>=2.0.6",
+]
 requires-python = "==3.9.*"
 readme = "README.md"
 license = {text = "GPLv3"}

@@ -1,7 +1,40 @@
 # *-* coding:utf8 *-*
-# from bxpy.系统包 import 系统类
+def 初始化_添加搜索路径():
+    import os
+    import sys
 
-# from bxarcpy.环境包 import 环境管理器类
+    # 添加src目录
+    该文件的目录 = os.path.dirname(__file__)
+
+    while 该文件的目录.split(os.sep)[-1] != "bxgis":
+        try:
+            该文件的目录 = os.path.dirname(该文件的目录)
+        except Exception as e:
+            raise Exception(f"添加搜索路径失败。\n{e}")
+
+    项目src目录 = os.path.dirname(该文件的目录)
+    if 项目src目录 not in sys.path:
+        sys.path.insert(0, 项目src目录)
+
+    # 添加utils目录
+    通用工具目录 = os.path.join(项目src目录, "bxgis", "utils")
+    if 通用工具目录 not in sys.path:
+        sys.path.insert(0, 通用工具目录)
+
+    # 添加bxgis的第三方包搜索路径
+    项目根目录 = os.path.dirname(项目src目录)
+    第三方包目录 = os.path.join(项目根目录, ".venv", "Lib", "site-packages")
+    if 第三方包目录 not in sys.path:
+        sys.path.insert(0, 第三方包目录)
+
+    # 移除10.8的搜索路径
+    from bxpy.基本对象包 import 表类
+
+    表类.项删除(sys.path, "c:\\program files (x86)\\arcgis\\desktop10.8\\bin", 索引或值不存在时是否提示=False)
+    表类.项删除(sys.path, "c:\\program files (x86)\\arcgis\\desktop10.8\\ArcPy", 索引或值不存在时是否提示=False)
+    表类.项删除(sys.path, "c:\\program files (x86)\\arcgis\\desktop10.8\\ArcToolbox\\Scripts", 索引或值不存在时是否提示=False)
+
+
 from bxgis.配置.配置包 import 配置类
 
 if __name__ == "__main__":
@@ -27,7 +60,7 @@ if __name__ == "__main__":
         #         else:
         #             参数字典[键] = 值
         #     print(f"参数字典：{参数字典}")
-
+        初始化_添加搜索路径()
         from bxpy.路径包 import 路径类
         import json
 
