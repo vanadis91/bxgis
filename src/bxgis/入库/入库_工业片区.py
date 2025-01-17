@@ -4,6 +4,7 @@ import bxarcpy
 from typing import Literal
 import bxarcpy.工具包 as 工具包
 from bxarcpy.要素包 import 要素类
+from bxpy.日志包 import 日志生成器, 日志处理器
 from bxarcpy.游标包 import 游标类
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类
@@ -91,12 +92,31 @@ def 入库_工业片区(工业片区要素名称="JX_工业片区范围线", 单
     数据库 = 基本信息.项目信息.工作空间
     if "XG" not in 数据库类.属性获取_要素数据集名称列表(数据库):
         要素数据集 = 要素数据集类.要素数据集创建("XG")
+
+    if "XG_GYPQ" in 数据库类.属性获取_要素名称列表(数据库 + "/XG"):
+        from bxgis.属性.属性对比 import 属性对比
+
+        字段名称列表 = 要素类.字段名称列表获取("XG/XG_GYPQ", 含系统字段=False)
+        对比字段名称列表 = [[x, x] for x in 字段名称列表]
+        属性对比(
+            输入要素路径1="XG/XG_GYPQ",
+            输入要素路径2=工业片区要素,
+            映射字段名称列表=["PQBM", "PQBM"],
+            对比字段名称列表=对比字段名称列表,
+        )
+
     输出要素 = 要素类.要素创建_通过复制并重命名重名要素(工业片区要素, "XG" + "/" + 输出要素名称)
     return 输出要素
 
 
 if __name__ == "__main__":
+    日志处理器.输出器_文件对象_路径 = r"C:\Users\beixiao\Desktop\工业片区.txt"
+    日志生成器.开启()
     # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
     工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
-        入库_工业片区(工业片区要素名称="JX_工业片区范围线", 单元名称=基本信息.项目信息.单元名称)
+        入库_工业片区(
+            工业片区要素名称="JX_工业片区范围线",
+            单元名称=基本信息.项目信息.单元名称,
+            输出要素名称="XG_GYPQ1",
+        )

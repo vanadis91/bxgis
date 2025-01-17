@@ -2,7 +2,7 @@
 
 from typing import Literal
 from bxarcpy.要素包 import 要素类
-from bxpy.日志包 import 日志生成器
+from bxpy.日志包 import 日志生成器, 日志处理器
 from bxarcpy.游标包 import 游标类
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类
@@ -123,7 +123,7 @@ def 入库_规划地块(
             else:
                 x["JZGD"] = 0.0
 
-            if x["用地构成"] in ["农园地", "林草地", "农业设施建设用地", "水域"]:
+            if x["用地构成"] in ["农园地", "林草地", "农业设施建设用地", "水域", "其他土地"]:
                 x["FL"] = "非建设用地"
             elif x["用地构成"] in ["城镇建设用地"]:
                 x["FL"] = "城镇建设用地"
@@ -139,8 +139,22 @@ def 入库_规划地块(
     要素类.字段删除(地块要素, 保留字段名称列表=["DYMC", "PFSJ", "PFWH", "DKBH", "DLDM", "DLMC", "DLBM", "ZDLDM", "JRBL", "MJ", "RJL", "LDL", "JZMD", "JZGD", "XGLX", "FJSS1", "FJSS2", "GXYQ", "TXYQ", "GHDT", "XZYD", "GDMJ", "FL", "TDM", "BZ"])
 
     数据库 = 基本信息.项目信息.工作空间
+
     if "XG" not in 数据库类.属性获取_要素数据集名称列表(数据库):
         要素数据集 = 要素数据集类.要素数据集创建("XG")
+
+    if "XG_GHDK" in 数据库类.属性获取_要素名称列表(数据库 + "/XG"):
+        from bxgis.属性.属性对比 import 属性对比
+
+        字段名称列表 = 要素类.字段名称列表获取("XG/XG_GHDK", 含系统字段=False)
+        对比字段名称列表 = [[x, x] for x in 字段名称列表]
+        属性对比(
+            输入要素路径1="XG/XG_GHDK",
+            输入要素路径2=地块要素,
+            映射字段名称列表=["DKBH", "DKBH"],
+            对比字段名称列表=对比字段名称列表,
+        )
+
     输出要素 = 要素类.要素创建_通过复制并重命名重名要素(地块要素, "XG" + "/" + 输出要素名称)
     return 输出要素
 
@@ -158,14 +172,15 @@ def 入库_规划地块(
 #     return u"地块编号：" + dkbh + '\n' +  u"地块性质：" + dlbm + '\n'+  u"容积率：" + rjl + '\n' + u"建筑密度：" + jzmd + '\n'+ u"建筑高度：" + jzgd + '\n' + u"绿地率：" + ldl + '\n'+  u"用地面积：" + mj + '\n'+ u"配套设施：" + fjss1 + fjss2
 if __name__ == "__main__":
     日志生成器.开启()
-    # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
-    工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
+    日志处理器.输出器_文件对象_路径 = r"C:\Users\beixiao\Desktop\debug.txt"
+    工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
+    # 工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
         入库_规划地块(
             地块要素名称=基本信息.项目信息.YD_用地_规划要素名称,
             单元名称=基本信息.项目信息.单元名称,
             批复时间=基本信息.项目信息.批复时间,
             批复文号=基本信息.项目信息.批复文号,
-            输出要素名称="XG_GHDK",
+            输出要素名称="XG_GHDK1",
             不入库设施名称列表=基本信息.项目信息.不入库设施名称列表,
         )

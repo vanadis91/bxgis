@@ -17,3 +17,8 @@ license = {text = "GPLv3"}
 
 [tool.pdm]
 distribution = false
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pypinyin>=0.53.0",
+]

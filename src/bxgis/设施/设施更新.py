@@ -523,6 +523,7 @@ if __name__ == "__main__":
     # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
     # 日志类.开启()
     工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
+    工作空间 = r"C:\Users\common\Project\D德清洛舍杨树湾单元控规\03过程文件\24.11.27报批稿\D德清洛舍杨树湾单元控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
         设施更新(
             输入要素路径="SS_配套设施",

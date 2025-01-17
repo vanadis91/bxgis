@@ -97,14 +97,13 @@ if __name__ == "__main__":
             参数字典 = 参数字典temp
             print(f"参数字典：{参数字典}")
 
-        工作空间 = 配置类.获取工作空间()
         from bxarcpy.环境包 import 环境管理器类
 
         import importlib
 
         模块 = importlib.import_module(模块名称)
         函数 = getattr(模块, 函数名称)
-        with 环境管理器类.环境管理器类创建(工作空间):
+        if 函数名称 == "项目初始化":
             if "参数列表" in 运行命令字典 and "参数字典" in 运行命令字典:
                 函数(*参数列表, **参数字典)
             elif "参数列表" in 运行命令字典 and "参数字典" not in 运行命令字典:
@@ -113,6 +112,17 @@ if __name__ == "__main__":
                 函数(**参数字典)
             else:
                 函数()
+        else:
+            工作空间 = 配置类.获取工作空间()
+            with 环境管理器类.环境管理器类创建(工作空间):
+                if "参数列表" in 运行命令字典 and "参数字典" in 运行命令字典:
+                    函数(*参数列表, **参数字典)
+                elif "参数列表" in 运行命令字典 and "参数字典" not in 运行命令字典:
+                    函数(*参数列表)
+                elif "参数列表" not in 运行命令字典 and "参数字典" in 运行命令字典:
+                    函数(**参数字典)
+                else:
+                    函数()
         input(f"按任意键继续...")
     except Exception as e:
         from bxpy.元数据包 import 追踪元数据类

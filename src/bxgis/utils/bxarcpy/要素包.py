@@ -1,17 +1,16 @@
-# *-* coding:utf8 *-*
 from bxpy.日志包 import 日志生成器
 from bxpy.时间包 import 时间类
 from bxpy.路径包 import 路径类
 from bxpy.元数据包 import 追踪元数据类
 import bxarcpy.工具包 as 工具包
-from bxarcpy.工具包 import 输出路径生成_当采用内存临时时, 输出路径生成_当采用临时工作空间临时时, 输出路径生成_当采用当前工作空间临时时
+from bxarcpy.工具包 import 临时路径生成, 临时字段名称生成
 from bxarcpy.基本对象包 import 枚举类
 import arcpy
 from bxarcpy.枚举包 import 特殊字段_枚举
-from typing import Union, Literal, Any
+from typing import Union, Literal
 
 
-# def 输出路径生成_当采用内存临时时(输入要素路径列表):
+# def 唯一路径生成(输入要素路径列表):
 #     日志类.临时关闭日志()
 #     from bxpy.基本对象包 import 字类
 
@@ -27,22 +26,21 @@ from typing import Union, Literal, Any
 #     输出要素路径 = "in_memory\\AA_" + 要素名称 + "_" + 工具包.生成短GUID()
 #     return 输出要素路径
 
+# def _字段名称生成_根据既有字段名称(既有字段名称列表):
 
-def _字段名称生成_根据既有字段名称(既有字段名称列表):
+#     日志生成器.临时关闭日志()
+#     from bxpy.基本对象包 import 字类
 
-    日志生成器.临时关闭日志()
-    from bxpy.基本对象包 import 字类
+#     既有字段名称 = "_".join(既有字段名称列表)
 
-    既有字段名称 = "_".join(既有字段名称列表)
-
-    既有字段名称列表 = 既有字段名称.split("_")
-    既有字段名称列表 = [x for x in 既有字段名称列表 if not 字类.匹配正则(x, r"^[A-Za-z0-9]{10}$") and not 字类.匹配正则(x, r"^[A-Za-z0-9]{22}$") and x.upper() not in ["AA", "KZX", "DIST", "YD", "GZW", "CZ", "AC", "DL", "JX", "SS", "TK", "YT"]]
-    既有字段名称 = "_".join(既有字段名称列表)
-    日志生成器.输出调试(f"要素名称为：{既有字段名称}")
-    if len(既有字段名称) > 18:
-        既有字段名称 = 既有字段名称[0:18]
-    输出要素路径 = 既有字段名称 + "_" + 工具包.生成短GUID()
-    return 输出要素路径
+#     既有字段名称列表 = 既有字段名称.split("_")
+#     既有字段名称列表 = [x for x in 既有字段名称列表 if not 字类.匹配正则(x, r"^[A-Za-z0-9]{10}$") and not 字类.匹配正则(x, r"^[A-Za-z0-9]{22}$") and x.upper() not in ["AA", "KZX", "DIST", "YD", "GZW", "CZ", "AC", "DL", "JX", "SS", "TK", "YT"]]
+#     既有字段名称 = "_".join(既有字段名称列表)
+#     日志生成器.输出调试(f"要素名称为：{既有字段名称}")
+#     if len(既有字段名称) > 18:
+#         既有字段名称 = 既有字段名称[0:18]
+#     输出要素路径 = 既有字段名称 + "_" + 工具包.生成短GUID()
+#     return 输出要素路径
 
 
 class 要素类:
@@ -99,17 +97,18 @@ class 要素类:
     @staticmethod
     def 要素创建_通过复制(要素路径, 输出要素路径="临时工作空间临时"):
         日志生成器.临时关闭日志()
-        from bxpy.路径包 import 路径类
-        from bxpy.基本对象包 import 字类
-
         日志生成器.输出调试(f"要素路径为：{要素路径}")
-        输出要素路径 = 输出路径生成_当采用临时工作空间临时时([要素路径]) if 输出要素路径 == "临时工作空间临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([要素路径], "临时工作空间") if 输出要素路径 == "临时工作空间临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
         from bxarcpy.空间参考包 import 空间参考类
         from bxarcpy.环境包 import 输入输出类
 
+        # print(f'要素路径：{要素路径}')
+        # print(f'输出要素路径：{输出要素路径}')
         try:
             arcpy.management.Copy(in_data=要素路径, out_data=输出要素路径)  # type: ignore
         except Exception as e:
+            # print(f"发生错误：{e}")
             空间参考对象 = 要素类.属性获取_空间参考(要素路径)
             if 空间参考对象:
                 if 空间参考类.属性获取_类型(空间参考对象) == "地理坐标系":
@@ -127,7 +126,7 @@ class 要素类:
         from bxpy.路径包 import 路径类
         from bxarcpy.环境包 import 环境类, 输入输出类
 
-        输出要素路径 = 输出路径生成_当采用临时工作空间临时时([输入要素路径]) if 输出要素路径 == "临时工作空间临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径], "临时工作空间") if 输出要素路径 == "临时工作空间临时" else 输出要素路径
 
         要素名称列表 = 数据库类.属性获取_要素名称列表(环境类.属性获取_当前工作空间())
         存在重复flag = False
@@ -148,6 +147,12 @@ class 要素类:
             except Exception as e:
                 outText = outText + f"存在重名要素，原要素备份失败，【{追踪元数据类.追踪信息获取()}】"
         try:
+            # 输出要素路径 = 要素类.字段删除(输出要素路径, 保留字段名称列表=[])
+            # 要素字段列表 = 要素类.字段列表获取(输入要素路径)
+            # for 要素字段 in 要素字段列表:
+            #     要素类.字段添加_通过字段对象(输出要素路径, 要素字段)
+            # arcpy.management.DeleteFeatures(输出要素路径)  # type: ignore
+            # arcpy.analysis.Append(inputs=输入要素路径, target=输出要素路径, schema_type="TEST", field_mapping="", subtype="")  # type: ignore
             要素类.要素删除(输出要素路径)
             要素类.要素创建_通过复制(输入要素路径, 输出要素路径)
             outText = outText + "，同时进行删除成功，" if 存在重复flag else outText
@@ -169,14 +174,14 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过合并(输入要素路径列表=[], 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时(输入要素路径列表) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成(输入要素路径列表) if 输出要素路径 == "内存临时" else 输出要素路径
 
         arcpy.management.Merge(inputs=输入要素路径列表, output=输出要素路径, field_mappings="", add_source="NO_SOURCE_INFO")  # type: ignore
         return 输出要素路径
 
     @staticmethod
     def 要素创建_通过裁剪(输入要素路径, 裁剪要素路径, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径, 裁剪要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径, 裁剪要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         arcpy.analysis.Clip(in_features=输入要素路径, clip_features=裁剪要素路径, out_feature_class=输出要素路径, cluster_tolerance="")  # type: ignore
         return 输出要素路径
@@ -184,21 +189,21 @@ class 要素类:
     @staticmethod
     def 要素创建_通过擦除_原始(输入要素路径, 擦除要素路径, 输出要素路径="内存临时"):
         # 这个函数如果和相交函数运行后的部分合并，会有缝隙
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径, 擦除要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径, 擦除要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         arcpy.analysis.Erase(in_features=输入要素路径, erase_features=擦除要素路径, out_feature_class=输出要素路径, cluster_tolerance="")  # type: ignore
         return 输出要素路径
 
     @staticmethod
     def 要素创建_通过擦除(输入要素路径, 擦除要素路径, 是否多部件转单部件=True, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径, 擦除要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径, 擦除要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         输出要素路径 = 要素类.要素创建_通过联合并赋值字段(输入要素路径, 擦除要素路径, 字段映射列表=None, 是否多部件转单部件=是否多部件转单部件, 是否去除输入无联合有的部分=True, 是否去除输入有联合有的部分=True, 是否检查两者差异=False, 输出要素路径=输出要素路径)
         return 输出要素路径
 
     @staticmethod
     def 要素创建_通过分割(输入要素路径, 分割要素路径, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径, 分割要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径, 分割要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         分割要素裁剪后 = 要素类.要素创建_通过裁剪(分割要素路径, 输入要素路径)
         输入要素字段列表 = 要素类.字段名称列表获取(输入要素路径)
@@ -210,7 +215,7 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过擦除并几何修复(输入要素路径, 擦除要素路径, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径, 擦除要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径, 擦除要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         输入要素路径 = 要素类.要素创建_通过几何修复(输入要素路径)
         擦除要素路径 = 要素类.要素创建_通过几何修复(擦除要素路径)
@@ -219,54 +224,74 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过几何修复(输入要素路径, 删除几何为空的要素=True, 是否打印被删除的要素=False, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输入要素 = 要素类.要素创建_通过复制(输入要素路径)
 
-        输入要素名称 = 要素类.属性获取_要素名称(输入要素路径)
-        输出要素路径 = 要素类.要素创建_通过复制(输入要素路径, 输出要素路径)
-        删除几何为空的要素 = "KEEP_NULL" if 删除几何为空的要素 is False else "DELETE_NULL"
-        arcpy.management.RepairGeometry(in_features=输出要素路径, delete_null=删除几何为空的要素, validation_method="ESRI")[0]  # type: ignore
-        # arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]
         if 是否打印被删除的要素:
             from bxarcpy.游标包 import 游标类
-            from bxarcpy.环境包 import 输入输出类
+            from bxpy.基本对象包 import 字类
+
+            字段名称 = 临时字段名称生成(["GUID"])
+            要素类.字段添加_字符串(输入要素, 字段名称)
+            with 游标类.游标创建("更新", 输入要素, [字段名称]) as 游标:
+                for 项x in 游标类.属性获取_数据_字典形式(游标, [字段名称]):
+                    项x[字段名称] = 字类.字符串生成_GUID()
+                    游标类.行更新_字典形式(游标, 项x)
+
+        修复前要素 = 要素类.要素创建_通过复制(输入要素)
+
+        # 输出要素路径 = 要素类.要素创建_通过复制(输入要素路径, 输出要素路径)
+        删除几何为空的要素 = "KEEP_NULL" if 删除几何为空的要素 is False else "DELETE_NULL"
+        arcpy.management.RepairGeometry(in_features=输入要素, delete_null=删除几何为空的要素, validation_method="ESRI")[0]  # type: ignore
+        # arcpy.management.RepairGeometry(in_features=self.名称, delete_null="DELETE_NULL", validation_method="ESRI")[0]
+
+        if 是否打印被删除的要素:
+            字段名称列表 = 要素类.字段名称列表获取(修复前要素, 含系统字段=False)
+            项类.项对比(修复前要素, 输入要素, [字段名称, 字段名称], 对比字段名称列表=[[x, x] for x in 字段名称列表])
+            输入要素 = 要素类.字段删除(输入要素, [字段名称])
+            # from bxarcpy.游标包 import 游标类
+            # from bxarcpy.环境包 import 输入输出类
 
             # 原要素ID列表 = []
             # 修复后要素ID列表 = []
-            输入要素项列表 = 游标类.项列表获取(输入要素路径, ["_ID"])
-            原要素ID列表 = [x["_ID"] for x in 输入要素项列表]
-            输出要素项列表 = 游标类.项列表获取(输出要素路径, ["_ID"])
-            修复后要素ID列表 = [x["_ID"] for x in 输出要素项列表]
             # with 游标类.游标创建("查询", 输入要素路径, ["_ID"]) as 游标:
             #     for row in 游标类.属性获取_数据_字典形式(游标, ["_ID"]):
             #         原要素ID列表.append(row["_ID"])
             # with 游标类.游标创建("查询", 输出要素路径, ["_ID"]) as 游标:
             #     for row in 游标类.属性获取_数据_字典形式(游标, ["_ID"]):
             #         修复后要素ID列表.append(row["_ID"])
-            被删除的要素列表 = [x for x in 原要素ID列表 if x not in 修复后要素ID列表]
-            被创建的要素列表 = [x for x in 修复后要素ID列表 if x not in 原要素ID列表]
-            被删除的要素数据列表 = []
-            被创建的要素数据列表 = []
-            操作列表 = 要素类.字段名称列表获取(输入要素路径)
-            操作列表.append("_ID")
-            for 项x in 游标类.项迭代器获取(输入要素路径, 操作列表):
-                if 项x["_ID"] in 被删除的要素列表:
-                    被删除的要素数据列表.append(项x)
-                if 项x["_ID"] in 被创建的要素列表:
-                    被创建的要素数据列表.append(项x)
-            from bxpy.基本对象包 import 字类
+            # 被删除的要素列表 = [x for x in 原要素ID列表 if x not in 修复后要素ID列表]
+            # 被删除的要素数据列表 = []
+            # 操作列表 = 要素类.字段名称列表获取(输入要素路径)
+            # 操作列表.append("_ID")
+            # with 游标类.游标创建("查询", 输入要素路径, 操作列表) as 游标:
+            #     for row in 游标类.属性获取_数据_字典形式(游标, 操作列表):
+            #         if row["_ID"] in 被删除的要素列表:
+            #             被删除的要素数据列表.append(row)
+            # if len(被删除的要素数据列表) > 0:
+            #     from bxpy.基本对象包 import 字类
 
-            if len(被删除的要素数据列表) > 0:
-                被删除的要素数据列表_转字 = 字类.转换_到字(被删除的要素数据列表, json缩进=2)
-                输入输出类.输出消息(f"{输入要素名称}几何修复后被删除的数据为：\n{被删除的要素数据列表_转字}")
-            if len(被创建的要素数据列表) > 0:
-                被创建的要素数据列表_转字 = 字类.转换_到字(被创建的要素数据列表, json缩进=2)
-                输入输出类.输出消息(f"{输入要素名称}几何修复后被创建的数据为：\n{被创建的要素数据列表_转字}")
+            #     被删除的要素数据列表_转字 = 字类.转换_到字(被删除的要素数据列表, json缩进=2)
+            #     输入输出类.输出消息(f"{输入要素名称}几何修复后被删除的数据为：\n{被删除的要素数据列表_转字}")
+        输出要素路径 = 临时路径生成([输入要素路径 + "_几何修复"]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 要素类.要素创建_通过复制并重命名重名要素(输入要素, 输出要素路径)
+        return 输出要素路径
+
+    @staticmethod
+    def 要素创建_通过属性域修复(输入要素路径, 输出要素路径="内存临时"):
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+
+        输入要素 = 要素类.要素创建_通过复制(输入要素路径)
+
+        新要素 = 要素类.要素创建_通过名称(要素类型=要素类.属性获取_几何类型(输入要素), 模板=输入要素)
+        输出要素 = 要素类.要素创建_通过合并([新要素, 输入要素])
+
+        输出要素路径 = 要素类.要素创建_通过复制并重命名重名要素(输出要素, 输出要素路径)
         return 输出要素路径
 
     @staticmethod
     def 要素创建_通过相交_原始(输入要素路径列表=[], 输出字段设置: Literal["所有", "除FID外所有字段", "仅FID字段", "仅第一个要素字段"] = "所有", 输出要素路径="内存临时"):
         # 这个函数如果和擦除函数运行后的部分合并，会有缝隙
-        输出要素路径 = 输出路径生成_当采用内存临时时(输入要素路径列表) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成(输入要素路径列表) if 输出要素路径 == "内存临时" else 输出要素路径
 
         _输出字段设施映射 = {"所有": "ALL", "除FID外所有字段": "NO_FID", "仅FID字段": "ONLY_FID"}
         字段设置raw = _输出字段设施映射[输出字段设置] if 输出字段设置 in _输出字段设施映射 else 输出字段设置
@@ -281,7 +306,7 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过相交(输入要素路径列表=[], 输出字段设置: Literal["所有", "除FID外所有字段", "仅FID字段", "仅第一个要素字段"] = "所有", 是否多部件转单部件=True, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时(输入要素路径列表) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成(输入要素路径列表) if 输出要素路径 == "内存临时" else 输出要素路径
 
         if len(输入要素路径列表) > 2:
             raise Exception("当前仅支持两个要素相交")
@@ -291,7 +316,7 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过联合(输入要素路径列表=[], 是否保留周长和面积=False, 是否保留FID=True, 删除各要素间重名字段=True, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时(输入要素路径列表) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成(输入要素路径列表) if 输出要素路径 == "内存临时" else 输出要素路径
 
         if 删除各要素间重名字段:
             唯一字段名称列表 = []
@@ -325,7 +350,7 @@ class 要素类:
         from bxarcpy.环境包 import 输入输出类
         from bxarcpy.游标包 import 游标类
 
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径, 联合要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径, 联合要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         输入要素原始名称 = 要素类.属性获取_要素名称(输入要素路径)
         输入要素路径 = 要素类.要素创建_通过复制(输入要素路径)
@@ -359,7 +384,7 @@ class 要素类:
         for 联合要素字段名称n in 联合要素字段名称列表:
             # 重命名联合要素中重名的字段
             if 联合要素字段名称n in 输入要素字段名称列表:
-                修改后字段名称 = _字段名称生成_根据既有字段名称([联合要素字段名称n])
+                修改后字段名称 = 临时字段名称生成([联合要素字段名称n])
                 要素类.字段修改(联合要素路径, 联合要素字段名称n, 修改后字段名称)
                 输入输出类.输出消息(f"【{输入要素原始名称}】中已存在联合要素中【{联合要素字段名称n}】字段，已将联合要素中字段重命名为【{修改后字段名称}】")
                 if 字段映射列表:
@@ -493,7 +518,7 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过融合(输入要素路径, 融合字段列表=[], 统计字段列表=None, 是否单部件=True, 是否计算面积字段=False, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         if 是否单部件 == True:
             是否单部件 = "SINGLE_PART"
@@ -506,14 +531,14 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过更新(输入要素路径, 更新要素路径, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径, 更新要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径, 更新要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         arcpy.analysis.Update(输入要素路径, 更新要素路径, 输出要素路径)  # type: ignore
         return 输出要素路径
 
     @staticmethod
     def 要素创建_通过更新并合并字段(输入要素路径, 更新要素路径, 是否多部件转单部件=True, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径, 更新要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径, 更新要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         输出 = 要素类.要素创建_通过擦除(输入要素路径, 更新要素路径, 是否多部件转单部件=是否多部件转单部件)
         输出要素路径 = 要素类.要素创建_通过合并([输出, 更新要素路径], 输出要素路径)
@@ -521,14 +546,14 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过筛选(输入要素路径, SQL语句="地类编号 LIKE '01%'", 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         arcpy.analysis.Select(in_features=输入要素路径, out_feature_class=输出要素路径, where_clause=SQL语句)  # type: ignore
         return 输出要素路径
 
     @staticmethod
     def 要素创建_通过排序(输入要素路径, 排序字段及顺序列表=[["DATE_REP", "正序"]], 空间排序方式="UR", 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         排序字段及顺序列表temp = []
         for x in 排序字段及顺序列表:
@@ -541,26 +566,12 @@ class 要素类:
         return 输出要素路径
 
     @staticmethod
-    def 要素创建_通过多部件至单部件(输入要素路径, 清除ORIG_FID=True, 输出提示=True, 输出要素路径="内存临时"):
+    def 要素创建_通过多部件至单部件(输入要素路径, 清除ORIG_FID=True, 输出要素路径="内存临时"):
         from bxpy.基本对象包 import 字类
-        from bxarcpy.游标包 import 游标类
-        from bxarcpy.环境包 import 输入输出类
 
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         arcpy.management.MultipartToSinglepart(in_features=输入要素路径, out_feature_class=输出要素路径)  # type: ignore
-        if 输出提示:
-            with 游标类.游标创建("查询", 输出要素路径, ["_ID", "ORIG_FID"]) as 游标:
-                ID字典 = {}
-                for x in 游标类.属性获取_数据_字典形式(游标, ["_ID", "ORIG_FID"]):
-                    if x["ORIG_FID"] not in ID字典:
-                        ID字典[x["ORIG_FID"]] = [x["_ID"]]
-                    else:
-                        ID字典[x["ORIG_FID"]].append(x["_ID"])
-                for k, v in ID字典.items():
-                    if len(v) > 1:
-                        输入输出类.输出消息(f"{输入要素路径}中原ID为{k}的记录变成单部件了，新ID为{v}")
-
         if 清除ORIG_FID:
             要素类.字段删除(输出要素路径, ["ORIG_FID"])
         return 输出要素路径
@@ -571,7 +582,7 @@ class 要素类:
         _连接方式映射表 = {"相交": "INTERSECT", "包含连接要素": "CONTAINS", "完全包含连接要素": "COMPLETELY_CONTAINS", "在连接要素内": "WITHIN", "完全在连接要素内": "COMPLETELY_WITHIN", "形心在连接要素内": "HAVE_THEIR_CENTER_IN", "大部分在连接要素内": "LARGEST_OVERLAP"}
         连接方式raw = _连接方式映射表[连接方式] if 连接方式 in _连接方式映射表 else 连接方式
 
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径, 连接要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径, 连接要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         if 连接方式raw == "包含连接要素内点":
             arcpy.management.RepairGeometry(in_features=连接要素路径, delete_null="DELETE_NULL", validation_method="ESRI")[0]  # type: ignore
@@ -640,7 +651,7 @@ class 要素类:
     def 要素创建_通过填充空隙(输入要素路径, 填充范围要素路径, 填充地类编号表达式='"00"', 输出要素路径="内存临时"):
         # 常用_填充空隙后
         # To allow overwriting outputs change overwriteOutput option to True.
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径, 填充范围要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径, 填充范围要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         # Process: 复制要素 (复制要素) (management)
 
@@ -655,7 +666,7 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过切分(输入要素路径, 折点数量=200, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         arcpy.management.Dice(输入要素路径, 输出要素路径, 折点数量)  # type: ignore
         return 输出要素路径
@@ -664,7 +675,7 @@ class 要素类:
     def 要素创建_通过转点(输入要素路径, 输出要素路径="内存临时"):
         from bxarcpy.游标包 import 游标类
 
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         点要素路径 = 要素类.要素创建_通过名称("内存临时", "点", 输入要素路径, "内存临时")
         输入要素名称 = 要素类.属性获取_要素名称(输入要素路径)
@@ -712,14 +723,24 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过转线(输入要素路径, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         arcpy.management.FeatureToLine(in_features=输入要素路径, out_feature_class=输出要素路径)  # type: ignore
         return 输出要素路径
 
     @staticmethod
+    def 要素创建_通过转栅格(输入要素路径, 值字段名称, 像元大小=-1.0, 输出要素路径="内存临时"):
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        if 像元大小 == -1.0:
+            arcpy.conversion.FeatureToRaster(输入要素路径, 值字段名称, 输出要素路径)  # type: ignore
+        else:
+            arcpy.conversion.FeatureToRaster(输入要素路径, 值字段名称, 输出要素路径, 像元大小)  # type: ignore
+
+        return 输出要素路径
+
+    @staticmethod
     def 要素创建_通过面转线(输入要素路径, 是否识别并存储面邻域信息=True, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         if 是否识别并存储面邻域信息:
             arcpy.management.PolygonToLine(in_features=输入要素路径, out_feature_class=输出要素路径, neighbor_option="IDENTIFY_NEIGHBORS")  # type: ignore
@@ -729,7 +750,7 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过缓冲(输入要素路径, 距离或字段名称, 融合类型="不融合", 融合字段名称列表=None, 末端类型="圆形", 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         _融合类型映射表 = {"不融合": "NONE", "NONE": "NONE", "融合为单个": "ALL", "ALL": "ALL", "融合按字段": "LIST", "LIST": "LIST"}
         融合类型 = _融合类型映射表[融合类型]
@@ -742,7 +763,7 @@ class 要素类:
 
     @staticmethod
     def 要素创建_通过增密(输入要素路径, 增密方法: Literal["固定距离", "偏转距离", "偏转角度"] = "偏转距离", 固定距离="10 Meters", 偏转距离="0.0001 Meters", 偏转角度=1, 最大折点计数=None, 输出要素路径="内存临时"):
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         _增密方法映射 = {"固定距离": "DISTANCE", "偏转距离": "OFFSET", "偏转角度": "ANGLE"}
 
@@ -754,7 +775,7 @@ class 要素类:
     @staticmethod
     def 要素创建_通过投影定义(输入要素路径, 坐标系='PROJCS["CGCS2000_3_Degree_GK_CM_120E",GEOGCS["GCS_China_Geodetic_Coordinate_System_2000",DATUM["D_China_2000",SPHEROID["CGCS2000",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Gauss_Kruger"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",120.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]', 输出要素路径="内存临时"):
         # 坐标系有效值可以是 SpatialReference 对象、扩展名为 .prj 的文件或坐标系的字符串表达形式。
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
         复制后要素路径 = 要素类.要素创建_通过复制(输入要素路径)
         arcpy.management.DefineProjection(in_dataset=复制后要素路径, coor_system=坐标系)  # type: ignore
@@ -764,17 +785,28 @@ class 要素类:
     @staticmethod
     def 要素创建_通过投影转换(输入要素路径, 输出坐标系='PROJCS["CGCS2000_3_Degree_GK_CM_120E",GEOGCS["GCS_China_Geodetic_Coordinate_System_2000",DATUM["D_China_2000",SPHEROID["CGCS2000",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Gauss_Kruger"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",120.0],PARAMETER["Scale_Factor",1.0],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]', 输出要素路径="内存临时"):
         # 坐标系有效值可以是 SpatialReference 对象、扩展名为 .prj 的文件或坐标系的字符串表达形式。
-        输出要素路径 = 输出路径生成_当采用内存临时时([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+        输出要素路径 = 临时路径生成([输入要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
-        输入要素唯一路径 = 输出路径生成_当采用临时工作空间临时时([输入要素路径])
+        输入要素唯一路径 = 临时路径生成([输入要素路径], "临时工作空间")
         复制后要素路径 = 要素类.要素创建_通过复制(输入要素路径, 输入要素唯一路径)
 
-        输出要素唯一路径 = 输出路径生成_当采用临时工作空间临时时([输入要素路径]) + "1"
+        输出要素唯一路径 = 临时路径生成([输入要素路径], "临时工作空间") + "1"
         arcpy.management.Project(in_dataset=复制后要素路径, out_dataset=输出要素唯一路径, out_coor_system=输出坐标系, transform_method=None, in_coor_system=None, preserve_shape="NO_PRESERVE_SHAPE", max_deviation=None, vertical="NO_VERTICAL")  # type: ignore
         ret = 要素类.要素创建_通过复制并重命名重名要素(输出要素唯一路径, 输出要素路径)
         要素类.要素删除(输出要素唯一路径)
         要素类.要素删除(输入要素唯一路径)
         return ret
+
+    @staticmethod
+    def 要素创建_通过栅格计算器(栅格路径列表=["栅格1", "栅格2"], 栅格路径变量列表=["x", "y"], 表达式='Con(IsNull("streams"), 0, "streams")', 输出范围="所有栅格的并集", 输出像元大小="第一个栅格的像元大小", 输出要素路径="内存临时"):
+        输出范围映射 = {"第一个栅格的范围": "FirstOf", "所有栅格的交集": "IntersectionOf", "所有栅格的并集": "UnionOf", "最后一个栅格的范围": "LastOf"}
+        输出范围raw = 输出范围映射.get(输出范围, 输出范围)
+        输出像元大小映射 = {"第一个栅格的像元大小": "FirstOf", "所有栅格中最小像元大小": "MinOf", "所有栅格中最大像元大小": "MaxOf", "所有栅格的平均像元大小": "MeanOf", "最后一个栅格的像元大小": "LastOf"}
+        输出像元大小raw = 输出像元大小映射.get(输出像元大小, 输出像元大小)
+
+        临时栅格 = arcpy.ia.RasterCalculator(rasters=栅格路径列表, input_names=栅格路径变量列表, expression=表达式, extent_type=输出范围raw, cellsize_type=输出像元大小raw)  # type: ignore
+        临时栅格.save(输出要素路径)
+        return 输出要素路径
 
     @staticmethod
     def 要素删除(要素路径):
@@ -819,25 +851,18 @@ class 要素类:
         if 删除字段名称列表 != None:
             # 日志类.输出控制台(f"即将被删除的字段为：" + str(删除字段名称列表))
             if 忽略系统字段:
-                一般不删除的字段名称列表 = ["OID", "OBJECTID", "OBJECTID_1", "SHAPE", "SHAPE_AREA", "SHAPE_LENGTH"]
-                删除字段名称列表temp = []
-                for x in 删除字段名称列表:
-                    if x.upper() not in 一般不删除的字段名称列表:
-                        删除字段名称列表temp.append(x)
-                删除字段名称列表 = 删除字段名称列表temp
+                一般不删除的字段名称列表 = ["OID", "OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length", "SHAPE"]
+                for x in 一般不删除的字段名称列表:
+                    if x in 删除字段名称列表:
+                        删除字段名称列表.remove(x)
             删除字段名称列表 = [x for x in 删除字段名称列表 if x in 字段名称列表]
             if 删除字段名称列表:
                 arcpy.management.DeleteField(in_table=输入要素路径, drop_field=删除字段名称列表, method="DELETE_FIELDS")[0]  # type: ignore
         if 保留字段名称列表 != None:
             字段名称列表 = 要素类.字段名称列表获取(输入要素路径)
             # 日志类.输出调试(f"要素拥有的所有字段为：" + str(字段名称列表))
-
             if 忽略系统字段:
-                一般不删除的字段名称列表 = ["OID", "OBJECTID", "OBJECTID_1", "SHAPE", "SHAPE_AREA", "SHAPE_LENGTH"]
-                for x in 字段名称列表:
-                    if x.upper() in 一般不删除的字段名称列表:
-                        保留字段名称列表.append(x)
-
+                保留字段名称列表.extend(["OID", "OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length", "SHAPE"])
             for x in 保留字段名称列表:
                 if x in 字段名称列表:
                     字段名称列表.remove(x)
@@ -855,16 +880,11 @@ class 要素类:
         字段类型raw = 枚举类.字段类型.值获取(字段类型)
         # 日志类.输出调试(f"字段类型raw：{字段类型raw}")
         if 删除既有字段:
-            要素类.字段删除(输入要素路径, [字段名称])
+            arcpy.management.DeleteField(in_table=输入要素路径, drop_field=[字段名称], method="DELETE_FIELDS")  # type: ignore
 
         字段名称列表 = 要素类.字段名称列表获取(输入要素路径)
         if 字段名称 not in 字段名称列表:
-            try:
-                arcpy.management.AddField(in_table=输入要素路径, field_name=字段名称, field_type=字段类型raw, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")  # type: ignore
-            except Exception as e:
-                from bxarcpy.环境包 import 输入输出类
-
-                输入输出类.输出消息(f"{输入要素路径}中创建{字段名称}字段失败")
+            arcpy.management.AddField(in_table=输入要素路径, field_name=字段名称, field_type=字段类型raw, field_precision=None, field_scale=None, field_length=字段长度, field_alias=字段别称, field_is_nullable="NULLABLE", field_is_required="NON_REQUIRED", field_domain="")  # type: ignore
         else:
             from bxarcpy.环境包 import 输入输出类
 
@@ -902,7 +922,7 @@ class 要素类:
         return 输入要素路径
 
     @staticmethod
-    def 字段计算(输入要素路径, 字段名称, 表达式: Union[Literal["round(!Shape_Area!/10000, 4)", "'abc'"], Any] = "round(!Shape_Area!/10000, 4)", 字段类型="字符串", 语言类型="PYTHON3", 代码块=""):
+    def 字段计算(输入要素路径, 字段名称, 表达式, 字段类型="字符串", 语言类型="PYTHON3", 代码块=""):
         字段类型 = 枚举类.字段类型.值获取(字段类型)
         arcpy.management.CalculateField(in_table=输入要素路径, field=字段名称, expression=表达式, expression_type=语言类型, code_block=代码块, field_type=字段类型, enforce_domains="NO_ENFORCE_DOMAINS")[0]  # type: ignore
         return 输入要素路径
@@ -911,10 +931,11 @@ class 要素类:
     def 字段修改(输入要素路径, 字段名称=None, 修改后字段名称=None, 修改后字段别称=None, 字段类型=None, 字段长度=None, 字段是否可为空: Literal["NULLABLE", None] = None, 清除字段别称=True):
         if 字段类型:
             字段类型 = 枚举类.字段类型.值获取(字段类型)
-            字段类型 = "TEXT" if 字段类型 == "STRING" else 字段类型
-            字段类型 = "GUID" if 字段类型 == "OID" else 字段类型
-            字段类型 = "LONG" if 字段类型 == "INTEGER" else 字段类型
-        arcpy.management.AlterField(in_table=输入要素路径, field=字段名称, new_field_name=修改后字段名称, new_field_alias=修改后字段别称, field_type=字段类型, field_length=字段长度, field_is_nullable=字段是否可为空, clear_field_alias=清除字段别称)[0]  # type: ignore
+        if 字段名称 != 修改后字段名称 and 字段名称.upper() == 修改后字段名称.upper():  # type: ignore
+            arcpy.management.AlterField(in_table=输入要素路径, field=字段名称, new_field_name=修改后字段名称 + "temp", new_field_alias=修改后字段别称, field_type=字段类型, field_length=字段长度, field_is_nullable=字段是否可为空, clear_field_alias=清除字段别称)[0]  # type: ignore
+            arcpy.management.AlterField(in_table=输入要素路径, field=修改后字段名称 + "temp", new_field_name=修改后字段名称, new_field_alias=修改后字段别称, field_type=字段类型, field_length=字段长度, field_is_nullable=字段是否可为空, clear_field_alias=清除字段别称)[0]  # type: ignore
+        else:
+            arcpy.management.AlterField(in_table=输入要素路径, field=字段名称, new_field_name=修改后字段名称, new_field_alias=修改后字段别称, field_type=字段类型, field_length=字段长度, field_is_nullable=字段是否可为空, clear_field_alias=清除字段别称)[0]  # type: ignore
         return 输入要素路径
 
     @staticmethod
@@ -1210,6 +1231,186 @@ class 字段类:
     # 图层.setDefinition(图层对象)
 
 
+class 项类:
+    @staticmethod
+    def 项对比(
+        输入要素路径1="DIST_用地规划图",
+        输入要素路径2="DIST_用地规划图",
+        映射字段名称列表=["_ID", "_ID"],
+        是否导出变更项=False,
+        对比字段名称列表=[["所属街区", "所属街区"], ["所属分村", "所属分村"]],
+    ):
+        from bxarcpy.游标包 import 游标类
+        from bxarcpy.环境包 import 输入输出类
+
+        输入要素1 = 要素类.要素创建_通过复制(输入要素路径1)
+        输入要素2 = 要素类.要素创建_通过复制(输入要素路径2)
+
+        要素1字段列表 = list(list(zip(*对比字段名称列表))[0])
+        要素2字段列表 = list(list(zip(*对比字段名称列表))[1])
+        if 映射字段名称列表[0] in 要素1字段列表:
+            要素1字段列表.remove(映射字段名称列表[0])
+        if 映射字段名称列表[1] in 要素2字段列表:
+            要素2字段列表.remove(映射字段名称列表[1])
+        操作字段名称列表1 = [映射字段名称列表[0], *要素1字段列表]
+        操作字段名称列表2 = [映射字段名称列表[1], *要素2字段列表]
+
+        if 是否导出变更项:
+            if "_形状" not in 操作字段名称列表1:
+                操作字段名称列表1.append("_形状")
+            if "_形状" not in 操作字段名称列表2:
+                操作字段名称列表2.append("_形状")
+
+        要素1项列表 = 游标类.项列表获取(输入要素1, [映射字段名称列表[0]])
+        要素1_映射字段列表 = [x[映射字段名称列表[0]] for x in 要素1项列表]
+        要素2项列表 = 游标类.项列表获取(输入要素2, [映射字段名称列表[1]])
+        要素2_映射字段列表 = [x[映射字段名称列表[1]] for x in 要素2项列表]
+
+        if 是否导出变更项:
+            变更要素1 = 要素类.要素创建_通过名称(要素类型="面", 模板=输入要素1)
+            变更要素2 = 要素类.要素创建_通过名称(要素类型="面", 模板=输入要素2)
+        是否有项不一致flag = False
+        with 游标类.游标创建("查询", 输入要素1, 操作字段名称列表1) as 游标_要素1, 游标类.游标创建("查询", 输入要素2, 操作字段名称列表2) as 游标_要素2:
+            for 要素1x in 游标类.属性获取_数据_字典形式(游标_要素1, 操作字段名称列表1):
+                是否找到对应的项flag = False
+                是否不同flag = False
+                for 要素2x in 游标类.属性获取_数据_字典形式(游标_要素2, 操作字段名称列表2):
+                    # if 字类.转换_到字(要素1x[操作字段名称列表1[0]]) == 字类.转换_到字(要素2x[操作字段名称列表2[0]]):
+                    if 要素1x[操作字段名称列表1[0]] == 要素2x[操作字段名称列表2[0]]:
+                        要素2_映射字段列表.remove(要素2x[操作字段名称列表2[0]])
+                        是否找到对应的项flag = True
+
+                        字符串 = f"{操作字段名称列表1[0]}为{要素1x[操作字段名称列表1[0]]}的项，"
+                        for 字段1, 字段2 in zip(要素1字段列表, 要素2字段列表):
+                            if str(要素1x[字段1]) != str(要素2x[字段2]):
+                                是否不同flag = True
+                                是否有项不一致flag = True
+                                字符串 += f"{字段1}由{要素1x[字段1]}改为{要素2x[字段2]}，"
+                        break
+                游标类.重置(游标_要素2)
+                if 是否不同flag:
+                    输入输出类.输出消息(字符串[0:-1])
+                if not 是否找到对应的项flag:
+                    if 是否导出变更项:
+                        with 游标类.游标创建("插入", 变更要素1, 操作字段名称列表1) as 游标_要素1:
+                            游标类.行插入_字典形式(游标_要素1, 要素1x)
+                    输入输出类.输出消息(f"第一个要素中{操作字段名称列表1[0]}为{要素1x[操作字段名称列表1[0]]}的项被删除了，{要素1x}")
+                    是否有项不一致flag = True
+            if len(要素2_映射字段列表) > 0:
+                是否有项不一致flag = True
+                with 游标类.游标创建("查询", 输入要素2, 操作字段名称列表2) as 游标_要素2:
+                    for 要素2x in 游标类.属性获取_数据_字典形式(游标_要素2, 操作字段名称列表2):
+                        if 要素2x[操作字段名称列表2[0]] in 要素2_映射字段列表:
+                            输入输出类.输出消息(f"第二个要素中{操作字段名称列表2[0]}为{要素2x[操作字段名称列表2[0]]}的项是新增项，{要素2x}")
+                            if 是否导出变更项:
+                                with 游标类.游标创建("插入", 变更要素2, 操作字段名称列表2) as 游标_要素2:
+                                    游标类.行插入_字典形式(游标_要素2, 要素2x)
+        if 是否导出变更项:
+            变更要素_合并后 = 要素类.要素创建_通过合并([变更要素1, 变更要素2])
+            要素类.要素创建_通过复制并重命名重名要素(变更要素_合并后, "AA_变更要素_合并后")
+        if not 是否有项不一致flag:
+            输入输出类.输出消息("进行对比的两个要素的项内容完全一致。")
+        return None
+
+    @staticmethod
+    def 项更新_通过面(输入要素路径, 面要素名称="JX_街区范围线", 字段映射列表=[["所属街区", "街区编号"]], 计算方式: Literal["分割输入要素", "内点在面要素内", "大部分在面要素内"] = "分割输入要素", 输出要素路径="内存临时"):
+        if 输出要素路径 == "内存临时":
+            输出要素路径 = "in_memory\\AA_计算所属区域" + "_" + 工具包.生成短GUID()
+
+        输入要素路径_复制后 = 要素类.要素创建_通过复制(输入要素路径)
+        面要素路径_复制后 = 要素类.要素创建_通过复制(面要素名称)
+
+        需要添加的字段列表 = [x[0] for x in 字段映射列表]
+        for x in 需要添加的字段列表:
+            要素类.字段添加(输入要素路径_复制后, x)
+
+        区域要素保留字段列表 = [x[1] for x in 字段映射列表]
+        要素类.字段删除(面要素路径_复制后, 保留字段名称列表=区域要素保留字段列表)
+
+        if 计算方式 == "分割输入要素":
+            赋值后要素 = 要素类.要素创建_通过联合并赋值字段(输入要素路径_复制后, 面要素路径_复制后, 字段映射列表, 要素被分割时提示信息中包括的字段=["_ID", "_面积"])
+            输出要素路径 = 要素类.要素创建_通过复制并重命名重名要素(赋值后要素, 输出要素路径, "计算所属区域前")
+
+        elif 计算方式 == "内点在面要素内":
+            赋值后要素 = 要素类.要素创建_通过空间连接(输入要素路径_复制后, 面要素路径_复制后, "内点在连接要素内")
+            for x in 字段映射列表:
+                要素类.字段计算(赋值后要素, x[0], f"!{x[1]}!")
+            要素类.字段删除(赋值后要素, [x[1] for x in 字段映射列表])
+
+            输出要素路径 = 要素类.要素创建_通过复制并重命名重名要素(赋值后要素, 输出要素路径, "计算所属区域前")
+
+        elif 计算方式 == "大部分在面要素内":
+            赋值后要素 = 要素类.要素创建_通过空间连接(输入要素路径_复制后, 面要素路径_复制后, "大部分在连接要素内")
+            for x in 字段映射列表:
+                要素类.字段计算(赋值后要素, x[0], f"!{x[1]}!")
+            要素类.字段删除(赋值后要素, [x[1] for x in 字段映射列表])
+
+            输出要素路径 = 要素类.要素创建_通过复制并重命名重名要素(赋值后要素, 输出要素路径, "计算所属区域前")
+
+        return 输出要素路径
+
+    @staticmethod
+    def 项更新_通过点(输入要素路径, 点要素名称="AA_test", 字段映射列表=[["所属街区", "街区编号"]], 输出要素路径="内存临时"):
+        if 输出要素路径 == "内存临时":
+            输出要素路径 = "in_memory\\AA_要素创建_通过更新_根据点" + "_" + 工具包.生成短GUID()
+
+        输入要素路径_复制后 = 要素类.要素创建_通过复制(输入要素路径)
+        点要素路径_复制后 = 要素类.要素创建_通过复制(点要素名称)
+
+        需要添加的字段列表 = [x[0] for x in 字段映射列表]
+        输入要素的字段列表 = 要素类.字段名称列表获取(输入要素路径_复制后)
+        for x in 需要添加的字段列表:
+            if x not in 输入要素的字段列表:
+                要素类.字段添加(输入要素路径_复制后, x)
+        输入要素的字段列表 = 要素类.字段名称列表获取(输入要素路径_复制后)
+
+        点要素保留字段列表 = [x[1] for x in 字段映射列表]
+        要素类.字段删除(点要素路径_复制后, 保留字段名称列表=点要素保留字段列表)
+        点要素的字段列表 = 要素类.字段名称列表获取(点要素路径_复制后)
+
+        字段映射列表temp = []
+        for x in 字段映射列表:
+            if x[1] in 输入要素的字段列表:
+                修改后的字段名称 = x[1] + "_" + 字类.字符串生成_短GUID()
+                修改后的字段名称 = 修改后的字段名称[:25]
+                日志生成器.输出调试(f"当前操作的字段：{x[1]}")
+                要素类.字段修改(点要素路径_复制后, x[1], 修改后的字段名称)
+                字段映射列表temp.append([x[0], 修改后的字段名称])
+            else:
+                字段映射列表temp.append(x)
+        字段映射列表 = 字段映射列表temp
+
+        赋值后要素 = 要素类.要素创建_通过空间连接(输入要素路径_复制后, 点要素路径_复制后, "包含连接要素")
+        操作字段 = set()
+        for x in 字段映射列表:
+            操作字段.add(x[0])
+            操作字段.add(x[1])
+        操作字段 = list(操作字段)
+        操作字段.append("Join_Count")
+        操作字段.append("_ID")
+        from bxarcpy.游标包 import 游标类
+
+        with 游标类.游标创建("更新", 赋值后要素, 操作字段) as 游标:
+            for 游标x in 游标类.属性获取_数据_字典形式(游标, 操作字段):
+                if 游标x["Join_Count"] == 0:
+                    continue
+                if 游标x["Join_Count"] > 1:
+                    要素类.要素创建_通过复制并重命名重名要素(赋值后要素, "AA_跳错")
+                    raise Exception(f"ID为 {游标x['_ID']} 的输入要素对应了多个点")
+                for kv in 字段映射列表:
+                    游标x[kv[0]] = 游标x[kv[1]]
+                    游标类.行更新_字典形式(游标, 游标x)
+
+        需要删除的字段名称列表 = [x[1] for x in 字段映射列表]
+        需要删除的字段名称列表.append("Join_Count")
+        需要删除的字段名称列表.append("TARGET_FID")
+        要素类.字段删除(赋值后要素, 需要删除的字段名称列表)
+
+        输出要素路径 = 要素类.要素创建_通过复制并重命名重名要素(赋值后要素, 输出要素路径)
+
+        return 输出要素路径
+
+
 # if __name__ == "__main__":
 #     工作空间 = bxarcpy.环境.输入参数获取_以字符串形式(0, r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb")
 #     图层名称 = bxarcpy.环境.输入参数获取_以字符串形式(1, r"DIST_用地规划图", False)
@@ -1221,18 +1422,16 @@ if __name__ == "__main__":
     from bxarcpy.环境包 import 环境管理器类
     from bxpy.基本对象包 import 字类
 
-    工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
-    工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
-    工作空间 = r"C:\Users\common\Project\D德清洛舍杨树湾单元控规\03过程文件\24.11.27报批稿\D德清洛舍杨树湾单元控规_数据库.gdb"
-    # 工作空间 = r"C:\Users\beixiao\Project\J江东区临江控规\临江控规_数据库.gdb"
+    # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
+    工作空间 = r"C:\Users\beixiao\Project\J江东区临江控规\临江控规_数据库.gdb"
     # 道路中线要素名称 = bxarcpy.环境.输入参数获取_以字符串形式(0, "DL_道路中线", True)
     with 环境管理器类.环境管理器类创建(工作空间):
         # pass
         # 要素1 = 要素类.要素创建_通过复制("KZX_城镇集建区")
         # 要素2 = 要素类.要素创建_通过复制("JX_街坊范围线")
         # 要素类.要素创建_通过分割(要素1, 要素2, "AA_test333")
+        要素类.要素创建_通过几何修复("DIST_用地规划图", 是否打印被删除的要素=True)
         # print(要素类.要素创建_通过复制("CZ_基本农田"))
-        要素类.要素创建_通过几何修复("DIST_用地规划图1", 输出要素路径="DIST_用地规划图2")
         # 返回值 = 要素类.转换_到numpy("DIST_用地规划图1", ["OID@", "地类编号"], 返回字典形式=False)
         # 返回值[0] = (1, "070303333")
         # print(返回值.dtype.keys())  # type: ignore

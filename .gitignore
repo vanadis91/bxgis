@@ -13,3 +13,4 @@ dist.bat
 /dist
 pdm.lock
 appBXGis.code-workspace
+**.pyt.xml

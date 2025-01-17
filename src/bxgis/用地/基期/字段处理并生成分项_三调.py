@@ -15,7 +15,7 @@ from typing import Union, Literal, Any, List, Dict, Optional, TypedDict
 # from pydantic import BaseModel
 
 
-def 字段处理并生成分项(
+def 字段处理并生成分项_三调(
     输入要素路径="CZ_三调",
     扣除地类系数要素路径: Optional[str] = 基本信息.项目信息.CZ_三调_扣除地类系数,
     种植属性名称要素路径: Optional[str] = 基本信息.项目信息.CZ_三调_种植属性名称,
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     工作空间 = r"C:\Users\common\Project\D德清洛舍杨树湾单元控规\03过程文件\24.11.27报批稿\D德清洛舍杨树湾单元控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
-        字段处理并生成分项(
+        字段处理并生成分项_三调(
             "CZ_三调",
             输出要素路径="CZ_三调_字段汉化",
         )

@@ -157,10 +157,10 @@ def 用地_工具集_根据入库要素生成用地(
 
 if __name__ == "__main__":
     日志生成器.开启()
-    工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
+    工作空间 = r"C:\Users\common\Project\F富阳受降控规\受降北_数据库.gdb"
     # 工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
         用地_工具集_根据入库要素生成用地(
-            地块要素名称="XG/XG_GHDK",
+            地块要素名称="AA_XG_GHDK_2",
             输出要素名称="DIST_用地规划图1",
         )

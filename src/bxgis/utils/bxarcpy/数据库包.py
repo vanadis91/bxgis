@@ -44,7 +44,7 @@ class 数据库类:
         return ret  # type: ignore
 
     @staticmethod
-    def 属性获取_栅格名称列表(数据库路径):
+    def 属性获取_栅格名称列表(数据库路径) -> list:
         当前数据库路径 = arcpy.env.workspace  # type: ignore
         arcpy.env.workspace = 数据库路径  # type: ignore
         ret = arcpy.ListRasters()
