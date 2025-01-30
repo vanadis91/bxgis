@@ -244,7 +244,7 @@ class Toolbox(object):
         self.alias = "BXGIS工具箱"  # 定义别名
 
         # List of tool classes associated with this toolbox
-        self.tools = [ru_ku_dan_yuan, ru_ku_tu_ze, ru_ku_ju_diao_ru_ku, ru_ku_gong_ye_pian_qu, ru_ku_kong_zhi_xian, ru_ku_cun_zhuang_jian_she_bian_jie, ru_ku_yong_tu_fen_qu, ru_ku_jie_qu_jie_fang_fen_cun, ru_ku_gui_hua_di_kuai, ru_ku_she_shi, ru_ku_dan_yuan_de_qing, ru_ku_kong_zhi_xian_de_qing_di_kuai_hou_tui_xian, ru_ku_kong_zhi_xian_de_qing_te_shu_fan_wei_xian, ru_ku_kong_zhi_xian_de_qing_dao_lu_zhong_xian, ru_ku_kong_zhi_xian_de_qing_dao_lu_bian_xian, ru_ku_gui_hua_di_kuai_de_qing, ru_ku_gui_hua_di_kuai_de_qing_shui_yu, ru_ku_gui_hua_di_kuai_de_qing_dao_lu, ru_ku_she_shi_de_qing, yong_tu_fen_qu_bian_hao_sheng_cheng, yong_tu_fen_qu_gui_hua_tu_sheng_cheng, qu_chu_zi_duan_zhong_suo_you_kong_ge, qu_yu_geng_xin, qu_yu_jian_cha, qu_yu_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_qu_yu, dao_ru_shu_xing_biao, zuo_biao_xi_tong_yi, dao_ru_cong_CAD, dao_chu_dao_CAD, yao_su_chuang_jian_tong_guo_geng_xin_gen_ju_mian, shu_ju_jian_cha, qu_zhuan_zhe, qing_li_li_shi_yao_su, tong_ji, yao_su_lian_he, yong_di_die_he_tu_sheng_cheng, yong_di_ji_qi_tu_sheng_cheng, yong_di_geng_xin, yong_di_xian_zhuang_tu_sheng_cheng, yong_di_gui_hua_tu_sheng_cheng, yong_di_chuang_jian_sheng_cheng_yong_di_tiao_zheng_tu, kai_fa_bian_jie_nei_gong_ye_yong_di, yong_di_ji_suan_tiao_zheng_lei_xing, jian_cha_di_kuai_bian_hao_he_tu_di_ma_shi_fou_you_wen_ti, di_lei_bian_hao_ming_cheng_bie_cheng_pi_pei_jian_cha, ji_ben_nong_tian_shi_fou_bei_zhan, kai_fa_bian_jie_wai_cheng_zhen_jian_she_yong_di_jian_cha, yong_di_he_gui_xing_jian_cha, chu_bu_ji_shu_zhuan_huan_san_diao, chu_bu_ji_shu_zhuan_huan_er_diao, zi_duan_chu_li_bing_sheng_cheng_fen_xiang_san_diao, zi_duan_chu_li_bing_sheng_cheng_fen_xiang_er_diao, yong_di_gong_ju_ji_jiang_jiu_ban_xin_di_lei_zhuan_wei_xin_ban_xin_di_lei, yong_di_gong_ju_ji_geng_xin_dui_xiang_shu_xing, yong_di_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_yong_di, yong_di_chuang_jian_tong_guo_gen_ju_di_lei_ming_cheng_sheng_cheng_bian_hao, yong_di_gong_ju_ji_yong_di_shu_ju_tong_ji, tong_ji_kai_fa_bian_jie_wai_ji_qi_203_yong_di, yong_di_chuang_jian_tong_guo_ji_suan_liang_ke_yong_di, ji_suan_wen_ben_lian_jie_yong_shu_ju, she_shi_geng_xin, she_shi_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_she_shi, he_dao_bian_xian_sheng_cheng, dao_lu_bian_xian_sheng_cheng, dao_lu_hong_xian_ti_qu, di_kuai_zhi_biao_ce_suan_biao_huo_qu, huo_qu_gong_zuo_kong_jian, xiang_mu_chu_shi_hua,]
+        self.tools = [ru_ku_dan_yuan, ru_ku_tu_ze, ru_ku_ju_diao_ru_ku, ru_ku_gong_ye_pian_qu, ru_ku_kong_zhi_xian, ru_ku_cun_zhuang_jian_she_bian_jie, ru_ku_yong_tu_fen_qu, ru_ku_jie_qu_jie_fang_fen_cun, ru_ku_gui_hua_di_kuai, ru_ku_she_shi, ru_ku_dan_yuan_de_qing, ru_ku_kong_zhi_xian_de_qing_di_kuai_hou_tui_xian, ru_ku_kong_zhi_xian_de_qing_te_shu_fan_wei_xian, ru_ku_kong_zhi_xian_de_qing_dao_lu_zhong_xian, ru_ku_kong_zhi_xian_de_qing_dao_lu_bian_xian, ru_ku_gui_hua_di_kuai_de_qing, ru_ku_gui_hua_di_kuai_de_qing_shui_yu, ru_ku_gui_hua_di_kuai_de_qing_dao_lu, ru_ku_she_shi_de_qing, yong_tu_fen_qu_bian_hao_sheng_cheng, yong_tu_fen_qu_gui_hua_tu_sheng_cheng, yong_di_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_fen_qu, qu_chu_zi_duan_zhong_suo_you_kong_ge, qu_yu_geng_xin, qu_yu_jian_cha, qu_yu_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_qu_yu, dao_ru_shu_xing_biao, shu_xing_dui_bi, zuo_biao_xi_tong_yi, zi_duan_ming_cheng_xiao_xie_gai_da_xie, dao_ru_cong_CAD, dao_chu_dao_CAD, shu_xing_yu_xiu_fu, yao_su_chuang_jian_tong_guo_geng_xin_gen_ju_mian, shu_ju_jian_cha, qu_zhuan_zhe, qing_li_li_shi_yao_su, tong_ji, yao_su_lian_he, yong_di_die_he_tu_sheng_cheng, yong_di_ji_qi_tu_sheng_cheng, yong_di_geng_xin, yong_di_xian_zhuang_tu_sheng_cheng, yong_di_gui_hua_tu_sheng_cheng, yong_di_chuang_jian_sheng_cheng_yong_di_tiao_zheng_tu, kai_fa_bian_jie_nei_gong_ye_yong_di, yong_di_ji_suan_tiao_zheng_lei_xing, jian_cha_di_kuai_bian_hao_he_tu_di_ma_shi_fou_you_wen_ti, di_lei_bian_hao_ming_cheng_bie_cheng_pi_pei_jian_cha, ji_ben_nong_tian_shi_fou_bei_zhan, kai_fa_bian_jie_wai_cheng_zhen_jian_she_yong_di_jian_cha, yong_di_he_gui_xing_jian_cha, chu_bu_ji_shu_zhuan_huan_san_diao, chu_bu_ji_shu_zhuan_huan_er_diao, zi_duan_chu_li_bing_sheng_cheng_fen_xiang_san_diao, zi_duan_chu_li_bing_sheng_cheng_fen_xiang_er_diao, yong_di_gong_ju_ji_jiang_jiu_ban_xin_di_lei_zhuan_wei_xin_ban_xin_di_lei, yong_di_gong_ju_ji_geng_xin_dui_xiang_shu_xing, yong_di_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_yong_di, yong_di_chuang_jian_tong_guo_gen_ju_di_lei_ming_cheng_sheng_cheng_bian_hao, yong_di_gong_ju_ji_yong_di_shu_ju_tong_ji, tong_ji_kai_fa_bian_jie_wai_ji_qi_203_yong_di, yong_di_chuang_jian_tong_guo_ji_suan_liang_ke_yong_di, ji_suan_wen_ben_lian_jie_yong_shu_ju, she_shi_geng_xin, she_shi_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_she_shi, he_dao_bian_xian_sheng_cheng, dao_lu_bian_xian_sheng_cheng, dao_lu_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_kong_zhi_xian, dao_lu_hong_xian_ti_qu, di_kuai_zhi_biao_ce_suan_biao_huo_qu, huo_qu_gong_zuo_kong_jian, xiang_mu_chu_shi_hua,]
 
 # class common_importFromCAD(object): 
 #     def __init__(self):
@@ -418,9 +418,7 @@ class ru_ku_kong_zhi_xian(object):
             {"name": u"地块要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'DIST_用地规划图'},
             {"name": u"道路中线要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'DL_道路中线'},
             {"name": u"道路边线要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'DL_道路边线'},
-            {"name": u"市政管线要素名称", "dataType": u"字符串", "required": u"选填", "argsDirction": u"输入参数", "multiValue": False, "default": None},
             {"name": u"输出要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输出参数", "multiValue": False, "default": u'XG_KZX'},
-            {"name": u"控制线列表", "dataType": u"任何值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": True, "default": [{'要素路径': 'GZW_高架桥', '类型代码': 'DLBX-GJ', '类型名称': '道路边线-高架', '字段映射': [['道路名称', 'MC'], ['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_隧道', '类型代码': 'DLBX-SD', '类型名称': '道路边线-隧道', '字段映射': [['道路名称', 'MC'], ['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'DL_河道中线', '类型代码': 'HDZX', '类型名称': '河道中心线', '字段映射': [['河道名称', 'MC'], ['开发动态', 'ZT'], ['备注说明', 'BZ']]}, {'要素路径': 'DL_河道边线', '类型代码': 'HDBX', '类型名称': '河道边线', '字段映射': [['河道名称', 'MC'], ['开发动态', 'ZT'], ['备注说明', 'BZ']]}, {'要素路径': 'GZW_铁路线', '类型代码': 'TL', '类型名称': '铁路', '字段映射': [['铁路名称', 'MC'], ['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_输油管', '类型代码': 'SYG', '类型名称': '输油管道设施线', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_原水管', '类型代码': 'YS', '类型名称': '原水输水管线', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_高压线', '类型代码': 'GYX', '类型名称': '高压电力架空线', '字段映射': [['电压等级', 'MC'], ['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_高压地埋线', '类型代码': 'GYX', '类型名称': '高压电力地埋线', '字段映射': [['电压等级', 'MC'], ['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_天然气', '类型代码': 'TRQ', '类型名称': '高压燃气设施线', '字段映射': [['等级', 'MC'], ['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_综合管廊', '类型代码': 'ZHGL', '类型名称': '综合管廊', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_防洪设施', '类型代码': 'FH', '类型名称': '防洪（潮）设施控制线', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_防灾设施', '类型代码': 'FZ', '类型名称': '综合防灾减灾设施控制线', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_微波通道', '类型代码': 'WBTD', '类型名称': '微波通道', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_高度分区', '类型代码': 'GDFQ', '类型名称': '建筑控制高度分区线', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_共用通道', '类型代码': 'DKJGGTD', '类型名称': '地块间公共通道', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_远景道路', '类型代码': 'YJDLKZ', '类型名称': '远景道路控制线', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_绿化控制线', '类型代码': 'KZLHX', '类型名称': '控制绿化线', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_虚位控制河道', '类型代码': 'XWKZHD', '类型名称': '虚位控制河道', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_虚位控制道路', '类型代码': 'XWKZDL', '类型名称': '虚位控制道路', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_景观廊道', '类型代码': 'JGKZLD', '类型名称': '景观控制廊道线', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}, {'要素路径': 'GZW_其他要素', '类型代码': 'QT', '类型名称': '其他控制线', '字段映射': [['开发动态', 'ZT'], ['备注', 'BZ']]}]},
             ]
         return ParameterCls.parameterCreate_muti(args_dict_list)
 
@@ -442,6 +440,8 @@ class ru_ku_cun_zhuang_jian_she_bian_jie(object):
             {"name": u"批复时间", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u''},
             {"name": u"批复文号", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u''},
             {"name": u"单元编号", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'QT12'},
+            {"name": u"是否融合并多部件变单部件", "dataType": u"布尔值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": True},
+            {"name": u"管控要求", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'按照“避让底线、引导集聚、单元统筹、预留弹性、界限清晰”的原则进行控制，综合考虑村庄分级分类与建设用地指标安排，引导乡村空间适度集聚'},
             {"name": u"输出要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输出参数", "multiValue": False, "default": u'XG_JSBJ'},
             ]
         return ParameterCls.parameterCreate_muti(args_dict_list)
@@ -770,6 +770,24 @@ class yong_tu_fen_qu_gui_hua_tu_sheng_cheng(object):
     def execute(self, parameterList, message):
         fun_run(u"bxgis.分区.用途分区规划图生成", u"用途分区规划图生成", parameterList)
     
+class yong_di_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_fen_qu(object):
+    # 用地_工具集_根据入库要素生成分区
+    def __init__(self):
+        self.label = u"用地_工具集_根据入库要素生成分区"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = u"分区\\工具集"
+
+    def getParameterInfo(self):
+        args_dict_list = [
+        {"name": u"分区要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'XG_YTFQ'},
+            {"name": u"输出要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输出参数", "multiValue": False, "default": u'内存临时'},
+            ]
+        return ParameterCls.parameterCreate_muti(args_dict_list)
+
+    def execute(self, parameterList, message):
+        fun_run(u"bxgis.分区.工具集.根据入库要素生成分区", u"用地_工具集_根据入库要素生成分区", parameterList)
+    
 class qu_chu_zi_duan_zhong_suo_you_kong_ge(object):
     # 去除字段中所有空格
     def __init__(self):
@@ -809,6 +827,7 @@ class qu_yu_geng_xin(object):
             {"name": u"有扣除地类系数的要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'CZ_三调筛选_扣除地类系数'},
             {"name": u"是否不汇总部分设施", "dataType": u"布尔值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": True},
             {"name": u"不汇总设施名称列表", "dataType": u"任何值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": True, "default": u"基本信息.项目信息.不入库设施名称列表"},
+            {"name": u"不汇总设施所在地块地类列表", "dataType": u"任何值", "required": u"选填", "argsDirction": u"输入参数", "multiValue": True, "default": None},
             {"name": u"是否计算用地和设施的所属区域", "dataType": u"布尔值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": True},
             {"name": u"是否按区域对用地进行分割", "dataType": u"布尔值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": True},
             {"name": u"是否统计耕地保有量", "dataType": u"布尔值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": True},
@@ -887,6 +906,27 @@ class dao_ru_shu_xing_biao(object):
     def execute(self, parameterList, message):
         fun_run(u"bxgis.属性.导入属性表", u"导入属性表", parameterList)
     
+class shu_xing_dui_bi(object):
+    # 属性对比
+    def __init__(self):
+        self.label = u"属性对比"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = u"属性"
+
+    def getParameterInfo(self):
+        args_dict_list = [
+        {"name": u"输入要素路径1", "dataType": u"要素类", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'DIST_用地规划图'},
+            {"name": u"输入要素路径2", "dataType": u"要素类", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'DIST_用地规划图'},
+            {"name": u"映射字段名称列表", "dataType": u"任何值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": True, "default": ['_ID', '_ID']},
+            {"name": u"是否导出变更项", "dataType": u"布尔值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": False},
+            {"name": u"对比字段名称列表", "dataType": u"任何值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": True, "default": [['所属街区', '所属街区'], ['所属分村', '所属分村']]},
+            ]
+        return ParameterCls.parameterCreate_muti(args_dict_list)
+
+    def execute(self, parameterList, message):
+        fun_run(u"bxgis.属性.属性对比", u"属性对比", parameterList)
+    
 class zuo_biao_xi_tong_yi(object):
     # 坐标系统一
     def __init__(self):
@@ -904,6 +944,24 @@ class zuo_biao_xi_tong_yi(object):
 
     def execute(self, parameterList, message):
         fun_run(u"bxgis.常用.坐标系统一", u"坐标系统一", parameterList)
+    
+class zi_duan_ming_cheng_xiao_xie_gai_da_xie(object):
+    # 字段名称小写改大写
+    def __init__(self):
+        self.label = u"字段名称小写改大写"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = u"常用"
+
+    def getParameterInfo(self):
+        args_dict_list = [
+        {"name": u"输入要素路径列表", "dataType": u"要素类", "required": u"必填", "argsDirction": u"输入参数", "multiValue": True, "default": ['JX_规划范围线']},
+            {"name": u"输出要素路径列表", "dataType": u"任何值", "required": u"必填", "argsDirction": u"输出参数", "multiValue": True, "default": ['内存临时']},
+            ]
+        return ParameterCls.parameterCreate_muti(args_dict_list)
+
+    def execute(self, parameterList, message):
+        fun_run(u"bxgis.常用.字段名称小写改大写", u"字段名称小写改大写", parameterList)
     
 class dao_ru_cong_CAD(object):
     # 导入从CAD
@@ -950,6 +1008,24 @@ class dao_chu_dao_CAD(object):
     def execute(self, parameterList, message):
         fun_run(u"bxgis.常用.导出到CAD", u"导出到CAD", parameterList)
     
+class shu_xing_yu_xiu_fu(object):
+    # 属性域修复
+    def __init__(self):
+        self.label = u"属性域修复"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = u"常用"
+
+    def getParameterInfo(self):
+        args_dict_list = [
+        {"name": u"输入要素路径列表", "dataType": u"要素类", "required": u"必填", "argsDirction": u"输入参数", "multiValue": True, "default": ['YD_基期初转换']},
+            {"name": u"输出要素路径列表", "dataType": u"任何值", "required": u"必填", "argsDirction": u"输出参数", "multiValue": True, "default": ['内存临时']},
+            ]
+        return ParameterCls.parameterCreate_muti(args_dict_list)
+
+    def execute(self, parameterList, message):
+        fun_run(u"bxgis.常用.属性区修复", u"属性域修复", parameterList)
+    
 class yao_su_chuang_jian_tong_guo_geng_xin_gen_ju_mian(object):
     # 要素创建_通过更新_根据面
     def __init__(self):
@@ -986,6 +1062,8 @@ class shu_ju_jian_cha(object):
             {"name": u"是否范围检查", "dataType": u"布尔值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": True},
             {"name": u"是否曲线检查", "dataType": u"布尔值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": True},
             {"name": u"是否几何修复", "dataType": u"布尔值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": True},
+            {"name": u"是否多部件检查", "dataType": u"布尔值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": False},
+            {"name": u"碎线检查阈值", "dataType": u"字符串", "required": u"选填", "argsDirction": u"输入参数", "multiValue": False, "default": None},
             {"name": u"输出要素路径", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输出参数", "multiValue": False, "default": u'内存临时'},
             ]
         return ParameterCls.parameterCreate_muti(args_dict_list)
@@ -1041,6 +1119,7 @@ class tong_ji(object):
         {"name": u"输入要素路径", "dataType": u"要素类", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'YD_基期初转换'},
             {"name": u"需统计字段及统计方式列表", "dataType": u"任何值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": True, "default": [{'字段名称': '', '统计方式': '求和'}]},
             {"name": u"分组字段列表", "dataType": u"任何值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": True, "default": ['分组1']},
+            {"name": u"筛选表达式", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u''},
             {"name": u"是否显示进度条", "dataType": u"布尔值", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": True},
             ]
         return ParameterCls.parameterCreate_muti(args_dict_list)
@@ -1122,6 +1201,7 @@ class yong_di_geng_xin(object):
     def getParameterInfo(self):
         args_dict_list = [
         {"name": u"用地要素路径", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'DIST_用地规划图'},
+            {"name": u"局部更新SQL语句", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u''},
             {"name": u"街坊范围线要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'JX_街坊范围线'},
             {"name": u"分村范围线要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'JX_分村范围线'},
             {"name": u"城镇集建区要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'KZX_城镇集建区'},
@@ -1218,6 +1298,7 @@ class yong_di_chuang_jian_sheng_cheng_yong_di_tiao_zheng_tu(object):
             {"name": u"规划要素路径", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'DIST_用地规划图'},
             {"name": u"种植属性要素路径", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u"基本信息.项目信息.CZ_三调_种植属性名称"},
             {"name": u"坐落单位要素路径", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u"基本信息.项目信息.CZ_三调_坐落单位名称"},
+            {"name": u"既有用地调整图", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'DIST_用地调整图'},
             {"name": u"输出要素路径", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输出参数", "multiValue": False, "default": u'内存临时'},
             ]
         return ParameterCls.parameterCreate_muti(args_dict_list)
@@ -1696,6 +1777,24 @@ class dao_lu_bian_xian_sheng_cheng(object):
 
     def execute(self, parameterList, message):
         fun_run(u"bxgis.道路.道路边线生成", u"道路边线生成", parameterList)
+    
+class dao_lu_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_kong_zhi_xian(object):
+    # 道路_工具集_根据入库要素生成控制线
+    def __init__(self):
+        self.label = u"道路_工具集_根据入库要素生成控制线"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = u"道路\\工具集"
+
+    def getParameterInfo(self):
+        args_dict_list = [
+        {"name": u"控制线要素名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'XG_KZX'},
+            {"name": u"输出要素名称后缀", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输出参数", "multiValue": False, "default": u'1'},
+            ]
+        return ParameterCls.parameterCreate_muti(args_dict_list)
+
+    def execute(self, parameterList, message):
+        fun_run(u"bxgis.道路.工具集.根据入库要素生成控制线", u"道路_工具集_根据入库要素生成控制线", parameterList)
     
 class dao_lu_hong_xian_ti_qu(object):
     # 道路红线提取

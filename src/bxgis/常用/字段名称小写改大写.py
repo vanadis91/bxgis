@@ -1,15 +1,15 @@
 # *-* coding:utf8 *-*
-import bxarcpy
-from bxarcpy.要素包 import 要素类, 输出路径生成_当采用内存临时时
+from bxarcpy.要素包 import 要素类
 from bxarcpy.游标包 import 游标类
 from bxarcpy.几何包 import 几何类
 from bxarcpy.环境包 import 输入输出类, 环境管理器类
+from bxarcpy.工具包 import 临时路径生成
 
 
 def 字段名称小写改大写(输入要素路径列表=["JX_规划范围线"], 输出要素路径列表=["内存临时"]):
     ret = []
     for 输入要素路径x, 输出要素路径x in zip(输入要素路径列表, 输出要素路径列表):
-        输出要素路径x = 输出路径生成_当采用内存临时时([输入要素路径x]) if 输出要素路径x == "内存临时" else 输出要素路径x
+        输出要素路径x = 临时路径生成([输入要素路径x]) if 输出要素路径x == "内存临时" else 输出要素路径x
         输入要素x = 要素类.要素创建_通过复制(输入要素路径x)
 
         字段名称列表 = 要素类.字段名称列表获取(输入要素x, 含系统字段=False)

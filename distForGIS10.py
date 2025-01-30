@@ -41,50 +41,17 @@ def 生成次要的包():
     项目根目录 = 路径类.属性获取_目录(__file__)
     所有项目根目录 = 路径类.属性获取_目录(__file__, 2)
 
-    # 删除bxshapely
-    bxshapely源码路径 = 路径类.连接(所有项目根目录, "bxshapely", "src", "bxshapely")
-    bxshapely目标路径 = 路径类.连接(项目根目录, "src", "bxgis", "utils", "bxshapely")
-    路径类.删除(bxshapely目标路径)
-    路径类.复制(bxshapely源码路径, 路径类.属性获取_目录(bxshapely目标路径))
-    加密类pyarmor.加密包(准备加密的包或文件的路径=bxshapely目标路径, 加密后存放的目录=路径类.属性获取_目录(bxshapely目标路径))
-    子路径列表的列表 = 路径类.子路径(bxshapely目标路径, 单一层次=False, 链接处理方式="向下探索")
-    for 子路径列表x in 子路径列表的列表:
-        if "#历史版本" in 子路径列表x[1]:
-            路径类.删除(路径类.连接(子路径列表x[0], "#历史版本"))
-
-    # 删除bxpandas
-    bxpandas源码路径 = 路径类.连接(所有项目根目录, "bxpandas", "src", "bxpandas")
-    bxpandas目标路径 = 路径类.连接(项目根目录, "src", "bxgis", "utils", "bxpandas")
-    路径类.删除(bxpandas目标路径)
-    路径类.复制(bxpandas源码路径, 路径类.属性获取_目录(bxpandas目标路径))
-    加密类pyarmor.加密包(准备加密的包或文件的路径=bxpandas目标路径, 加密后存放的目录=路径类.属性获取_目录(bxpandas目标路径))
-    子路径列表的列表 = 路径类.子路径(bxpandas目标路径, 单一层次=False, 链接处理方式="向下探索")
-    for 子路径列表x in 子路径列表的列表:
-        if "#历史版本" in 子路径列表x[1]:
-            路径类.删除(路径类.连接(子路径列表x[0], "#历史版本"))
-
-    # 删除bxpy
-    bxpy源码路径 = 路径类.连接(所有项目根目录, "bxpy", "src", "bxpy")
-    bxpy目标路径 = 路径类.连接(项目根目录, "src", "bxgis", "utils", "bxpy")
-    路径类.删除(bxpy目标路径)
-    路径类.复制(bxpy源码路径, 路径类.属性获取_目录(bxpy目标路径))
-    加密类pyarmor.加密包(准备加密的包或文件的路径=bxpy目标路径, 加密后存放的目录=路径类.属性获取_目录(bxpy目标路径))
-    子路径列表的列表 = 路径类.子路径(bxpy目标路径, 单一层次=False, 链接处理方式="向下探索")
-    for 子路径列表x in 子路径列表的列表:
-        if "#历史版本" in 子路径列表x[1]:
-            路径类.删除(路径类.连接(子路径列表x[0], "#历史版本"))
-
-    # # 删除bxarcpy
-    # bxarcpy目录路径 = 路径类.连接(项目根目录, "src", "bxgis", "utils", "bxarcpy")
-    # 路径类.删除(源路径=bxarcpy目录路径)
-    # 路径类.复制(
-    #     路径类.连接(所有项目根目录, "bxarcpy", "src", "bxarcpy"),
-    #     路径类.连接(项目根目录, "src", "bxgis", "utils"),
-    # )
-    # 子路径列表的列表 = 路径类.子路径(bxarcpy目录路径, 单一层次=False, 链接处理方式="向下探索")
-    # for 子路径列表x in 子路径列表的列表:
-    #     if "#历史版本" in 子路径列表x[1]:
-    #         路径类.删除(路径类.连接(子路径列表x[0], "#历史版本"))
+    需要加密的包列表 = ["bxshapely", "bxpandas", "bxpy"]
+    for 包x in 需要加密的包列表:
+        bxshapely源码路径 = 路径类.连接(所有项目根目录, 包x, "src", 包x)
+        bxshapely目标路径 = 路径类.连接(项目根目录, "src", "bxgis", "utils", 包x)
+        路径类.删除(bxshapely目标路径)
+        路径类.复制(bxshapely源码路径, 路径类.属性获取_目录(bxshapely目标路径))
+        加密类pyarmor.加密包(准备加密的包或文件的路径=bxshapely目标路径, 加密后存放的目录=路径类.属性获取_目录(bxshapely目标路径))
+        子路径列表的列表 = 路径类.子路径(bxshapely目标路径, 单一层次=False, 链接处理方式="向下探索")
+        for 子路径列表x in 子路径列表的列表:
+            if "#历史版本" in 子路径列表x[1]:
+                路径类.删除(路径类.连接(子路径列表x[0], "#历史版本"))
 
 
 def main():

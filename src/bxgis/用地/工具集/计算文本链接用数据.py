@@ -1,12 +1,13 @@
 # *-* coding:utf8 *-*
 import bxarcpy
 import bxarcpy.工具包 as 工具包
-from bxarcpy.要素包 import 要素类, 输出路径生成_当采用内存临时时
+from bxarcpy.要素包 import 要素类
 from bxarcpy.游标包 import 游标类
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类
 from bxarcpy.环境包 import 环境管理器类, 输入输出类
 from bxgis.配置 import 基本信息
+from bxarcpy.工具包 import 临时路径生成
 
 
 def 计算文本链接用数据(
@@ -21,7 +22,7 @@ def 计算文本链接用数据(
     地类编号字段名称="地类名称",
     输出要素路径="内存临时",
 ):
-    输出要素路径 = 输出路径生成_当采用内存临时时([用地规划要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
+    输出要素路径 = 临时路径生成([用地规划要素路径]) if 输出要素路径 == "内存临时" else 输出要素路径
 
     集建区裁剪后 = 要素类.要素创建_通过裁剪(城镇集建区要素路径, 规划范围线要素路径)
     返回值 = 要素类.统计(输入要素路径=集建区裁剪后, 需统计字段及统计方式列表=[{"字段名称": "_面积", "统计方式": "求和"}], 分组字段列表=[])

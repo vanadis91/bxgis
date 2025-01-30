@@ -14,7 +14,7 @@ from bxgis.配置 import 基本信息
 from typing import Union, Literal
 
 
-def 导出到CAD(输入要素路径="DIST_用地规划图", 规划范围线要素名称: Union[str, None] = "JX_规划范围线", 需融合字段名称=None, 需融合字段中需融合的值的列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称='地类编号', 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg"):
+def 导出到CAD(输入要素路径="DIST_用地规划图", 规划范围线要素名称: Union[str, None] = "JX_规划范围线", 需融合字段名称=None, 需融合字段中需融合的值的列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="地类编号", 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg"):
     # {"折点数量": 10, "孔洞数量": 2, "面积": 1000, "地类编号列表": ["1207"]}
     输入要素路径_复制后 = 要素类.要素创建_通过复制(输入要素路径)
     日志生成器.输出控制台(f"几何数量：{要素类.属性获取_几何数量(输入要素路径_复制后)}")

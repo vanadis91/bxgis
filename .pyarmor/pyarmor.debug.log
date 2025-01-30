@@ -1,497 +1,497 @@
-2025-01-17 09:12:46,980 Python 3.9.11
-2025-01-17 09:12:46,981 Pyarmor 8.5.12 (pro), 005556, non-profits
-2025-01-17 09:12:46,981 Platform windows.x86_64
-2025-01-17 09:12:46,981 native platform windows.amd64
-2025-01-17 09:12:46,982 home path: C:\Users\beixiao\.pyarmor
-2025-01-17 09:12:46,982 command options: {'recursive': True, 'output': 'c:\\Users\\beixiao\\Project\\appBXGis\\src\\bxgis\\utils', 'no_runtime': False, 'import_prefix': 1, 'inputs': ['c:\\Users\\beixiao\\Project\\bxpy\\src\\bxpy']}
-2025-01-17 09:12:46,982 install plugin: CodesignPlugin
-2025-01-17 09:12:46,982 install plugin: DarwinUniversalPlugin
-2025-01-17 09:12:46,983 search inputs ...
-2025-01-17 09:12:46,983 find package at c:\Users\beixiao\Project\bxpy\src\bxpy
-2025-01-17 09:12:46,987 find 1 top resources
-2025-01-17 09:12:46,996 start to generate runtime files
-2025-01-17 09:12:46,997 target platforms {'windows.amd64'}
-2025-01-17 09:12:46,999 got C:\Users\beixiao\Project\bxpy\.venv\Lib\site-packages\pyarmor\cli\core\pyarmor_runtime.pyd
-2025-01-17 09:12:46,999 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\pyarmor_runtime_005556\pyarmor_runtime.pyd
-2025-01-17 09:12:47,000 patching runtime data at 529440
-2025-01-17 09:12:47,011 patch runtime file OK
-2025-01-17 09:12:47,011 call post runtime plugin <class 'pyarmor.cli.plugin.CodesignPlugin'>
-2025-01-17 09:12:47,032 generate runtime files OK
-2025-01-17 09:12:47,032 start to obfuscate scripts
-2025-01-17 09:12:47,033 process resource "bxpy"
-2025-01-17 09:12:47,033 obfuscating file __init__.py
-2025-01-17 09:12:47,035 process inline marker
-2025-01-17 09:12:47,035 parse script
-2025-01-17 09:12:47,036 process co
-2025-01-17 09:12:47,037 patch co
-2025-01-17 09:12:47,041 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\__init__.py
-2025-01-17 09:12:47,063 obfuscating file 元数据包.py
-2025-01-17 09:12:47,065 process inline marker
-2025-01-17 09:12:47,065 parse script
-2025-01-17 09:12:47,070 process co
-2025-01-17 09:12:47,094 patch co
-2025-01-17 09:12:47,116 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\元数据包.py
-2025-01-17 09:12:47,118 obfuscating file 压缩包.py
-2025-01-17 09:12:47,119 process inline marker
-2025-01-17 09:12:47,119 parse script
-2025-01-17 09:12:47,122 process co
-2025-01-17 09:12:47,133 patch co
-2025-01-17 09:12:47,144 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\压缩包.py
-2025-01-17 09:12:47,145 obfuscating file 基本对象包.py
-2025-01-17 09:12:47,147 process inline marker
-2025-01-17 09:12:47,147 parse script
-2025-01-17 09:12:47,161 process co
-2025-01-17 09:12:47,329 patch co
-2025-01-17 09:12:47,442 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\基本对象包.py
-2025-01-17 09:12:47,444 obfuscating file 定时任务包.py
-2025-01-17 09:12:47,446 process inline marker
-2025-01-17 09:12:47,446 parse script
-2025-01-17 09:12:47,455 process co
-2025-01-17 09:12:47,501 patch co
-2025-01-17 09:12:47,537 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\定时任务包.py
-2025-01-17 09:12:47,539 obfuscating file 数据库包.py
-2025-01-17 09:12:47,541 process inline marker
-2025-01-17 09:12:47,541 parse script
-2025-01-17 09:12:47,549 process co
-2025-01-17 09:12:47,616 patch co
-2025-01-17 09:12:47,675 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\数据库包.py
-2025-01-17 09:12:47,677 obfuscating file 日志包.py
-2025-01-17 09:12:47,679 process inline marker
-2025-01-17 09:12:47,679 parse script
-2025-01-17 09:12:47,684 process co
-2025-01-17 09:12:47,717 patch co
-2025-01-17 09:12:47,751 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\日志包.py
-2025-01-17 09:12:47,752 obfuscating file 时间包.py
-2025-01-17 09:12:47,753 process inline marker
-2025-01-17 09:12:47,754 parse script
-2025-01-17 09:12:47,758 process co
-2025-01-17 09:12:47,788 patch co
-2025-01-17 09:12:47,825 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\时间包.py
-2025-01-17 09:12:47,830 obfuscating file 服务包.py
-2025-01-17 09:12:47,831 process inline marker
-2025-01-17 09:12:47,832 parse script
-2025-01-17 09:12:47,834 process co
-2025-01-17 09:12:47,853 patch co
-2025-01-17 09:12:47,866 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\服务包.py
-2025-01-17 09:12:47,898 obfuscating file 构建发布包.py
-2025-01-17 09:12:47,899 process inline marker
-2025-01-17 09:12:47,899 parse script
-2025-01-17 09:12:47,904 process co
-2025-01-17 09:12:47,947 patch co
-2025-01-17 09:12:47,976 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\构建发布包.py
-2025-01-17 09:12:47,977 obfuscating file 测试包.py
-2025-01-17 09:12:47,978 process inline marker
-2025-01-17 09:12:47,978 parse script
-2025-01-17 09:12:47,979 process co
-2025-01-17 09:12:47,982 patch co
-2025-01-17 09:12:47,987 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\测试包.py
-2025-01-17 09:12:47,988 obfuscating file 界面包.py
-2025-01-17 09:12:47,991 process inline marker
-2025-01-17 09:12:47,991 parse script
-2025-01-17 09:12:47,996 process co
-2025-01-17 09:12:48,038 patch co
-2025-01-17 09:12:48,081 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\界面包.py
-2025-01-17 09:12:48,083 obfuscating file 系统包.py
-2025-01-17 09:12:48,084 process inline marker
-2025-01-17 09:12:48,084 parse script
-2025-01-17 09:12:48,088 process co
-2025-01-17 09:12:48,122 patch co
-2025-01-17 09:12:48,150 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\系统包.py
-2025-01-17 09:12:48,152 obfuscating file 网络会话包.py
-2025-01-17 09:12:48,153 process inline marker
-2025-01-17 09:12:48,153 parse script
-2025-01-17 09:12:48,160 process co
-2025-01-17 09:12:48,213 patch co
-2025-01-17 09:12:48,269 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\网络会话包.py
-2025-01-17 09:12:48,270 obfuscating file 网络框架包.py
-2025-01-17 09:12:48,272 process inline marker
-2025-01-17 09:12:48,272 parse script
-2025-01-17 09:12:48,278 process co
-2025-01-17 09:12:48,365 patch co
-2025-01-17 09:12:48,481 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\网络框架包.py
-2025-01-17 09:12:48,503 obfuscating file 路径包.py
-2025-01-17 09:12:48,505 process inline marker
-2025-01-17 09:12:48,505 parse script
-2025-01-17 09:12:48,517 process co
-2025-01-17 09:12:48,584 patch co
-2025-01-17 09:12:48,645 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\路径包.py
-2025-01-17 09:12:48,661 obfuscating file 进度条包.py
-2025-01-17 09:12:48,662 process inline marker
-2025-01-17 09:12:48,662 parse script
-2025-01-17 09:12:48,664 process co
-2025-01-17 09:12:48,675 patch co
-2025-01-17 09:12:48,685 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\进度条包.py
-2025-01-17 09:12:48,687 obfuscating file 进程包.py
-2025-01-17 09:12:48,688 process inline marker
-2025-01-17 09:12:48,688 parse script
-2025-01-17 09:12:48,695 process co
-2025-01-17 09:12:48,747 patch co
-2025-01-17 09:12:48,797 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\进程包.py
-2025-01-17 09:12:48,809 obfuscating file 邮件包.py
-2025-01-17 09:12:48,810 process inline marker
-2025-01-17 09:12:48,810 parse script
-2025-01-17 09:12:48,812 process co
-2025-01-17 09:12:48,820 patch co
-2025-01-17 09:12:48,831 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\邮件包.py
-2025-01-17 09:12:48,833 obfuscating file 优化_24.01.05.py
-2025-01-17 09:12:48,834 process inline marker
-2025-01-17 09:12:48,834 parse script
-2025-01-17 09:12:48,841 process co
-2025-01-17 09:12:48,925 patch co
-2025-01-17 09:12:49,039 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\优化_24.01.05.py
-2025-01-17 09:12:49,042 obfuscating file 优化_24.02.02.py
-2025-01-17 09:12:49,045 process inline marker
-2025-01-17 09:12:49,045 parse script
-2025-01-17 09:12:49,054 process co
-2025-01-17 09:12:49,133 patch co
-2025-01-17 09:12:49,201 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\优化_24.02.02.py
-2025-01-17 09:12:49,203 obfuscating file 会话包_24.03.20.py
-2025-01-17 09:12:49,205 process inline marker
-2025-01-17 09:12:49,205 parse script
-2025-01-17 09:12:49,233 process co
-2025-01-17 09:12:49,275 patch co
-2025-01-17 09:12:49,323 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\会话包_24.03.20.py
-2025-01-17 09:12:49,354 obfuscating file 包管理.py
-2025-01-17 09:12:49,356 process inline marker
-2025-01-17 09:12:49,356 parse script
-2025-01-17 09:12:49,359 process co
-2025-01-17 09:12:49,376 patch co
-2025-01-17 09:12:49,400 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\包管理.py
-2025-01-17 09:12:49,402 obfuscating file 压缩包_24.11.25.py
-2025-01-17 09:12:49,403 process inline marker
-2025-01-17 09:12:49,405 parse script
-2025-01-17 09:12:49,409 process co
-2025-01-17 09:12:49,418 patch co
-2025-01-17 09:12:49,429 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\压缩包_24.11.25.py
-2025-01-17 09:12:49,431 obfuscating file 基本数据包_24.03.20.py
-2025-01-17 09:12:49,433 process inline marker
-2025-01-17 09:12:49,433 parse script
-2025-01-17 09:12:49,441 process co
-2025-01-17 09:12:49,514 patch co
-2025-01-17 09:12:49,621 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\基本数据包_24.03.20.py
-2025-01-17 09:12:49,627 obfuscating file 字_23.11.12.py
-2025-01-17 09:12:49,629 process inline marker
-2025-01-17 09:12:49,629 parse script
-2025-01-17 09:12:49,631 process co
-2025-01-17 09:12:49,636 patch co
-2025-01-17 09:12:49,651 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\字_23.11.12.py
-2025-01-17 09:12:49,675 obfuscating file 定时任务包_24.11.08.py
-2025-01-17 09:12:49,677 process inline marker
-2025-01-17 09:12:49,678 parse script
-2025-01-17 09:12:49,684 process co
-2025-01-17 09:12:49,721 patch co
-2025-01-17 09:12:49,750 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\定时任务包_24.11.08.py
-2025-01-17 09:12:49,752 obfuscating file 常用_24.02.07.py
-2025-01-17 09:12:49,753 process inline marker
-2025-01-17 09:12:49,753 parse script
-2025-01-17 09:12:49,754 process co
-2025-01-17 09:12:49,762 patch co
-2025-01-17 09:12:49,770 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\常用_24.02.07.py
-2025-01-17 09:12:49,771 obfuscating file 常用_24.03.20.py
-2025-01-17 09:12:49,774 process inline marker
-2025-01-17 09:12:49,774 parse script
-2025-01-17 09:12:49,775 process co
-2025-01-17 09:12:49,784 patch co
-2025-01-17 09:12:49,795 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\常用_24.03.20.py
-2025-01-17 09:12:49,797 obfuscating file 数据.py
-2025-01-17 09:12:49,799 process inline marker
-2025-01-17 09:12:49,799 parse script
-2025-01-17 09:12:49,803 process co
-2025-01-17 09:12:49,828 patch co
-2025-01-17 09:12:49,852 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据.py
-2025-01-17 09:12:49,853 obfuscating file 数据库_24.03.20.py
-2025-01-17 09:12:49,855 process inline marker
-2025-01-17 09:12:49,855 parse script
-2025-01-17 09:12:49,861 process co
-2025-01-17 09:12:49,916 patch co
-2025-01-17 09:12:49,967 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据库_24.03.20.py
-2025-01-17 09:12:49,969 obfuscating file 数据模型包_24.11.15.py
-2025-01-17 09:12:49,970 process inline marker
-2025-01-17 09:12:49,970 parse script
-2025-01-17 09:12:49,971 process co
-2025-01-17 09:12:49,974 patch co
-2025-01-17 09:12:49,982 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据模型包_24.11.15.py
-2025-01-17 09:12:49,983 obfuscating file 日志包_24.09.23.py
-2025-01-17 09:12:49,985 process inline marker
-2025-01-17 09:12:49,986 parse script
-2025-01-17 09:12:49,989 process co
-2025-01-17 09:12:50,021 patch co
-2025-01-17 09:12:50,048 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\日志包_24.09.23.py
-2025-01-17 09:12:50,049 obfuscating file 日志包_24.09.24.py
-2025-01-17 09:12:50,050 process inline marker
-2025-01-17 09:12:50,051 parse script
-2025-01-17 09:12:50,057 process co
-2025-01-17 09:12:50,087 patch co
-2025-01-17 09:12:50,114 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\日志包_24.09.24.py
-2025-01-17 09:12:50,116 obfuscating file 时间_24.03.20.py
-2025-01-17 09:12:50,117 process inline marker
-2025-01-17 09:12:50,117 parse script
-2025-01-17 09:12:50,119 process co
-2025-01-17 09:12:50,154 patch co
-2025-01-17 09:12:50,188 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\时间_24.03.20.py
-2025-01-17 09:12:50,189 obfuscating file 机器学习_24.03.20.py
-2025-01-17 09:12:50,192 process inline marker
-2025-01-17 09:12:50,192 parse script
-2025-01-17 09:12:50,201 process co
-2025-01-17 09:12:50,283 patch co
-2025-01-17 09:12:50,377 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\机器学习_24.03.20.py
-2025-01-17 09:12:50,379 obfuscating file 流程_24.03.20.py
-2025-01-17 09:12:50,381 process inline marker
-2025-01-17 09:12:50,381 parse script
-2025-01-17 09:12:50,384 process co
-2025-01-17 09:12:50,412 patch co
-2025-01-17 09:12:50,444 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\流程_24.03.20.py
-2025-01-17 09:12:50,445 obfuscating file 深度学习_24.03.20.py
-2025-01-17 09:12:50,447 process inline marker
-2025-01-17 09:12:50,447 parse script
-2025-01-17 09:12:50,451 process co
-2025-01-17 09:12:50,474 patch co
-2025-01-17 09:12:50,503 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\深度学习_24.03.20.py
-2025-01-17 09:12:50,524 obfuscating file 版本管理.py
-2025-01-17 09:12:50,526 process inline marker
-2025-01-17 09:12:50,526 parse script
-2025-01-17 09:12:50,528 process co
-2025-01-17 09:12:50,551 patch co
-2025-01-17 09:12:50,570 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\版本管理.py
-2025-01-17 09:12:50,572 obfuscating file 系统_24.01.05.py
-2025-01-17 09:12:50,574 process inline marker
-2025-01-17 09:12:50,575 parse script
-2025-01-17 09:12:50,603 process co
-2025-01-17 09:12:50,671 patch co
-2025-01-17 09:12:50,735 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.01.05.py
-2025-01-17 09:12:50,738 obfuscating file 系统_24.03.20.py
-2025-01-17 09:12:50,740 process inline marker
-2025-01-17 09:12:50,740 parse script
-2025-01-17 09:12:50,750 process co
-2025-01-17 09:12:50,813 patch co
-2025-01-17 09:12:50,879 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.03.20.py
-2025-01-17 09:12:50,881 obfuscating file 网络.py
-2025-01-17 09:12:50,882 process inline marker
-2025-01-17 09:12:50,882 parse script
-2025-01-17 09:12:50,883 process co
-2025-01-17 09:12:50,887 patch co
-2025-01-17 09:12:50,896 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络.py
-2025-01-17 09:12:50,897 obfuscating file 网络2.py
-2025-01-17 09:12:50,898 process inline marker
-2025-01-17 09:12:50,898 parse script
-2025-01-17 09:12:50,899 process co
-2025-01-17 09:12:50,901 patch co
-2025-01-17 09:12:50,905 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络2.py
-2025-01-17 09:12:50,908 obfuscating file 网络框架_23.10.01.py
-2025-01-17 09:12:50,910 process inline marker
-2025-01-17 09:12:50,910 parse script
-2025-01-17 09:12:50,917 process co
-2025-01-17 09:12:51,008 patch co
-2025-01-17 09:12:51,109 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_23.10.01.py
-2025-01-17 09:12:51,112 obfuscating file 网络框架_24.03.20.py
-2025-01-17 09:12:51,114 process inline marker
-2025-01-17 09:12:51,114 parse script
-2025-01-17 09:12:51,120 process co
-2025-01-17 09:12:51,219 patch co
-2025-01-17 09:12:51,327 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_24.03.20.py
-2025-01-17 09:12:51,329 obfuscating file 转换_24.03.20.py
-2025-01-17 09:12:51,331 process inline marker
-2025-01-17 09:12:51,331 parse script
-2025-01-17 09:12:51,332 process co
-2025-01-17 09:12:51,335 patch co
-2025-01-17 09:12:51,342 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\转换_24.03.20.py
-2025-01-17 09:12:51,343 obfuscate scripts OK
-2025-01-17 09:12:51,344 call post build plugin <class 'pyarmor.cli.plugin.DarwinUniversalPlugin'>
+2025-01-20 20:46:19,624 Python 3.9.11
+2025-01-20 20:46:19,624 Pyarmor 8.5.12 (pro), 005556, non-profits
+2025-01-20 20:46:19,624 Platform windows.x86_64
+2025-01-20 20:46:19,624 native platform windows.amd64
+2025-01-20 20:46:19,624 home path: C:\Users\beixiao\.pyarmor
+2025-01-20 20:46:19,625 command options: {'recursive': True, 'output': 'c:\\Users\\beixiao\\Project\\appBXGis\\src\\bxgis\\utils', 'no_runtime': False, 'import_prefix': 1, 'inputs': ['c:\\Users\\beixiao\\Project\\bxpy\\src\\bxpy']}
+2025-01-20 20:46:19,625 install plugin: CodesignPlugin
+2025-01-20 20:46:19,625 install plugin: DarwinUniversalPlugin
+2025-01-20 20:46:19,625 search inputs ...
+2025-01-20 20:46:19,625 find package at c:\Users\beixiao\Project\bxpy\src\bxpy
+2025-01-20 20:46:19,627 find 1 top resources
+2025-01-20 20:46:19,634 start to generate runtime files
+2025-01-20 20:46:19,635 target platforms {'windows.amd64'}
+2025-01-20 20:46:19,638 got C:\Users\beixiao\Project\bxpy\.venv\Lib\site-packages\pyarmor\cli\core\pyarmor_runtime.pyd
+2025-01-20 20:46:19,638 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\pyarmor_runtime_005556\pyarmor_runtime.pyd
+2025-01-20 20:46:19,638 patching runtime data at 529440
+2025-01-20 20:46:19,641 patch runtime file OK
+2025-01-20 20:46:19,642 call post runtime plugin <class 'pyarmor.cli.plugin.CodesignPlugin'>
+2025-01-20 20:46:19,661 generate runtime files OK
+2025-01-20 20:46:19,661 start to obfuscate scripts
+2025-01-20 20:46:19,662 process resource "bxpy"
+2025-01-20 20:46:19,662 obfuscating file __init__.py
+2025-01-20 20:46:19,663 process inline marker
+2025-01-20 20:46:19,664 parse script
+2025-01-20 20:46:19,664 process co
+2025-01-20 20:46:19,665 patch co
+2025-01-20 20:46:19,667 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\__init__.py
+2025-01-20 20:46:19,668 obfuscating file 元数据包.py
+2025-01-20 20:46:19,670 process inline marker
+2025-01-20 20:46:19,671 parse script
+2025-01-20 20:46:19,673 process co
+2025-01-20 20:46:19,694 patch co
+2025-01-20 20:46:19,759 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\元数据包.py
+2025-01-20 20:46:19,761 obfuscating file 压缩包.py
+2025-01-20 20:46:19,762 process inline marker
+2025-01-20 20:46:19,762 parse script
+2025-01-20 20:46:19,765 process co
+2025-01-20 20:46:19,776 patch co
+2025-01-20 20:46:19,788 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\压缩包.py
+2025-01-20 20:46:19,789 obfuscating file 基本对象包.py
+2025-01-20 20:46:19,791 process inline marker
+2025-01-20 20:46:19,791 parse script
+2025-01-20 20:46:19,804 process co
+2025-01-20 20:46:19,913 patch co
+2025-01-20 20:46:20,025 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\基本对象包.py
+2025-01-20 20:46:20,027 obfuscating file 定时任务包.py
+2025-01-20 20:46:20,029 process inline marker
+2025-01-20 20:46:20,029 parse script
+2025-01-20 20:46:20,038 process co
+2025-01-20 20:46:20,073 patch co
+2025-01-20 20:46:20,105 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\定时任务包.py
+2025-01-20 20:46:20,107 obfuscating file 数据库包.py
+2025-01-20 20:46:20,109 process inline marker
+2025-01-20 20:46:20,109 parse script
+2025-01-20 20:46:20,115 process co
+2025-01-20 20:46:20,173 patch co
+2025-01-20 20:46:20,230 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\数据库包.py
+2025-01-20 20:46:20,232 obfuscating file 日志包.py
+2025-01-20 20:46:20,234 process inline marker
+2025-01-20 20:46:20,234 parse script
+2025-01-20 20:46:20,240 process co
+2025-01-20 20:46:20,273 patch co
+2025-01-20 20:46:20,300 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\日志包.py
+2025-01-20 20:46:20,301 obfuscating file 时间包.py
+2025-01-20 20:46:20,304 process inline marker
+2025-01-20 20:46:20,304 parse script
+2025-01-20 20:46:20,308 process co
+2025-01-20 20:46:20,334 patch co
+2025-01-20 20:46:20,371 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\时间包.py
+2025-01-20 20:46:20,377 obfuscating file 服务包.py
+2025-01-20 20:46:20,379 process inline marker
+2025-01-20 20:46:20,379 parse script
+2025-01-20 20:46:20,383 process co
+2025-01-20 20:46:20,397 patch co
+2025-01-20 20:46:20,413 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\服务包.py
+2025-01-20 20:46:20,414 obfuscating file 构建发布包.py
+2025-01-20 20:46:20,416 process inline marker
+2025-01-20 20:46:20,416 parse script
+2025-01-20 20:46:20,423 process co
+2025-01-20 20:46:20,467 patch co
+2025-01-20 20:46:20,491 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\构建发布包.py
+2025-01-20 20:46:20,493 obfuscating file 测试包.py
+2025-01-20 20:46:20,494 process inline marker
+2025-01-20 20:46:20,494 parse script
+2025-01-20 20:46:20,495 process co
+2025-01-20 20:46:20,498 patch co
+2025-01-20 20:46:20,505 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\测试包.py
+2025-01-20 20:46:20,506 obfuscating file 界面包.py
+2025-01-20 20:46:20,508 process inline marker
+2025-01-20 20:46:20,508 parse script
+2025-01-20 20:46:20,513 process co
+2025-01-20 20:46:20,554 patch co
+2025-01-20 20:46:20,594 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\界面包.py
+2025-01-20 20:46:20,596 obfuscating file 系统包.py
+2025-01-20 20:46:20,597 process inline marker
+2025-01-20 20:46:20,598 parse script
+2025-01-20 20:46:20,601 process co
+2025-01-20 20:46:20,632 patch co
+2025-01-20 20:46:20,674 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\系统包.py
+2025-01-20 20:46:20,676 obfuscating file 网络会话包.py
+2025-01-20 20:46:20,677 process inline marker
+2025-01-20 20:46:20,677 parse script
+2025-01-20 20:46:20,681 process co
+2025-01-20 20:46:20,742 patch co
+2025-01-20 20:46:20,798 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\网络会话包.py
+2025-01-20 20:46:20,800 obfuscating file 网络框架包.py
+2025-01-20 20:46:20,802 process inline marker
+2025-01-20 20:46:20,802 parse script
+2025-01-20 20:46:20,810 process co
+2025-01-20 20:46:20,890 patch co
+2025-01-20 20:46:20,981 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\网络框架包.py
+2025-01-20 20:46:20,983 obfuscating file 路径包.py
+2025-01-20 20:46:20,984 process inline marker
+2025-01-20 20:46:20,985 parse script
+2025-01-20 20:46:20,994 process co
+2025-01-20 20:46:21,057 patch co
+2025-01-20 20:46:21,119 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\路径包.py
+2025-01-20 20:46:21,122 obfuscating file 进度条包.py
+2025-01-20 20:46:21,124 process inline marker
+2025-01-20 20:46:21,124 parse script
+2025-01-20 20:46:21,125 process co
+2025-01-20 20:46:21,131 patch co
+2025-01-20 20:46:21,143 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\进度条包.py
+2025-01-20 20:46:21,152 obfuscating file 进程包.py
+2025-01-20 20:46:21,155 process inline marker
+2025-01-20 20:46:21,155 parse script
+2025-01-20 20:46:21,162 process co
+2025-01-20 20:46:21,210 patch co
+2025-01-20 20:46:21,258 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\进程包.py
+2025-01-20 20:46:21,260 obfuscating file 邮件包.py
+2025-01-20 20:46:21,262 process inline marker
+2025-01-20 20:46:21,262 parse script
+2025-01-20 20:46:21,264 process co
+2025-01-20 20:46:21,272 patch co
+2025-01-20 20:46:21,279 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\邮件包.py
+2025-01-20 20:46:21,281 obfuscating file 优化_24.01.05.py
+2025-01-20 20:46:21,283 process inline marker
+2025-01-20 20:46:21,283 parse script
+2025-01-20 20:46:21,290 process co
+2025-01-20 20:46:21,356 patch co
+2025-01-20 20:46:21,428 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\优化_24.01.05.py
+2025-01-20 20:46:21,431 obfuscating file 优化_24.02.02.py
+2025-01-20 20:46:21,432 process inline marker
+2025-01-20 20:46:21,433 parse script
+2025-01-20 20:46:21,439 process co
+2025-01-20 20:46:21,510 patch co
+2025-01-20 20:46:21,595 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\优化_24.02.02.py
+2025-01-20 20:46:21,597 obfuscating file 会话包_24.03.20.py
+2025-01-20 20:46:21,598 process inline marker
+2025-01-20 20:46:21,598 parse script
+2025-01-20 20:46:21,624 process co
+2025-01-20 20:46:21,659 patch co
+2025-01-20 20:46:21,711 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\会话包_24.03.20.py
+2025-01-20 20:46:21,713 obfuscating file 包管理.py
+2025-01-20 20:46:21,715 process inline marker
+2025-01-20 20:46:21,715 parse script
+2025-01-20 20:46:21,718 process co
+2025-01-20 20:46:21,735 patch co
+2025-01-20 20:46:21,752 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\包管理.py
+2025-01-20 20:46:21,754 obfuscating file 压缩包_24.11.25.py
+2025-01-20 20:46:21,756 process inline marker
+2025-01-20 20:46:21,756 parse script
+2025-01-20 20:46:21,759 process co
+2025-01-20 20:46:21,775 patch co
+2025-01-20 20:46:21,783 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\压缩包_24.11.25.py
+2025-01-20 20:46:21,785 obfuscating file 基本数据包_24.03.20.py
+2025-01-20 20:46:21,788 process inline marker
+2025-01-20 20:46:21,788 parse script
+2025-01-20 20:46:21,795 process co
+2025-01-20 20:46:21,876 patch co
+2025-01-20 20:46:21,954 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\基本数据包_24.03.20.py
+2025-01-20 20:46:21,956 obfuscating file 字_23.11.12.py
+2025-01-20 20:46:21,957 process inline marker
+2025-01-20 20:46:21,957 parse script
+2025-01-20 20:46:21,958 process co
+2025-01-20 20:46:21,962 patch co
+2025-01-20 20:46:21,975 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\字_23.11.12.py
+2025-01-20 20:46:21,977 obfuscating file 定时任务包_24.11.08.py
+2025-01-20 20:46:21,978 process inline marker
+2025-01-20 20:46:21,979 parse script
+2025-01-20 20:46:21,988 process co
+2025-01-20 20:46:22,018 patch co
+2025-01-20 20:46:22,045 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\定时任务包_24.11.08.py
+2025-01-20 20:46:22,047 obfuscating file 常用_24.02.07.py
+2025-01-20 20:46:22,048 process inline marker
+2025-01-20 20:46:22,048 parse script
+2025-01-20 20:46:22,049 process co
+2025-01-20 20:46:22,054 patch co
+2025-01-20 20:46:22,061 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\常用_24.02.07.py
+2025-01-20 20:46:22,063 obfuscating file 常用_24.03.20.py
+2025-01-20 20:46:22,064 process inline marker
+2025-01-20 20:46:22,064 parse script
+2025-01-20 20:46:22,065 process co
+2025-01-20 20:46:22,071 patch co
+2025-01-20 20:46:22,081 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\常用_24.03.20.py
+2025-01-20 20:46:22,086 obfuscating file 数据.py
+2025-01-20 20:46:22,089 process inline marker
+2025-01-20 20:46:22,089 parse script
+2025-01-20 20:46:22,092 process co
+2025-01-20 20:46:22,110 patch co
+2025-01-20 20:46:22,138 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据.py
+2025-01-20 20:46:22,140 obfuscating file 数据库_24.03.20.py
+2025-01-20 20:46:22,141 process inline marker
+2025-01-20 20:46:22,142 parse script
+2025-01-20 20:46:22,146 process co
+2025-01-20 20:46:22,195 patch co
+2025-01-20 20:46:22,245 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据库_24.03.20.py
+2025-01-20 20:46:22,247 obfuscating file 数据模型包_24.11.15.py
+2025-01-20 20:46:22,249 process inline marker
+2025-01-20 20:46:22,249 parse script
+2025-01-20 20:46:22,249 process co
+2025-01-20 20:46:22,252 patch co
+2025-01-20 20:46:22,262 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据模型包_24.11.15.py
+2025-01-20 20:46:22,263 obfuscating file 日志包_24.09.23.py
+2025-01-20 20:46:22,265 process inline marker
+2025-01-20 20:46:22,265 parse script
+2025-01-20 20:46:22,271 process co
+2025-01-20 20:46:22,298 patch co
+2025-01-20 20:46:22,326 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\日志包_24.09.23.py
+2025-01-20 20:46:22,328 obfuscating file 日志包_24.09.24.py
+2025-01-20 20:46:22,329 process inline marker
+2025-01-20 20:46:22,329 parse script
+2025-01-20 20:46:22,334 process co
+2025-01-20 20:46:22,361 patch co
+2025-01-20 20:46:22,394 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\日志包_24.09.24.py
+2025-01-20 20:46:22,395 obfuscating file 时间_24.03.20.py
+2025-01-20 20:46:22,397 process inline marker
+2025-01-20 20:46:22,397 parse script
+2025-01-20 20:46:22,399 process co
+2025-01-20 20:46:22,435 patch co
+2025-01-20 20:46:22,467 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\时间_24.03.20.py
+2025-01-20 20:46:22,469 obfuscating file 机器学习_24.03.20.py
+2025-01-20 20:46:22,472 process inline marker
+2025-01-20 20:46:22,472 parse script
+2025-01-20 20:46:22,480 process co
+2025-01-20 20:46:22,558 patch co
+2025-01-20 20:46:22,645 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\机器学习_24.03.20.py
+2025-01-20 20:46:22,647 obfuscating file 流程_24.03.20.py
+2025-01-20 20:46:22,649 process inline marker
+2025-01-20 20:46:22,649 parse script
+2025-01-20 20:46:22,650 process co
+2025-01-20 20:46:22,677 patch co
+2025-01-20 20:46:22,709 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\流程_24.03.20.py
+2025-01-20 20:46:22,711 obfuscating file 深度学习_24.03.20.py
+2025-01-20 20:46:22,712 process inline marker
+2025-01-20 20:46:22,712 parse script
+2025-01-20 20:46:22,716 process co
+2025-01-20 20:46:22,748 patch co
+2025-01-20 20:46:22,790 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\深度学习_24.03.20.py
+2025-01-20 20:46:22,792 obfuscating file 版本管理.py
+2025-01-20 20:46:22,793 process inline marker
+2025-01-20 20:46:22,793 parse script
+2025-01-20 20:46:22,795 process co
+2025-01-20 20:46:22,820 patch co
+2025-01-20 20:46:22,843 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\版本管理.py
+2025-01-20 20:46:22,844 obfuscating file 系统_24.01.05.py
+2025-01-20 20:46:22,846 process inline marker
+2025-01-20 20:46:22,847 parse script
+2025-01-20 20:46:22,879 process co
+2025-01-20 20:46:22,951 patch co
+2025-01-20 20:46:23,029 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.01.05.py
+2025-01-20 20:46:23,031 obfuscating file 系统_24.03.20.py
+2025-01-20 20:46:23,033 process inline marker
+2025-01-20 20:46:23,033 parse script
+2025-01-20 20:46:23,043 process co
+2025-01-20 20:46:23,108 patch co
+2025-01-20 20:46:23,164 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.03.20.py
+2025-01-20 20:46:23,166 obfuscating file 网络.py
+2025-01-20 20:46:23,167 process inline marker
+2025-01-20 20:46:23,167 parse script
+2025-01-20 20:46:23,168 process co
+2025-01-20 20:46:23,173 patch co
+2025-01-20 20:46:23,179 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络.py
+2025-01-20 20:46:23,180 obfuscating file 网络2.py
+2025-01-20 20:46:23,181 process inline marker
+2025-01-20 20:46:23,182 parse script
+2025-01-20 20:46:23,182 process co
+2025-01-20 20:46:23,184 patch co
+2025-01-20 20:46:23,188 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络2.py
+2025-01-20 20:46:23,190 obfuscating file 网络框架_23.10.01.py
+2025-01-20 20:46:23,191 process inline marker
+2025-01-20 20:46:23,191 parse script
+2025-01-20 20:46:23,197 process co
+2025-01-20 20:46:23,291 patch co
+2025-01-20 20:46:23,388 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_23.10.01.py
+2025-01-20 20:46:23,390 obfuscating file 网络框架_24.03.20.py
+2025-01-20 20:46:23,392 process inline marker
+2025-01-20 20:46:23,393 parse script
+2025-01-20 20:46:23,398 process co
+2025-01-20 20:46:23,515 patch co
+2025-01-20 20:46:23,639 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_24.03.20.py
+2025-01-20 20:46:23,641 obfuscating file 转换_24.03.20.py
+2025-01-20 20:46:23,643 process inline marker
+2025-01-20 20:46:23,643 parse script
+2025-01-20 20:46:23,644 process co
+2025-01-20 20:46:23,650 patch co
+2025-01-20 20:46:23,658 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\转换_24.03.20.py
+2025-01-20 20:46:23,659 obfuscate scripts OK
+2025-01-20 20:46:23,660 call post build plugin <class 'pyarmor.cli.plugin.DarwinUniversalPlugin'>
 s\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\日志包_24.09.24.py
-2025-01-17 09:12:50,116 obfuscating file 时间_24.03.20.py
-2025-01-17 09:12:50,117 process inline marker
-2025-01-17 09:12:50,117 parse script
-2025-01-17 09:12:50,119 process co
-2025-01-17 09:12:50,154 patch co
-2025-01-17 09:12:50,188 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\时间_24.03.20.py
-2025-01-17 09:12:50,189 obfuscating file 机器学习_24.03.20.py
-2025-01-17 09:12:50,192 process inline marker
-2025-01-17 09:12:50,192 parse script
-2025-01-17 09:12:50,201 process co
-2025-01-17 09:12:50,283 patch co
-2025-01-17 09:12:50,377 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\机器学习_24.03.20.py
-2025-01-17 09:12:50,379 obfuscating file 流程_24.03.20.py
-2025-01-17 09:12:50,381 process inline marker
-2025-01-17 09:12:50,381 parse script
-2025-01-17 09:12:50,384 process co
-2025-01-17 09:12:50,412 patch co
-2025-01-17 09:12:50,444 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\流程_24.03.20.py
-2025-01-17 09:12:50,445 obfuscating file 深度学习_24.03.20.py
-2025-01-17 09:12:50,447 process inline marker
-2025-01-17 09:12:50,447 parse script
-2025-01-17 09:12:50,451 process co
-2025-01-17 09:12:50,474 patch co
-2025-01-17 09:12:50,503 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\深度学习_24.03.20.py
-2025-01-17 09:12:50,524 obfuscating file 版本管理.py
-2025-01-17 09:12:50,526 process inline marker
-2025-01-17 09:12:50,526 parse script
-2025-01-17 09:12:50,528 process co
-2025-01-17 09:12:50,551 patch co
-2025-01-17 09:12:50,570 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\版本管理.py
-2025-01-17 09:12:50,572 obfuscating file 系统_24.01.05.py
-2025-01-17 09:12:50,574 process inline marker
-2025-01-17 09:12:50,575 parse script
-2025-01-17 09:12:50,603 process co
-2025-01-17 09:12:50,671 patch co
-2025-01-17 09:12:50,735 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.01.05.py
-2025-01-17 09:12:50,738 obfuscating file 系统_24.03.20.py
-2025-01-17 09:12:50,740 process inline marker
-2025-01-17 09:12:50,740 parse script
-2025-01-17 09:12:50,750 process co
-2025-01-17 09:12:50,813 patch co
-2025-01-17 09:12:50,879 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.03.20.py
-2025-01-17 09:12:50,881 obfuscating file 网络.py
-2025-01-17 09:12:50,882 process inline marker
-2025-01-17 09:12:50,882 parse script
-2025-01-17 09:12:50,883 process co
-2025-01-17 09:12:50,887 patch co
-2025-01-17 09:12:50,896 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络.py
-2025-01-17 09:12:50,897 obfuscating file 网络2.py
-2025-01-17 09:12:50,898 process inline marker
-2025-01-17 09:12:50,898 parse script
-2025-01-17 09:12:50,899 process co
-2025-01-17 09:12:50,901 patch co
-2025-01-17 09:12:50,905 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络2.py
-2025-01-17 09:12:50,908 obfuscating file 网络框架_23.10.01.py
-2025-01-17 09:12:50,910 process inline marker
-2025-01-17 09:12:50,910 parse script
-2025-01-17 09:12:50,917 process co
-2025-01-17 09:12:51,008 patch co
-2025-01-17 09:12:51,109 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_23.10.01.py
-2025-01-17 09:12:51,112 obfuscating file 网络框架_24.03.20.py
-2025-01-17 09:12:51,114 process inline marker
-2025-01-17 09:12:51,114 parse script
-2025-01-17 09:12:51,120 process co
-2025-01-17 09:12:51,219 patch co
-2025-01-17 09:12:51,327 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_24.03.20.py
-2025-01-17 09:12:51,329 obfuscating file 转换_24.03.20.py
-2025-01-17 09:12:51,331 process inline marker
-2025-01-17 09:12:51,331 parse script
-2025-01-17 09:12:51,332 process co
-2025-01-17 09:12:51,335 patch co
-2025-01-17 09:12:51,342 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\转换_24.03.20.py
-2025-01-17 09:12:51,343 obfuscate scripts OK
-2025-01-17 09:12:51,344 call post build plugin <class 'pyarmor.cli.plugin.DarwinUniversalPlugin'>
+2025-01-20 20:46:22,395 obfuscating file 时间_24.03.20.py
+2025-01-20 20:46:22,397 process inline marker
+2025-01-20 20:46:22,397 parse script
+2025-01-20 20:46:22,399 process co
+2025-01-20 20:46:22,435 patch co
+2025-01-20 20:46:22,467 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\时间_24.03.20.py
+2025-01-20 20:46:22,469 obfuscating file 机器学习_24.03.20.py
+2025-01-20 20:46:22,472 process inline marker
+2025-01-20 20:46:22,472 parse script
+2025-01-20 20:46:22,480 process co
+2025-01-20 20:46:22,558 patch co
+2025-01-20 20:46:22,645 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\机器学习_24.03.20.py
+2025-01-20 20:46:22,647 obfuscating file 流程_24.03.20.py
+2025-01-20 20:46:22,649 process inline marker
+2025-01-20 20:46:22,649 parse script
+2025-01-20 20:46:22,650 process co
+2025-01-20 20:46:22,677 patch co
+2025-01-20 20:46:22,709 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\流程_24.03.20.py
+2025-01-20 20:46:22,711 obfuscating file 深度学习_24.03.20.py
+2025-01-20 20:46:22,712 process inline marker
+2025-01-20 20:46:22,712 parse script
+2025-01-20 20:46:22,716 process co
+2025-01-20 20:46:22,748 patch co
+2025-01-20 20:46:22,790 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\深度学习_24.03.20.py
+2025-01-20 20:46:22,792 obfuscating file 版本管理.py
+2025-01-20 20:46:22,793 process inline marker
+2025-01-20 20:46:22,793 parse script
+2025-01-20 20:46:22,795 process co
+2025-01-20 20:46:22,820 patch co
+2025-01-20 20:46:22,843 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\版本管理.py
+2025-01-20 20:46:22,844 obfuscating file 系统_24.01.05.py
+2025-01-20 20:46:22,846 process inline marker
+2025-01-20 20:46:22,847 parse script
+2025-01-20 20:46:22,879 process co
+2025-01-20 20:46:22,951 patch co
+2025-01-20 20:46:23,029 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.01.05.py
+2025-01-20 20:46:23,031 obfuscating file 系统_24.03.20.py
+2025-01-20 20:46:23,033 process inline marker
+2025-01-20 20:46:23,033 parse script
+2025-01-20 20:46:23,043 process co
+2025-01-20 20:46:23,108 patch co
+2025-01-20 20:46:23,164 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.03.20.py
+2025-01-20 20:46:23,166 obfuscating file 网络.py
+2025-01-20 20:46:23,167 process inline marker
+2025-01-20 20:46:23,167 parse script
+2025-01-20 20:46:23,168 process co
+2025-01-20 20:46:23,173 patch co
+2025-01-20 20:46:23,179 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络.py
+2025-01-20 20:46:23,180 obfuscating file 网络2.py
+2025-01-20 20:46:23,181 process inline marker
+2025-01-20 20:46:23,182 parse script
+2025-01-20 20:46:23,182 process co
+2025-01-20 20:46:23,184 patch co
+2025-01-20 20:46:23,188 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络2.py
+2025-01-20 20:46:23,190 obfuscating file 网络框架_23.10.01.py
+2025-01-20 20:46:23,191 process inline marker
+2025-01-20 20:46:23,191 parse script
+2025-01-20 20:46:23,197 process co
+2025-01-20 20:46:23,291 patch co
+2025-01-20 20:46:23,388 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_23.10.01.py
+2025-01-20 20:46:23,390 obfuscating file 网络框架_24.03.20.py
+2025-01-20 20:46:23,392 process inline marker
+2025-01-20 20:46:23,393 parse script
+2025-01-20 20:46:23,398 process co
+2025-01-20 20:46:23,515 patch co
+2025-01-20 20:46:23,639 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_24.03.20.py
+2025-01-20 20:46:23,641 obfuscating file 转换_24.03.20.py
+2025-01-20 20:46:23,643 process inline marker
+2025-01-20 20:46:23,643 parse script
+2025-01-20 20:46:23,644 process co
+2025-01-20 20:46:23,650 patch co
+2025-01-20 20:46:23,658 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\转换_24.03.20.py
+2025-01-20 20:46:23,659 obfuscate scripts OK
+2025-01-20 20:46:23,660 call post build plugin <class 'pyarmor.cli.plugin.DarwinUniversalPlugin'>
 t\appBXGis\src\bxgis\utils\bxpy\#历史版本\字_23.11.12.py
-2025-01-17 09:12:49,675 obfuscating file 定时任务包_24.11.08.py
-2025-01-17 09:12:49,677 process inline marker
-2025-01-17 09:12:49,678 parse script
-2025-01-17 09:12:49,684 process co
-2025-01-17 09:12:49,721 patch co
-2025-01-17 09:12:49,750 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\定时任务包_24.11.08.py
-2025-01-17 09:12:49,752 obfuscating file 常用_24.02.07.py
-2025-01-17 09:12:49,753 process inline marker
-2025-01-17 09:12:49,753 parse script
-2025-01-17 09:12:49,754 process co
-2025-01-17 09:12:49,762 patch co
-2025-01-17 09:12:49,770 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\常用_24.02.07.py
-2025-01-17 09:12:49,771 obfuscating file 常用_24.03.20.py
-2025-01-17 09:12:49,774 process inline marker
-2025-01-17 09:12:49,774 parse script
-2025-01-17 09:12:49,775 process co
-2025-01-17 09:12:49,784 patch co
-2025-01-17 09:12:49,795 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\常用_24.03.20.py
-2025-01-17 09:12:49,797 obfuscating file 数据.py
-2025-01-17 09:12:49,799 process inline marker
-2025-01-17 09:12:49,799 parse script
-2025-01-17 09:12:49,803 process co
-2025-01-17 09:12:49,828 patch co
-2025-01-17 09:12:49,852 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据.py
-2025-01-17 09:12:49,853 obfuscating file 数据库_24.03.20.py
-2025-01-17 09:12:49,855 process inline marker
-2025-01-17 09:12:49,855 parse script
-2025-01-17 09:12:49,861 process co
-2025-01-17 09:12:49,916 patch co
-2025-01-17 09:12:49,967 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据库_24.03.20.py
-2025-01-17 09:12:49,969 obfuscating file 数据模型包_24.11.15.py
-2025-01-17 09:12:49,970 process inline marker
-2025-01-17 09:12:49,970 parse script
-2025-01-17 09:12:49,971 process co
-2025-01-17 09:12:49,974 patch co
-2025-01-17 09:12:49,982 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据模型包_24.11.15.py
-2025-01-17 09:12:49,983 obfuscating file 日志包_24.09.23.py
-2025-01-17 09:12:49,985 process inline marker
-2025-01-17 09:12:49,986 parse script
-2025-01-17 09:12:49,989 process co
-2025-01-17 09:12:50,021 patch co
-2025-01-17 09:12:50,048 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\日志包_24.09.23.py
-2025-01-17 09:12:50,049 obfuscating file 日志包_24.09.24.py
-2025-01-17 09:12:50,050 process inline marker
-2025-01-17 09:12:50,051 parse script
-2025-01-17 09:12:50,057 process co
-2025-01-17 09:12:50,087 patch co
-2025-01-17 09:12:50,114 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\日志包_24.09.24.py
-2025-01-17 09:12:50,116 obfuscating file 时间_24.03.20.py
-2025-01-17 09:12:50,117 process inline marker
-2025-01-17 09:12:50,117 parse script
-2025-01-17 09:12:50,119 process co
-2025-01-17 09:12:50,154 patch co
-2025-01-17 09:12:50,188 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\时间_24.03.20.py
-2025-01-17 09:12:50,189 obfuscating file 机器学习_24.03.20.py
-2025-01-17 09:12:50,192 process inline marker
-2025-01-17 09:12:50,192 parse script
-2025-01-17 09:12:50,201 process co
-2025-01-17 09:12:50,283 patch co
-2025-01-17 09:12:50,377 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\机器学习_24.03.20.py
-2025-01-17 09:12:50,379 obfuscating file 流程_24.03.20.py
-2025-01-17 09:12:50,381 process inline marker
-2025-01-17 09:12:50,381 parse script
-2025-01-17 09:12:50,384 process co
-2025-01-17 09:12:50,412 patch co
-2025-01-17 09:12:50,444 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\流程_24.03.20.py
-2025-01-17 09:12:50,445 obfuscating file 深度学习_24.03.20.py
-2025-01-17 09:12:50,447 process inline marker
-2025-01-17 09:12:50,447 parse script
-2025-01-17 09:12:50,451 process co
-2025-01-17 09:12:50,474 patch co
-2025-01-17 09:12:50,503 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\深度学习_24.03.20.py
-2025-01-17 09:12:50,524 obfuscating file 版本管理.py
-2025-01-17 09:12:50,526 process inline marker
-2025-01-17 09:12:50,526 parse script
-2025-01-17 09:12:50,528 process co
-2025-01-17 09:12:50,551 patch co
-2025-01-17 09:12:50,570 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\版本管理.py
-2025-01-17 09:12:50,572 obfuscating file 系统_24.01.05.py
-2025-01-17 09:12:50,574 process inline marker
-2025-01-17 09:12:50,575 parse script
-2025-01-17 09:12:50,603 process co
-2025-01-17 09:12:50,671 patch co
-2025-01-17 09:12:50,735 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.01.05.py
-2025-01-17 09:12:50,738 obfuscating file 系统_24.03.20.py
-2025-01-17 09:12:50,740 process inline marker
-2025-01-17 09:12:50,740 parse script
-2025-01-17 09:12:50,750 process co
-2025-01-17 09:12:50,813 patch co
-2025-01-17 09:12:50,879 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.03.20.py
-2025-01-17 09:12:50,881 obfuscating file 网络.py
-2025-01-17 09:12:50,882 process inline marker
-2025-01-17 09:12:50,882 parse script
-2025-01-17 09:12:50,883 process co
-2025-01-17 09:12:50,887 patch co
-2025-01-17 09:12:50,896 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络.py
-2025-01-17 09:12:50,897 obfuscating file 网络2.py
-2025-01-17 09:12:50,898 process inline marker
-2025-01-17 09:12:50,898 parse script
-2025-01-17 09:12:50,899 process co
-2025-01-17 09:12:50,901 patch co
-2025-01-17 09:12:50,905 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络2.py
-2025-01-17 09:12:50,908 obfuscating file 网络框架_23.10.01.py
-2025-01-17 09:12:50,910 process inline marker
-2025-01-17 09:12:50,910 parse script
-2025-01-17 09:12:50,917 process co
-2025-01-17 09:12:51,008 patch co
-2025-01-17 09:12:51,109 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_23.10.01.py
-2025-01-17 09:12:51,112 obfuscating file 网络框架_24.03.20.py
-2025-01-17 09:12:51,114 process inline marker
-2025-01-17 09:12:51,114 parse script
-2025-01-17 09:12:51,120 process co
-2025-01-17 09:12:51,219 patch co
-2025-01-17 09:12:51,327 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_24.03.20.py
-2025-01-17 09:12:51,329 obfuscating file 转换_24.03.20.py
-2025-01-17 09:12:51,331 process inline marker
-2025-01-17 09:12:51,331 parse script
-2025-01-17 09:12:51,332 process co
-2025-01-17 09:12:51,335 patch co
-2025-01-17 09:12:51,342 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\转换_24.03.20.py
-2025-01-17 09:12:51,343 obfuscate scripts OK
-2025-01-17 09:12:51,344 call post build plugin <class 'pyarmor.cli.plugin.DarwinUniversalPlugin'>
+2025-01-20 20:46:21,977 obfuscating file 定时任务包_24.11.08.py
+2025-01-20 20:46:21,978 process inline marker
+2025-01-20 20:46:21,979 parse script
+2025-01-20 20:46:21,988 process co
+2025-01-20 20:46:22,018 patch co
+2025-01-20 20:46:22,045 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\定时任务包_24.11.08.py
+2025-01-20 20:46:22,047 obfuscating file 常用_24.02.07.py
+2025-01-20 20:46:22,048 process inline marker
+2025-01-20 20:46:22,048 parse script
+2025-01-20 20:46:22,049 process co
+2025-01-20 20:46:22,054 patch co
+2025-01-20 20:46:22,061 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\常用_24.02.07.py
+2025-01-20 20:46:22,063 obfuscating file 常用_24.03.20.py
+2025-01-20 20:46:22,064 process inline marker
+2025-01-20 20:46:22,064 parse script
+2025-01-20 20:46:22,065 process co
+2025-01-20 20:46:22,071 patch co
+2025-01-20 20:46:22,081 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\常用_24.03.20.py
+2025-01-20 20:46:22,086 obfuscating file 数据.py
+2025-01-20 20:46:22,089 process inline marker
+2025-01-20 20:46:22,089 parse script
+2025-01-20 20:46:22,092 process co
+2025-01-20 20:46:22,110 patch co
+2025-01-20 20:46:22,138 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据.py
+2025-01-20 20:46:22,140 obfuscating file 数据库_24.03.20.py
+2025-01-20 20:46:22,141 process inline marker
+2025-01-20 20:46:22,142 parse script
+2025-01-20 20:46:22,146 process co
+2025-01-20 20:46:22,195 patch co
+2025-01-20 20:46:22,245 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据库_24.03.20.py
+2025-01-20 20:46:22,247 obfuscating file 数据模型包_24.11.15.py
+2025-01-20 20:46:22,249 process inline marker
+2025-01-20 20:46:22,249 parse script
+2025-01-20 20:46:22,249 process co
+2025-01-20 20:46:22,252 patch co
+2025-01-20 20:46:22,262 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\数据模型包_24.11.15.py
+2025-01-20 20:46:22,263 obfuscating file 日志包_24.09.23.py
+2025-01-20 20:46:22,265 process inline marker
+2025-01-20 20:46:22,265 parse script
+2025-01-20 20:46:22,271 process co
+2025-01-20 20:46:22,298 patch co
+2025-01-20 20:46:22,326 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\日志包_24.09.23.py
+2025-01-20 20:46:22,328 obfuscating file 日志包_24.09.24.py
+2025-01-20 20:46:22,329 process inline marker
+2025-01-20 20:46:22,329 parse script
+2025-01-20 20:46:22,334 process co
+2025-01-20 20:46:22,361 patch co
+2025-01-20 20:46:22,394 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\日志包_24.09.24.py
+2025-01-20 20:46:22,395 obfuscating file 时间_24.03.20.py
+2025-01-20 20:46:22,397 process inline marker
+2025-01-20 20:46:22,397 parse script
+2025-01-20 20:46:22,399 process co
+2025-01-20 20:46:22,435 patch co
+2025-01-20 20:46:22,467 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\时间_24.03.20.py
+2025-01-20 20:46:22,469 obfuscating file 机器学习_24.03.20.py
+2025-01-20 20:46:22,472 process inline marker
+2025-01-20 20:46:22,472 parse script
+2025-01-20 20:46:22,480 process co
+2025-01-20 20:46:22,558 patch co
+2025-01-20 20:46:22,645 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\机器学习_24.03.20.py
+2025-01-20 20:46:22,647 obfuscating file 流程_24.03.20.py
+2025-01-20 20:46:22,649 process inline marker
+2025-01-20 20:46:22,649 parse script
+2025-01-20 20:46:22,650 process co
+2025-01-20 20:46:22,677 patch co
+2025-01-20 20:46:22,709 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\流程_24.03.20.py
+2025-01-20 20:46:22,711 obfuscating file 深度学习_24.03.20.py
+2025-01-20 20:46:22,712 process inline marker
+2025-01-20 20:46:22,712 parse script
+2025-01-20 20:46:22,716 process co
+2025-01-20 20:46:22,748 patch co
+2025-01-20 20:46:22,790 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\深度学习_24.03.20.py
+2025-01-20 20:46:22,792 obfuscating file 版本管理.py
+2025-01-20 20:46:22,793 process inline marker
+2025-01-20 20:46:22,793 parse script
+2025-01-20 20:46:22,795 process co
+2025-01-20 20:46:22,820 patch co
+2025-01-20 20:46:22,843 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\版本管理.py
+2025-01-20 20:46:22,844 obfuscating file 系统_24.01.05.py
+2025-01-20 20:46:22,846 process inline marker
+2025-01-20 20:46:22,847 parse script
+2025-01-20 20:46:22,879 process co
+2025-01-20 20:46:22,951 patch co
+2025-01-20 20:46:23,029 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.01.05.py
+2025-01-20 20:46:23,031 obfuscating file 系统_24.03.20.py
+2025-01-20 20:46:23,033 process inline marker
+2025-01-20 20:46:23,033 parse script
+2025-01-20 20:46:23,043 process co
+2025-01-20 20:46:23,108 patch co
+2025-01-20 20:46:23,164 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\系统_24.03.20.py
+2025-01-20 20:46:23,166 obfuscating file 网络.py
+2025-01-20 20:46:23,167 process inline marker
+2025-01-20 20:46:23,167 parse script
+2025-01-20 20:46:23,168 process co
+2025-01-20 20:46:23,173 patch co
+2025-01-20 20:46:23,179 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络.py
+2025-01-20 20:46:23,180 obfuscating file 网络2.py
+2025-01-20 20:46:23,181 process inline marker
+2025-01-20 20:46:23,182 parse script
+2025-01-20 20:46:23,182 process co
+2025-01-20 20:46:23,184 patch co
+2025-01-20 20:46:23,188 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络2.py
+2025-01-20 20:46:23,190 obfuscating file 网络框架_23.10.01.py
+2025-01-20 20:46:23,191 process inline marker
+2025-01-20 20:46:23,191 parse script
+2025-01-20 20:46:23,197 process co
+2025-01-20 20:46:23,291 patch co
+2025-01-20 20:46:23,388 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_23.10.01.py
+2025-01-20 20:46:23,390 obfuscating file 网络框架_24.03.20.py
+2025-01-20 20:46:23,392 process inline marker
+2025-01-20 20:46:23,393 parse script
+2025-01-20 20:46:23,398 process co
+2025-01-20 20:46:23,515 patch co
+2025-01-20 20:46:23,639 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\网络框架_24.03.20.py
+2025-01-20 20:46:23,641 obfuscating file 转换_24.03.20.py
+2025-01-20 20:46:23,643 process inline marker
+2025-01-20 20:46:23,643 parse script
+2025-01-20 20:46:23,644 process co
+2025-01-20 20:46:23,650 patch co
+2025-01-20 20:46:23,658 write c:\Users\beixiao\Project\appBXGis\src\bxgis\utils\bxpy\#历史版本\转换_24.03.20.py
+2025-01-20 20:46:23,659 obfuscate scripts OK
+2025-01-20 20:46:23,660 call post build plugin <class 'pyarmor.cli.plugin.DarwinUniversalPlugin'>

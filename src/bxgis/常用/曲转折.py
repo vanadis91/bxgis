@@ -58,7 +58,8 @@ if __name__ == "__main__":
 
     # 工作空间 = r"C:\Users\common\Project\D德清洛舍杨树湾单元控规\03过程文件\24.11.27报批稿\D德清洛舍杨树湾单元控规_数据库.gdb"
     # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
-    工作空间 = r"C:\Users\beixiao\Desktop\杭州市钱塘区临江单元入库数据.gdb"
+    # 工作空间 = r"C:\Users\beixiao\Desktop\杭州市钱塘区临江单元入库数据.gdb"
+    工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
         曲转折(["XG/XG_GHDK", "XG/XG_GHFW", "XG/XG_GYPQ", "XG/XG_JQJF", "XG/XG_JSBJ", "XG/XG_KZX", "XG/XG_PTSS", "XG/XG_TZD", "XG/XG_TZM", "XG/XG_TZX", "XG/XG_YTFQ"])
         # 曲转折(["JX_工业片区范围线"])
