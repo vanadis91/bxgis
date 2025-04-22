@@ -244,7 +244,7 @@ class Toolbox(object):
         self.alias = "BXGIS工具箱"  # 定义别名
 
         # List of tool classes associated with this toolbox
-        self.tools = [ru_ku_dan_yuan, ru_ku_tu_ze, ru_ku_ju_diao_ru_ku, ru_ku_gong_ye_pian_qu, ru_ku_kong_zhi_xian, ru_ku_cun_zhuang_jian_she_bian_jie, ru_ku_yong_tu_fen_qu, ru_ku_jie_qu_jie_fang_fen_cun, ru_ku_gui_hua_di_kuai, ru_ku_she_shi, ru_ku_dan_yuan_de_qing, ru_ku_kong_zhi_xian_de_qing_di_kuai_hou_tui_xian, ru_ku_kong_zhi_xian_de_qing_te_shu_fan_wei_xian, ru_ku_kong_zhi_xian_de_qing_dao_lu_zhong_xian, ru_ku_kong_zhi_xian_de_qing_dao_lu_bian_xian, ru_ku_gui_hua_di_kuai_de_qing, ru_ku_gui_hua_di_kuai_de_qing_shui_yu, ru_ku_gui_hua_di_kuai_de_qing_dao_lu, ru_ku_she_shi_de_qing, yong_tu_fen_qu_bian_hao_sheng_cheng, yong_tu_fen_qu_gui_hua_tu_sheng_cheng, yong_di_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_fen_qu, qu_chu_zi_duan_zhong_suo_you_kong_ge, qu_yu_geng_xin, qu_yu_jian_cha, qu_yu_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_qu_yu, dao_ru_shu_xing_biao, shu_xing_dui_bi, zuo_biao_xi_tong_yi, zi_duan_ming_cheng_xiao_xie_gai_da_xie, dao_ru_cong_CAD, dao_chu_dao_CAD, shu_xing_yu_xiu_fu, yao_su_chuang_jian_tong_guo_geng_xin_gen_ju_mian, shu_ju_jian_cha, qu_zhuan_zhe, qing_li_li_shi_yao_su, tong_ji, yao_su_lian_he, yong_di_die_he_tu_sheng_cheng, yong_di_ji_qi_tu_sheng_cheng, yong_di_geng_xin, yong_di_xian_zhuang_tu_sheng_cheng, yong_di_gui_hua_tu_sheng_cheng, yong_di_chuang_jian_sheng_cheng_yong_di_tiao_zheng_tu, kai_fa_bian_jie_nei_gong_ye_yong_di, yong_di_ji_suan_tiao_zheng_lei_xing, jian_cha_di_kuai_bian_hao_he_tu_di_ma_shi_fou_you_wen_ti, di_lei_bian_hao_ming_cheng_bie_cheng_pi_pei_jian_cha, ji_ben_nong_tian_shi_fou_bei_zhan, kai_fa_bian_jie_wai_cheng_zhen_jian_she_yong_di_jian_cha, yong_di_he_gui_xing_jian_cha, chu_bu_ji_shu_zhuan_huan_san_diao, chu_bu_ji_shu_zhuan_huan_er_diao, zi_duan_chu_li_bing_sheng_cheng_fen_xiang_san_diao, zi_duan_chu_li_bing_sheng_cheng_fen_xiang_er_diao, yong_di_gong_ju_ji_jiang_jiu_ban_xin_di_lei_zhuan_wei_xin_ban_xin_di_lei, yong_di_gong_ju_ji_geng_xin_dui_xiang_shu_xing, yong_di_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_yong_di, yong_di_chuang_jian_tong_guo_gen_ju_di_lei_ming_cheng_sheng_cheng_bian_hao, yong_di_gong_ju_ji_yong_di_shu_ju_tong_ji, tong_ji_kai_fa_bian_jie_wai_ji_qi_203_yong_di, yong_di_chuang_jian_tong_guo_ji_suan_liang_ke_yong_di, ji_suan_wen_ben_lian_jie_yong_shu_ju, she_shi_geng_xin, she_shi_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_she_shi, he_dao_bian_xian_sheng_cheng, dao_lu_bian_xian_sheng_cheng, dao_lu_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_kong_zhi_xian, dao_lu_hong_xian_ti_qu, di_kuai_zhi_biao_ce_suan_biao_huo_qu, huo_qu_gong_zuo_kong_jian, xiang_mu_chu_shi_hua,]
+        self.tools = [ru_ku_dan_yuan, ru_ku_tu_ze, ru_ku_ju_diao_ru_ku, ru_ku_gong_ye_pian_qu, ru_ku_kong_zhi_xian, ru_ku_cun_zhuang_jian_she_bian_jie, ru_ku_yong_tu_fen_qu, ru_ku_jie_qu_jie_fang_fen_cun, ru_ku_gui_hua_di_kuai, ru_ku_she_shi, ru_ku_dan_yuan_de_qing, ru_ku_kong_zhi_xian_de_qing_di_kuai_hou_tui_xian, ru_ku_kong_zhi_xian_de_qing_te_shu_fan_wei_xian, ru_ku_kong_zhi_xian_de_qing_dao_lu_zhong_xian, ru_ku_kong_zhi_xian_de_qing_dao_lu_bian_xian, ru_ku_gui_hua_di_kuai_de_qing, ru_ku_gui_hua_di_kuai_de_qing_shui_yu, ru_ku_gui_hua_di_kuai_de_qing_dao_lu, ru_ku_she_shi_de_qing, yong_tu_fen_qu_bian_hao_sheng_cheng, yong_tu_fen_qu_gui_hua_tu_sheng_cheng, yong_di_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_fen_qu, qu_chu_zi_duan_zhong_suo_you_kong_ge, qu_yu_geng_xin, qu_yu_jian_cha, qu_yu_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_qu_yu, dao_ru_shu_xing_biao, shu_xing_dui_bi, zuo_biao_xi_tong_yi, zi_duan_ming_cheng_xiao_xie_gai_da_xie, dao_ru_cong_CAD, dao_chu_dao_CAD, shu_xing_yu_xiu_fu, yao_su_chuang_jian_tong_guo_geng_xin_gen_ju_mian, shu_ju_jian_cha, qu_zhuan_zhe, qing_li_li_shi_yao_su, tong_ji, yao_su_lian_he, yong_di_die_he_tu_sheng_cheng, yong_di_ji_qi_tu_sheng_cheng, yong_di_geng_xin, yong_di_xian_zhuang_tu_sheng_cheng, yong_di_gui_hua_tu_sheng_cheng, yong_di_chuang_jian_sheng_cheng_yong_di_tiao_zheng_tu, kai_fa_bian_jie_nei_gong_ye_yong_di, yong_di_ji_suan_tiao_zheng_lei_xing, jian_cha_di_kuai_bian_hao_he_tu_di_ma_shi_fou_you_wen_ti, di_lei_bian_hao_ming_cheng_bie_cheng_pi_pei_jian_cha, ji_ben_nong_tian_shi_fou_bei_zhan, kai_fa_bian_jie_wai_cheng_zhen_jian_she_yong_di_jian_cha, yong_di_he_gui_xing_jian_cha, chu_bu_ji_shu_zhuan_huan_san_diao, chu_bu_ji_shu_zhuan_huan_er_diao, zi_duan_chu_li_bing_sheng_cheng_fen_xiang_san_diao, zi_duan_chu_li_bing_sheng_cheng_fen_xiang_er_diao, di_lei_zhuan_huan_cheng_xiang_di_lei_zhuan_guo_kong_di_lei, di_lei_zhuan_huan_jiu_ban_guo_kong_di_lei_zhuan_xin_ban_guo_kong_di_lei, yong_di_gong_ju_ji_geng_xin_dui_xiang_shu_xing, yong_di_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_yong_di, yong_di_chuang_jian_tong_guo_gen_ju_di_lei_ming_cheng_sheng_cheng_bian_hao, yong_di_gong_ju_ji_yong_di_shu_ju_tong_ji, tong_ji_kai_fa_bian_jie_wai_ji_qi_203_yong_di, yong_di_chuang_jian_tong_guo_ji_suan_liang_ke_yong_di, ji_suan_wen_ben_lian_jie_yong_shu_ju, she_shi_geng_xin, she_shi_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_she_shi, he_dao_bian_xian_sheng_cheng, dao_lu_bian_xian_sheng_cheng, dao_lu_gong_ju_ji_gen_ju_ru_ku_yao_su_sheng_cheng_kong_zhi_xian, dao_lu_hong_xian_ti_qu, di_kuai_zhi_biao_ce_suan_biao_huo_qu, huo_qu_gong_zuo_kong_jian, xiang_mu_chu_shi_hua,]
 
 # class common_importFromCAD(object): 
 #     def __init__(self):
@@ -1024,7 +1024,7 @@ class shu_xing_yu_xiu_fu(object):
         return ParameterCls.parameterCreate_muti(args_dict_list)
 
     def execute(self, parameterList, message):
-        fun_run(u"bxgis.常用.属性区修复", u"属性域修复", parameterList)
+        fun_run(u"bxgis.常用.属性域修复", u"属性域修复", parameterList)
     
 class yao_su_chuang_jian_tong_guo_geng_xin_gen_ju_mian(object):
     # 要素创建_通过更新_根据面
@@ -1527,10 +1527,10 @@ class zi_duan_chu_li_bing_sheng_cheng_fen_xiang_er_diao(object):
     def execute(self, parameterList, message):
         fun_run(u"bxgis.用地.基期.字段处理并生成分项_二调", u"字段处理并生成分项_二调", parameterList)
     
-class yong_di_gong_ju_ji_jiang_jiu_ban_xin_di_lei_zhuan_wei_xin_ban_xin_di_lei(object):
-    # 用地_工具集_将旧版新地类转为新版新地类
+class di_lei_zhuan_huan_cheng_xiang_di_lei_zhuan_guo_kong_di_lei(object):
+    # 地类转换_城乡地类转国空地类
     def __init__(self):
-        self.label = u"用地_工具集_将旧版新地类转为新版新地类"
+        self.label = u"地类转换_城乡地类转国空地类"
         self.description = ""
         self.canRunInBackground = False
         self.category = u"用地\\工具集"
@@ -1544,7 +1544,26 @@ class yong_di_gong_ju_ji_jiang_jiu_ban_xin_di_lei_zhuan_wei_xin_ban_xin_di_lei(o
         return ParameterCls.parameterCreate_muti(args_dict_list)
 
     def execute(self, parameterList, message):
-        fun_run(u"bxgis.用地.工具集.将旧版新地类转为新版新地类", u"用地_工具集_将旧版新地类转为新版新地类", parameterList)
+        fun_run(u"bxgis.用地.工具集.地类转换_城乡地类转国空地类", u"地类转换_城乡地类转国空地类", parameterList)
+    
+class di_lei_zhuan_huan_jiu_ban_guo_kong_di_lei_zhuan_xin_ban_guo_kong_di_lei(object):
+    # 地类转换_旧版国空地类转新版国空地类
+    def __init__(self):
+        self.label = u"地类转换_旧版国空地类转新版国空地类"
+        self.description = ""
+        self.canRunInBackground = False
+        self.category = u"用地\\工具集"
+
+    def getParameterInfo(self):
+        args_dict_list = [
+        {"name": u"输入要素路径", "dataType": u"要素类", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u'XG_GHDK'},
+            {"name": u"地类编号字段名称", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输入参数", "multiValue": False, "default": u"基本信息.地块要素字段映射.地类编号字段名称"},
+            {"name": u"输出要素路径", "dataType": u"字符串", "required": u"必填", "argsDirction": u"输出参数", "multiValue": False, "default": u'内存临时'},
+            ]
+        return ParameterCls.parameterCreate_muti(args_dict_list)
+
+    def execute(self, parameterList, message):
+        fun_run(u"bxgis.用地.工具集.地类转换_旧版国空地类转新版国空地类", u"地类转换_旧版国空地类转新版国空地类", parameterList)
     
 class yong_di_gong_ju_ji_geng_xin_dui_xiang_shu_xing(object):
     # 用地_工具集_更新对象属性

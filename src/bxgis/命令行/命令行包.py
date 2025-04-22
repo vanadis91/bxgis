@@ -77,8 +77,8 @@ if __name__ == "__main__":
 
             参数列表temp = []
             for x in 参数列表:
-                if ";" in x:
-                    参数列表temp.append(x.split(";"))
+                if isinstance(x, str) and ";" in x:
+                    参数列表temp.append([y.strip() for y in x.split(";")])
                 else:
                     参数列表temp.append(x)
             参数列表 = 参数列表temp
@@ -91,7 +91,7 @@ if __name__ == "__main__":
             参数字典temp = {}
             for k, v in 参数字典.items():
                 if isinstance(v, str) and ";" in v:
-                    参数字典temp[k] = v.split(";")
+                    参数字典temp[k] = [y.strip() for y in v.split(";")]
                 else:
                     参数字典temp[k] = v
             参数字典 = 参数字典temp
