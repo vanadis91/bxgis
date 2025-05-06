@@ -242,6 +242,7 @@ if __name__ == "__main__":
     工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
     工作空间 = r"C:\Users\common\Project\D德清洛舍杨树湾单元控规\03过程文件\24.11.27报批稿\D德清洛舍杨树湾单元控规_数据库.gdb"
     工作空间 = r"C:\Users\Common\Project\S申花单元医院西侧商改居地块\S申花单元医院西侧商改居地块_数据库.gdb"
+    工作空间 = r"C:\Users\Common\Project\H杭州配套设施优化研究\H杭州配套设施优化研究_数据库.gdb"
     with 环境管理器类.环境管理器类创建(工作空间):
         # 导出到CAD(输入要素名称="XG_GHDK", 规划范围线要素名称=None, 需融合地类编号列表=None, 切分阈值=None, 是否去孔=True, CAD中图层采用的字段的名称="dldm", 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg")
         # 导出到CAD(输入要素名称="AA_开发边界内", 规划范围线要素名称=None, 需融合字段中需融合的值的列表=["1207", "1207v"], 切分阈值=None, 是否去孔=False, CAD中图层采用的字段的名称="dldm", 输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg")
@@ -258,7 +259,7 @@ if __name__ == "__main__":
         #     输出CAD路径=r"C:\Users\beixiao\Desktop\01.dwg",
         # )
         导出到CAD(
-            输入要素路径="DIST_用地规划图_仅申花",
+            输入要素路径="DIST_用地规划图",
             规划范围线要素名称=None,
             需融合字段名称=None,
             需融合字段中需融合的值的列表=None,

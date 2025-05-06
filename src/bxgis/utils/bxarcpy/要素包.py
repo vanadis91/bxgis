@@ -846,14 +846,17 @@ class 要素类:
     @staticmethod
     def 字段删除(输入要素路径, 删除字段名称列表=None, 保留字段名称列表=None, 忽略系统字段=True):
         from bxpy.日志包 import 日志生成器
+        from bxpy.基本对象包 import 表类
 
+        # 日志生成器.临时开启日志()
         字段名称列表 = 要素类.字段名称列表获取(输入要素路径)
         if 删除字段名称列表 != None:
             # 日志类.输出控制台(f"即将被删除的字段为：" + str(删除字段名称列表))
             if 忽略系统字段:
-                一般不删除的字段名称列表 = ["OID", "OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length", "SHAPE"]
-                for x in 一般不删除的字段名称列表:
-                    if x in 删除字段名称列表:
+                一般不删除的字段名称列表 = ["OID", "OID_1", "OBJECTID", "OBJECTID_1", "SHAPE", "SHAPE_1", "SHAPE_AREA", "SHAPE_AREA_1", "SHAPE_LENGTH", "SHAPE_LENGTH_1"]
+                删除字段名称列表_TEMP = 表类.深拷贝(删除字段名称列表)
+                for x in 删除字段名称列表_TEMP:
+                    if x.upper() in 一般不删除的字段名称列表:
                         删除字段名称列表.remove(x)
             删除字段名称列表 = [x for x in 删除字段名称列表 if x in 字段名称列表]
             if 删除字段名称列表:
@@ -862,11 +865,16 @@ class 要素类:
             字段名称列表 = 要素类.字段名称列表获取(输入要素路径)
             # 日志类.输出调试(f"要素拥有的所有字段为：" + str(字段名称列表))
             if 忽略系统字段:
-                保留字段名称列表.extend(["OID", "OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length", "SHAPE"])
-            for x in 保留字段名称列表:
-                if x in 字段名称列表:
+                # 保留字段名称列表.extend(["OID", "OBJECTID", "OBJECTID_1", "Shape", "Shape_Area", "Shape_Length", "SHAPE"])
+                保留字段名称列表.extend(["OID", "OID_1", "OBJECTID", "OBJECTID_1", "SHAPE", "SHAPE_1", "SHAPE_AREA", "SHAPE_AREA_1", "SHAPE_LENGTH", "SHAPE_LENGTH_1"])
+            字段名称列表_TEMP = 表类.深拷贝(字段名称列表)
+            for x in 字段名称列表_TEMP:
+                if x.upper() in 保留字段名称列表:
                     字段名称列表.remove(x)
-            # 日志类.输出调试(f"即将被删除的字段为：" + str(字段名称列表))
+            # for x in 保留字段名称列表:
+            #     if x in 字段名称列表:
+            #         字段名称列表.remove(x)
+            日志生成器.输出调试(f"即将被删除的字段为：" + str(字段名称列表))
             if len(字段名称列表) > 0:
                 arcpy.management.DeleteField(in_table=输入要素路径, drop_field=字段名称列表, method="DELETE_FIELDS")[0]  # type: ignore
         return 输入要素路径

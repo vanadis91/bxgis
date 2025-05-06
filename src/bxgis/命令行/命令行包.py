@@ -35,8 +35,6 @@ def 初始化_添加搜索路径():
     表类.项删除(sys.path, "c:\\program files (x86)\\arcgis\\desktop10.8\\ArcToolbox\\Scripts", 索引或值不存在时是否提示=False)
 
 
-from bxgis.配置.配置包 import 配置类
-
 if __name__ == "__main__":
     try:
         # 参数列表 = 系统类.属性获取_当前进程参数()
@@ -62,6 +60,7 @@ if __name__ == "__main__":
         #     print(f"参数字典：{参数字典}")
         初始化_添加搜索路径()
         from bxpy.路径包 import 路径类
+        from bxgis.配置.配置包 import 配置类
         import json
 
         命令行参数文件路径 = 路径类.连接(路径类.属性获取_目录(__file__), "命令行参数.json")
