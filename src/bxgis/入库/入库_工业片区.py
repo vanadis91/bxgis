@@ -9,7 +9,9 @@ from bxarcpy.游标包 import 游标类
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类
 from bxarcpy.环境包 import 环境管理器类, 输入输出类
-from bxgis.配置 import 基本信息
+from bxgis.配置.配置包 import 配置类
+
+基本信息 = 配置类.项目信息对象获取()
 
 
 def 入库_工业片区(工业片区要素名称="JX_工业片区范围线", 单元名称="临江单元", 输出要素名称="XG_GYPQ"):
@@ -110,7 +112,7 @@ def 入库_工业片区(工业片区要素名称="JX_工业片区范围线", 单
 
 
 if __name__ == "__main__":
-    日志处理器.输出器_文件对象_路径 = r"C:\Users\beixiao\Desktop\工业片区.txt"
+    日志处理器.输出器_文件对象_路径 = r"C:\Users\beixiao\Desktop\debug_工业片区.txt"
     日志生成器.开启()
     # 工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
     工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"

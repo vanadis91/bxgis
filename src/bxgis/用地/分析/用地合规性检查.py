@@ -8,7 +8,9 @@ def 用地合规性检查(
 ):
     import bxarcpy.工具包 as 工具包
     from bxarcpy.要素包 import 要素类, 字段类
-    from bxgis.配置 import 基本信息
+    from bxgis.配置.配置包 import 配置类
+
+    基本信息 = 配置类.项目信息对象获取()
     from bxarcpy.环境包 import 环境管理器类, 输入输出类
 
     输出要素路径 = 工具包.输出路径生成_当采用内存临时时(["用地更新"]) if 输出要素路径 == "内存临时" else 输出要素路径
@@ -47,7 +49,9 @@ def 用地合规性检查(
         # 检查字段的数据类型是否正确
         from bxpy.基本对象包 import 字典类
         from bxpy.路径包 import 路径类
-        from bxgis.配置 import 基本信息
+        from bxgis.配置.配置包 import 配置类
+
+        基本信息 = 配置类.项目信息对象获取()
 
         地块属性表 = 基本信息.应用信息.地块属性表获取()
         字段类型不准确flag = False

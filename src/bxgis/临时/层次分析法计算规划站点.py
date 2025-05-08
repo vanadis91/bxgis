@@ -5,7 +5,9 @@ from bxarcpy.游标包 import 游标类
 from bxpy.日志包 import 日志生成器
 from bxpy.基本对象包 import 整类
 from bxarcpy.环境包 import 环境管理器类, 输入输出类
-from bxgis.配置 import 基本信息
+from bxgis.配置.配置包 import 配置类
+
+基本信息 = 配置类.项目信息对象获取()
 import bxarcpy.工具包 as 工具包
 
 

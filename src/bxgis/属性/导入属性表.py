@@ -10,7 +10,9 @@ from bxarcpy.几何包 import 几何类
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类
 from bxarcpy.环境包 import 环境管理器类, 输入输出类
-from bxgis.配置 import 基本信息
+from bxgis.配置.配置包 import 配置类
+
+基本信息 = 配置类.项目信息对象获取()
 from bxgis.常用 import 属性更新
 
 

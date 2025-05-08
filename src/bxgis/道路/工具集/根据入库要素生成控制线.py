@@ -8,7 +8,10 @@ from bxarcpy.游标包 import 游标类
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类
 from bxarcpy.环境包 import 环境管理器类, 输入输出类
-from bxgis.配置 import 基本信息
+
+from bxgis.配置.配置包 import 配置类
+
+基本信息 = 配置类.项目信息对象获取()
 
 控制线类型与名称映射 = [
     {"类型名称": "道路中心线-公路", "类型编码": "DLZX-GL", "图层名称": "DL_道路中线"},

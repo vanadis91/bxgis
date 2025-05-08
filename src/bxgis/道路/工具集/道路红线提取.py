@@ -3,10 +3,14 @@
 # import arcpy
 # from sys import argv
 import bxarcpy
-from bxgis.配置 import 基本信息
+
 import bxarcpy.工具包 as 工具包
 from bxarcpy.要素包 import 要素类
 from bxarcpy.环境包 import 环境管理器类
+
+from bxgis.配置.配置包 import 配置类
+
+基本信息 = 配置类.项目信息对象获取()
 
 
 def 道路红线提取(用地要素名称="DIST_用地规划图", 地类编号字段名称=基本信息.地块要素字段映射.地类编号字段名称, 导出到CAD路径=r"C:\Users\beixiao\Desktop\01.dwg", 输出要素名称="内存临时"):

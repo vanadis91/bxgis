@@ -45,9 +45,9 @@ def 解析py文件(文件路径="src\\bxgis\\常用\\导出到CAD.py"):
                     构造数据["参数类型"] = "输出参数"
                 if i >= 第一个有默认值的参数的索引:
                     默认值 = 函数参数默认值列表[i - 第一个有默认值的参数的索引]
+                    构造数据["是否必须"] = "选填"
                     if 默认值 == "None":
                         默认值raw = "None"
-                        构造数据["是否必须"] = "选填"
                     elif 默认值 in ["True", "False"]:
                         默认值raw = 默认值
                         构造数据["数据类型"] = "布尔值"
@@ -70,10 +70,10 @@ def 解析py文件(文件路径="src\\bxgis\\常用\\导出到CAD.py"):
         import importlib
 
         模块 = importlib.import_module(ret["模块名称"])
-        if hasattr(模块, "界面类"):
-            界面类 = getattr(模块, "界面类")
-            if hasattr(界面类, "分类"):
-                ret["分类"] = getattr(界面类, "分类")
+        if hasattr(模块, "界面配置字典"):
+            界面配置字典 = getattr(模块, "界面配置字典")
+            if "分类" in 界面配置字典:
+                ret["分类"] = 界面配置字典["分类"]
     except Exception as e:
         raise Exception(f"{文件路径}解析失败，{e}")
 
@@ -160,9 +160,9 @@ args_type_map = {
 #     with open(toml_file_path,mode='r')as f:
 #         return yaml.load(f)
 def get_registry_value(key_path, value_name):
-    import _winreg as winreg
     # 打开注册表项
     try:
+        import _winreg as winreg # type: ignore
         key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path, 0, winreg.KEY_READ | winreg.KEY_WOW64_64KEY)
         # 获取指定名称的值
         value, regtype = winreg.QueryValueEx(key, value_name)
@@ -171,52 +171,55 @@ def get_registry_value(key_path, value_name):
         return value
     
     except WindowsError as e:
-        raise Exception(u"无法找到arcgis_pro的安装路径".encode('gbk'))
+        raise Exception(u"无法找到arcgis_pro的安装路径，错误为：{}".format(e).encode('gbk'))
 
 def add_search_path():
     # 为py3的包搜索路径中添加本项目
-    import os
-    import shutil
-    arcgis_pro_install_dir = get_registry_value(r"SOFTWARE\\ESRI\\ArcGISPro",'InstallDir')
-    pkg_search_path = os.path.join(arcgis_pro_install_dir,'bin','Python','envs','arcgispro-py3','Lib','site-packages')
-    com_pth_path_from = os.path.join(os.path.dirname(__file__),u'com.pth')
-    com_pth_path_to = os.path.join(pkg_search_path,u'com.pth')
-    if not os.path.isfile(com_pth_path_to):
-        shutil.copy2(com_pth_path_from, com_pth_path_to)
-    else:
-        try:
+    try:
+        import os
+        import shutil
+        arcgis_pro_install_dir = get_registry_value(r"SOFTWARE\\ESRI\\ArcGISPro",'InstallDir')
+        pkg_search_path = os.path.join(arcgis_pro_install_dir,'bin','Python','envs','arcgispro-py3','Lib','site-packages')
+        com_pth_path_from = os.path.join(os.path.dirname(__file__),u'com.pth')
+        com_pth_path_to = os.path.join(pkg_search_path,u'com.pth')
+
+        if os.path.isfile(com_pth_path_to):
             os.remove(com_pth_path_to)
-            shutil.copy2(com_pth_path_from, com_pth_path_to)
-        except Exception as e:
-            print(u"无法删除原有的com.pth".encode('gbk'))
+        shutil.copy2(com_pth_path_from, com_pth_path_to)
+
+    except Exception as e:
+        raise Exception(u"复制com.pth失败，错误为：{}".format(e).encode('gbk'))
 
 add_search_path()
 
 def fun_run(module_name, function_name, args_list):
-    import subprocess
-    import json
-    import os
-    import arcpy
+    try:
+        import subprocess
+        import json
+        import os
+        import arcpy
 
-    args_dict = ParameterCls.convert_to_dictRawValue(args_list)
-    args_dict_str = json.dumps(args_dict,ensure_ascii=False)
+        args_dict = ParameterCls.convert_to_dictRawValue(args_list)
+        args_dict_str = json.dumps(args_dict,ensure_ascii=False)
 
-    run_cli_dict={
-        u'模块名称'.encode('gbk'): module_name.encode('gbk'),
-        u'函数名称'.encode('gbk'): function_name.encode('gbk'),
-        u'参数字典'.encode('gbk'): args_dict_str,
-        u'当前工作空间'.encode('gbk'): arcpy.env.workspace.encode('gbk'),
-    }
+        run_cli_dict={
+            u'模块名称'.encode('gbk'): module_name.encode('gbk'),
+            u'函数名称'.encode('gbk'): function_name.encode('gbk'),
+            u'参数字典'.encode('gbk'): args_dict_str,
+            u'当前工作空间'.encode('gbk'): arcpy.env.workspace.encode('gbk'), # type: ignore
+        }
 
-    args_path = os.path.join(os.path.dirname(__file__),u'命令行',u'命令行参数.json')
-    with open(args_path,mode='w')as f:
-        json.dump(run_cli_dict, f, ensure_ascii=False, indent=4)
+        args_path = os.path.join(os.path.dirname(__file__),u'命令行',u'命令行参数.json')
+        with open(args_path,mode='w')as f:
+            json.dump(run_cli_dict, f, ensure_ascii=False, indent=4)
 
-    arcgis_pro_install_dir = get_registry_value(r"SOFTWARE\\ESRI\\ArcGISPro",'InstallDir')
-    interpreter_path = os.path.join(arcgis_pro_install_dir,'bin','Python','envs','arcgispro-py3','python.exe')
-    str = u"\\"{}\\" -m bxgis.命令行.命令行包".format(interpreter_path)
-    process = subprocess.Popen(str.encode('gbk'))
-    return None
+        arcgis_pro_install_dir = get_registry_value(r"SOFTWARE\\ESRI\\ArcGISPro",'InstallDir')
+        interpreter_path = os.path.join(arcgis_pro_install_dir,'bin','Python','envs','arcgispro-py3','python.exe')
+        str = u"\\"{}\\" -m bxgis.命令行.命令行包".format(interpreter_path)
+        process = subprocess.Popen(str.encode('gbk'))
+        return None
+    except Exception as e:
+        arcpy.AddMessage(u"运行失败，错误为：{}".format(e).encode('gbk'))
 
 class ParameterCls:
     @staticmethod

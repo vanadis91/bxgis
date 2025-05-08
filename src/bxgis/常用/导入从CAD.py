@@ -3,7 +3,9 @@ from bxarcpy.要素包 import 要素类
 from bxpy.日志包 import 日志生成器
 from bxpy.元数据包 import 追踪元数据类
 from bxarcpy.环境包 import 环境管理器类, 环境类
-from bxgis.配置 import 基本信息
+from bxgis.配置.配置包 import 配置类
+
+基本信息 = 配置类.项目信息对象获取()
 
 
 def 导入从CAD(输入CAD数据集中的要素类路径=r"C:\Users\beixiao\Desktop\01.dwg\控规地块", 是否拓扑检查=False, 是否范围检查=True, 是否转曲=True, 输出要素路径=r"CZ_CAD色块"):

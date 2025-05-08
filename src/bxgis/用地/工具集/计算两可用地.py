@@ -6,7 +6,8 @@ from bxarcpy.游标包 import 游标类
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类
 from bxarcpy.环境包 import 环境管理器类, 输入输出类
-from bxgis.配置 import 基本信息
+from bxgis.配置.配置包 import 配置类
+基本信息 = 配置类.项目信息对象获取()
 
 
 def 用地创建_通过计算两可用地(输入要素名称, 有种植属性的要素名称="CZ_三调筛选_种植属性名称", 输出要素名称="in_memory\\AA_计算两可用地"):

@@ -3,12 +3,14 @@
 import bxarcpy
 import bxarcpy.工具包 as 工具包
 from bxarcpy.工具包 import 输出路径生成_当采用内存临时时
-from bxarcpy.要素包 import 要素类
+from bxarcpy.要素包 import 要素类, 项类
 from bxarcpy.游标包 import 游标类
 from bxarcpy.数据库包 import 数据库类
 from bxarcpy.要素数据集包 import 要素数据集类
 from bxarcpy.环境包 import 环境管理器类, 输入输出类
-from bxgis.配置 import 基本信息
+from bxgis.配置.配置包 import 配置类
+
+基本信息 = 配置类.项目信息对象获取()
 from bxgis.常用 import 数据检查
 from bxpy.日志包 import 日志生成器, 日志处理器
 from typing import Union, Literal, Any, List, Dict, Optional, TypedDict
@@ -128,9 +130,10 @@ def 用地创建_生成用地调整图(
         用地调整图要素 = 要素类.要素创建_通过复制(既有用地调整图)
         用地调整图要素_筛选后 = 要素类.要素创建_通过筛选(用地调整图要素, "特殊处理 IS NOT NULL AND 特殊处理 <> ''")
         用地调整图要素_筛选后_转点 = 要素类.要素创建_通过转点(用地调整图要素_筛选后)
-        from bxgis.常用.属性更新 import 要素创建_通过更新_根据点
+        # from bxgis.常用.属性更新 import 要素创建_通过更新_根据点
 
-        用地要素 = 要素创建_通过更新_根据点(用地要素, 用地调整图要素_筛选后_转点, [["特殊处理", "特殊处理"]])
+        用地要素 = 项类.项更新_通过点(用地要素, 用地调整图要素_筛选后_转点, [["特殊处理", "特殊处理"]])
+        # 用地要素 = 要素创建_通过更新_根据点(用地要素, 用地调整图要素_筛选后_转点, [["特殊处理", "特殊处理"]])
 
         操作字段 = ["建设用地面积", "建设用地面积_新增", "建设用地面积_保留", "建设用地面积_盘活", "农业用地面积", "农业用地面积_复垦", "农业用地面积_垦造", "农业用地面积_耕地功能恢复", "农业用地面积_耕地质量提升", "生态用地面积", "生态用地面积_林地", "生态用地面积_水域", "生态用地面积_生态修复", "特殊处理"]
         with 游标类.游标创建("更新", 用地要素, 操作字段) as 游标:
@@ -203,7 +206,7 @@ def 用地创建_生成用地调整图(
 
 
 if __name__ == "__main__":
-    日志处理器.输出器_文件对象_路径 = r"C:\Users\beixiao\Desktop\debug.txt"
+    日志处理器.输出器_文件对象_路径 = r"C:\Users\beixiao\Desktop\debug.txt"  # type: ignore
     日志生成器.开启()
     工作空间 = r"C:\Users\common\project\F富阳受降控规\受降北_数据库.gdb"
     # 工作空间 = r"C:\Users\common\project\J江东区临江控规\临江控规_数据库.gdb"
